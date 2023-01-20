@@ -8,7 +8,6 @@ We love pull requests! We can't wait to collaborate with you. Please note that w
   - [Prerequisites](#prerequisites)
   - [Development Setup](#development-setup)
   - [Running the tests](#running-the-tests)
-  - [Editor setup](#editor-setup)
 - [Testing](#testing)
 - [Style Guide](#style-guide)
 - [Commit Message Guidelines](#commit-message-guidelines)
