@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
@@ -13,4 +13,6 @@ const AltStudentSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = AltStudent = mongoose.model("AltStudent", AltStudentSchema);
+const AltStudent = mongoose.model('AltStudent', AltStudentSchema);
+
+module.exports = AltStudent;

@@ -9,8 +9,7 @@ var debug = require('debug')('study-buddy:server');
 var http = require('http');
 const connectDatabase = require('../utils/db');
 
-const config = require('../config/index')
-
+const config = require('../config');
 
 /**
  * Get port from environment and store in Express.
@@ -86,7 +85,7 @@ function onError(error) {
  */
 
 async function onListening() {
-  connectDatabase(config.db.name)
+  connectDatabase(config.db.name);
   var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr

@@ -1,12 +1,7 @@
-const { createMentor } = require('./controller')
+const { createMentor } = require('./controller');
 
-const mentorRouter = require('express').Router()
+const mentorRouter = require('express').Router();
 
+mentorRouter.route('/').post(createMentor);
 
-mentorRouter
-    .route('/')
-    .post(createMentor)
-
-
-
-module.exports = mentorRouter
+module.exports = mentorRouter;
