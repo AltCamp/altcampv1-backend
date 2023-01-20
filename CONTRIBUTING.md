@@ -2,7 +2,7 @@
 
 When contributing to this repository, please first discuss the change you wish to make via [issue](https://github.com/StudyBuddyv1/studybuddyv1-backend/issues) or any other method with the owners of this repository before making a change.
 
-Please note we have a [Code of Conduct](https://github.com/StudyBuddyv1/studybuddyv1-backend/blob/main/CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
+Please note we have a [Code of Conduct](/CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
 
 ## Pull Request Process
 
