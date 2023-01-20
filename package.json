@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "start:dev": "nodemon ./bin/www"
+    "start:dev": "nodemon ./bin/www",
+    "lint": "eslint ."
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -15,6 +16,7 @@
     "morgan": "~1.9.1"
   },
   "devDependencies": {
+    "eslint": "^8.32.0",
     "nodemon": "^2.0.20"
   }
 }
