@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { hashPassword } = require('../../utils/authUtils');
 
 const Schema = mongoose.Schema;
 
@@ -12,6 +13,19 @@ const AltStudentSchema = new Schema(
   },
   { timestamps: true }
 );
+
+AltStudentSchema.pre('save', async function (next) {
+  const user = this;
+  try {
+    if (user.isModified('password') || user.isNew) {
+      await hashPassword(user);
+    }
+    next();
+
+  } catch (error) {
+    next(error);
+  }
+});
 
 const AltStudent = mongoose.model('AltStudent', AltStudentSchema);
 

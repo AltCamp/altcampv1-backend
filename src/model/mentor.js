@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
+const { hashPassword } = require('../../utils/authUtils');
 
 const MentorSchema = new Schema(
   {
@@ -12,6 +13,19 @@ const MentorSchema = new Schema(
   },
   { timestamps: true }
 );
+
+MentorSchema.pre('save', async function (next) {
+  const user = this;
+  try {
+    if (user.isModified('password') || user.isNew) {
+      await hashPassword(user);
+    }
+    next();
+
+  } catch (error) {
+    next(error);
+  }
+});
 
 const Mentor = mongoose.model('Mentor', MentorSchema);
 
