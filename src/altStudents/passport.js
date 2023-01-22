@@ -21,9 +21,14 @@ passport.use(
           return done(null, false, { message: 'User already exists' });
         }
 
-        const newaltStudent = await altStudentSchema.create({ ...req.body, password });
+        const newaltStudent = await altStudentSchema.create({
+          ...req.body,
+          password,
+        });
 
-        return done(null, newaltStudent, { message: 'altStudent signup successful' });
+        return done(null, newaltStudent, {
+          message: 'altStudent signup successful',
+        });
       } catch (error) {
         done(error);
       }
@@ -53,7 +58,9 @@ passport.use(
           return done(null, false, { message: 'Invalid password' });
         }
 
-        return done(null, altStudent, { message: 'AltStudent login successful' });
+        return done(null, altStudent, {
+          message: 'AltStudent login successful',
+        });
       } catch (error) {
         return done(error);
       }

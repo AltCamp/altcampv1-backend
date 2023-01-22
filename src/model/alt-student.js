@@ -23,7 +23,6 @@ AltStudentSchema.pre('save', async function (next) {
       await hashPassword(user);
     }
     next();
-
   } catch (error) {
     next(error);
   }

@@ -15,7 +15,9 @@ async function hashPassword(user) {
 // login
 const login = (req, res, { err, user, info }) => {
   if (err || !user) {
-    return res.status(401).json({ message: info?.message || 'Login failed', error: err || '' });
+    return res
+      .status(401)
+      .json({ message: info?.message || 'Login failed', error: err || '' });
   }
 
   req.login(user, { session: false }, async (error) => {
