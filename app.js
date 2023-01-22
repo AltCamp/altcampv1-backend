@@ -1,13 +1,15 @@
-var express = require('express');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
 // Signup and login authentication middleware
-require('./src/authentication/passport');
+require('./src/mentors/passport');
+require('./src/students/passport');
+require('./src/altStudents/passport');
 
-var indexRouter = require('./routes');
+const indexRouter = require('./routes');
 
-var app = express();
+const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());

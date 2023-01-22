@@ -1,9 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const mentorRouter = require('../src/mentors/route');
-const authRouter = require('../src/authentication/authRoute');
+const studentRouter = require('../src/students/route');
+const altStudentRouter = require('../src/altStudents/altStudentRoute');
 
-router.use('/auth', authRouter);
+router.use('/student', studentRouter);
+router.use('/alt_student', altStudentRouter);
 router.use('/mentor', mentorRouter);
 
 /* GET home page. */

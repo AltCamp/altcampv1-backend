@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const { hashPassword } = require('../../utils/authUtils');
 
 const Schema = mongoose.Schema;
-const { hashPassword } = require('../../utils/authUtils');
 
 const MentorSchema = new Schema(
   {
@@ -26,6 +27,15 @@ MentorSchema.pre('save', async function (next) {
     next(error);
   }
 });
+
+MentorSchema.methods.isValidPassword = async function (password) {
+  const user = this;
+  try {
+    return await bcrypt.compare(password, user.password);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const Mentor = mongoose.model('Mentor', MentorSchema);
 
