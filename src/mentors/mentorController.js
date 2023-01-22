@@ -1,25 +1,14 @@
-const mentorSchema = require('../model/mentor');
-
 const registerNewMentor = async (req, res) => {
-  const { firstname, lastname, email, password, track } = req.body;
-
-  try {
-    const newMentor = await mentorSchema.create({
-      firstname: firstname,
-      lastname: lastname,
-      email: email,
-      password: password,
-      track: track,
+  delete req.user.password;
+  return res
+    .status(201)
+    .json({ message: 'Mentor signup successful', user: {
+      id: req.user._id,
+      name: `${req.user.firstname} ${req.user.lastname}`,
+      email: req.user.email,
+      createdAt: req.user.createdAt,
+    }
     });
-
-    delete newMentor.password;
-
-    return res
-      .status(201)
-      .json({ message: 'Mentor signup successful', user: newMentor });
-  } catch (error) {
-    console.log(`error signup: ${error}`);
-  }
 };
 
 module.exports = {

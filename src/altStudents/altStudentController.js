@@ -1,26 +1,14 @@
-const altStudentSchema = require('../model/alt-student');
-
 const registerNewAltStudent = async (req, res) => {
-  const { firstname, lastname, email, password, track, matric } = req.body;
-
-  try {
-    const newAltStudent = await altStudentSchema.create({
-      firstname,
-      lastname,
-      email,
-      password,
-      track,
-      matric,
+  delete req.user.password;
+  return res
+    .status(201)
+    .json({ message: 'AltStudent signup successful', user: {
+      id: req.user._id,
+      name: `${req.user.firstname} ${req.user.lastname}`,
+      email: req.user.email,
+      createdAt: req.user.createdAt,
+    }
     });
-
-    delete newAltStudent.password;
-
-    return res
-      .status(201)
-      .json({ message: 'AltStudent signup successful', user: newAltStudent });
-  } catch (error) {
-    console.log(`error signup: ${error}`);
-  }
 };
 
 module.exports = {
