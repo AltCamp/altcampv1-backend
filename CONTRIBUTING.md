@@ -79,14 +79,20 @@ $ git add .
 $ git commit -m "commit message"
 ```
 
-4. Push your changes to your remote branch.
+4. Pull from the upstream `dev` branch to get the latest changes.
+
+```
+$ git pull upstream dev
+```
+
+5. Push your changes to your remote branch.
 
 ```
 $ git push origin feature/feature-name
 ```
 
-5. Create a pull request to the `dev` branch.
-6. Wait for your pull request to be reviewed and merged.
+6. Create a pull request to the `dev` branch.
+7. Wait for your pull request to be reviewed and merged.
 
 ### Running the Tests
 
