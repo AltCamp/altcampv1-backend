@@ -21,7 +21,10 @@ passport.use(
           return done(null, false, { message: 'User already exists' });
         }
 
-        const newStudent = await studentSchema.create({ ...req.body, password });
+        const newStudent = await studentSchema.create({
+          ...req.body,
+          password,
+        });
 
         return done(null, newStudent, { message: 'Student signup successful' });
       } catch (error) {

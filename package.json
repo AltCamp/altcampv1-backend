@@ -6,7 +6,8 @@
     "start": "node ./bin/www",
     "start:dev": "nodemon ./bin/www",
     "lint": "eslint .",
-    "format": "npx prettier --check ."
+    "format:check": "npx prettier --check .",
+    "format:write": "npx prettier --write ."
   },
   "dependencies": {
     "bcrypt": "^5.1.0",

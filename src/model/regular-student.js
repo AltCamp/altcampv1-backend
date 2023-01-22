@@ -35,7 +35,6 @@ RegularStudentSchema.methods.isValidPassword = async function (password) {
   }
 };
 
-
 const RegularStudent = mongoose.model('RegularStudent', RegularStudentSchema);
 
 module.exports = RegularStudent;
