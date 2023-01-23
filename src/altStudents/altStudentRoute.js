@@ -14,7 +14,7 @@ altStudentRouter.post(
 // login
 altStudentRouter.post('/login', async (req, res, next) =>
   passport.authenticate('login_alt', (err, user, info) => {
-    login(req, res, { err, user, info });
+    login(req, res, next, { err, user, info });
   })(req, res, next)
 );
 

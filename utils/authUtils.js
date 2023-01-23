@@ -13,15 +13,13 @@ async function hashPassword(user) {
 }
 
 // login
-const login = (req, res, { err, user, info }) => {
+const login = (req, res, next, { err, user, info }) => {
   if (err || !user) {
-    return res
-      .status(401)
-      .json({ message: info?.message || 'Login failed', error: err || '' });
+    return next(err || info);
   }
 
   req.login(user, { session: false }, async (error) => {
-    if (error) return res.status(401).json({ message: error.message });
+    if (error) return next(error);
 
     const body = { _id: user._id, email: user.email };
 
