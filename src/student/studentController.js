@@ -1,27 +1,50 @@
-const Student = require('../../model/student');
+const { ACCOUNT_TYPES } = require('../../constant');
+const Account = require('../../model/account');
+const { NotFoundError } = require('../../utils/customError');
 
 async function getStudents(req, res) {
-  const students = await Student.find({});
+  const students = await Account.find({
+    accountType: ACCOUNT_TYPES.STUDENT,
+  }).populate('owner');
   res.json(students);
+}
+
+async function getSingleStudent(req, res) {
+  const student = await Account.findOne({
+    accountType: ACCOUNT_TYPES.STUDENT,
+  }).populate('owner');
+  res.json(student);
+}
+
+async function updateStudent(req, res) {
+  const { firstname, lastname } = req.body;
+  const stundent = await Account.findByIdAndUpdate(
+    req.user.id,
+    { firstname, lastname },
+    { new: true }
+  );
+  if (!stundent) {
+    throw new NotFoundError('Student not found!');
+  }
+  res.json(stundent);
+}
+
+async function changeStudentPassword(req, res) {
+  const { password } = req.body;
+  const student = await Account.findByIdAndUpdate(
+    req.user.id,
+    { password },
+    { new: true }
+  );
+  if (!student) {
+    throw new NotFoundError('Student not found!');
+  }
+  res.json(student);
 }
 
 module.exports = {
   getStudents,
+  getSingleStudent,
+  updateStudent,
+  changeStudentPassword,
 };
-
-// const registerNewAltStudent = async (req, res) => {
-//   delete req.user.password;
-//   return res.status(201).json({
-//     message: 'AltStudent signup successful',
-//     user: {
-//       id: req.user._id,
-//       name: `${req.user.firstname} ${req.user.lastname}`,
-//       email: req.user.email,
-//       createdAt: req.user.createdAt,
-//     },
-//   });
-// };
-
-// module.exports = {
-//   registerNewAltStudent,
-// };

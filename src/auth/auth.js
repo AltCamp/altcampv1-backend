@@ -3,7 +3,7 @@ const { ACCOUNT_TYPES } = require('../../constant');
 const Account = require('../../model/account');
 const Mentor = require('../../model/mentor');
 const Student = require('../../model/student');
-const { ConflitError } = require('../../utils/customError');
+const { ConflitError, UnAuthorizedError } = require('../../utils/customError');
 const { createToken, validateCredentials } = require('../../utils/helper');
 
 const registerMentor = async (req, res) => {
@@ -46,9 +46,7 @@ const registerStudent = async (req, res) => {
   // throw new Error('okay')
   const studentExist = await Account.findOne({ email });
   if (studentExist) {
-    return res.status(409).json({
-      msg: 'Student already exist!',
-    });
+    throw new ConflitError('Student Exist already!');
   }
   const student = await Student.create({ matric, stack, gender });
   let account = await Account.create({
@@ -74,9 +72,7 @@ const studentLogin = async (req, res) => {
 
   let account = await validateCredentials(email, password);
   if (!account) {
-    return res.status(401).json({
-      msg: 'Invalid credentials!',
-    });
+    throw new UnAuthorizedError('Invalid credentials!');
   }
   account = omit(account.toObject(), ['password']);
   const acessToken = createToken(account);

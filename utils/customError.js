@@ -12,10 +12,17 @@ class UnAuthorizedError extends Error {
   }
 }
 
+class NotFoundError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 404;
+  }
+}
+
 class BadRequestError extends Error {
   constructor(message) {
     super(message);
-    this.statusCode = 401;
+    this.statusCode = 400;
   }
 }
 
@@ -26,9 +33,18 @@ class UnprocessableEntity extends Error {
   }
 }
 
+class ForbiddenResourceError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 403;
+  }
+}
+
 module.exports = {
   ConflitError,
   UnAuthorizedError,
   BadRequestError,
-  UnprocessableEntity
+  UnprocessableEntity,
+  ForbiddenResourceError,
+  NotFoundError
 };
