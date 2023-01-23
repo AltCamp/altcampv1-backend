@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-// const mentorRouter = require('../src/mentors/route');
 const authRouter = require('../src/auth/router');
-
-/* GET home page. */
+const studentRouter = require('../src/student/studentRoute');
+const mentorRouter = require('../src/mentors/route');
 
 router.use('/auth', authRouter);
-// router.use('/mentor', mentorRouter);
+router.use('/students', studentRouter);
+router.use('/mentor', mentorRouter);
 
 module.exports = router;

@@ -48,27 +48,6 @@ const accountSchema = new Schema(
   { timestamps: true }
 );
 
-// accountSchema.pre('save', async function (next) {
-//   const user = this;
-//   try {
-//     if (user.isModified('password') || user.isNew) {
-//       await hashPassword(user);
-//     }
-//     next();
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-// accountSchema.methods.isValidPassword = async function (password) {
-//   const user = this;
-//   try {
-//     return await bcrypt.compare(password, user.password);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
 const Account = mongoose.model('Account', accountSchema);
 
 module.exports = Account;

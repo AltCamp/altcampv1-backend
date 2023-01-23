@@ -3,8 +3,8 @@ module.exports = {
   PRODUCTION: 'production',
 
   ACCOUNT_TYPES: {
-    STUDENT: 'student',
-    MENTOR: 'mentor',
-    ADMIN: 'admin',
+    STUDENT: 'Student',
+    MENTOR: 'Mentor',
+    ADMIN: 'Admin',
   },
 };
