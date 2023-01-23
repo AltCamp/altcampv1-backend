@@ -14,7 +14,7 @@ mentorRouter.post(
 // login
 mentorRouter.post('/login', async (req, res, next) =>
   Passport.authenticate('login_mentor', (err, user, info) => {
-    login(req, res, { err, user, info });
+    login(req, res, next, { err, user, info });
   })(req, res, next)
 );
 

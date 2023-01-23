@@ -14,7 +14,7 @@ studentRouter.post(
 // login
 studentRouter.post('/login', async (req, res, next) =>
   passport.authenticate('login_student', (err, user, info) => {
-    login(req, res, { err, user, info });
+    login(req, res, next, { err, user, info });
   })(req, res, next)
 );
 
