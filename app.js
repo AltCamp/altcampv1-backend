@@ -4,6 +4,7 @@ const logger = require('morgan');
 const errorHandler = require('./utils/errorHandler');
 
 // Signup and login authentication middleware
+require('./utils/passport');
 require('./src/mentors/passport');
 require('./src/students/passport');
 require('./src/altStudents/passport');
