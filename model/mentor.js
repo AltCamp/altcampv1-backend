@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const { hashPassword } = require('../../utils/authUtils');
+const { hashPassword } = require('../utils/authUtils');
 
 const Schema = mongoose.Schema;
 

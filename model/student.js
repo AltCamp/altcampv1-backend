@@ -1,22 +1,22 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const { hashPassword } = require('../../utils/authUtils');
+const { hashPassword } = require('../utils/authUtils');
 
 const Schema = mongoose.Schema;
 
-const AltStudentSchema = new Schema(
+const studentSchema = new Schema(
   {
     firstname: { type: String, required: true },
     lastname: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
     track: { type: String, required: true },
-    matric: { type: String, required: true },
+    matric: { type: String },
   },
   { timestamps: true }
 );
 
-AltStudentSchema.pre('save', async function (next) {
+studentSchema.pre('save', async function (next) {
   const user = this;
   try {
     if (user.isModified('password') || user.isNew) {
@@ -28,7 +28,7 @@ AltStudentSchema.pre('save', async function (next) {
   }
 });
 
-AltStudentSchema.methods.isValidPassword = async function (password) {
+studentSchema.methods.isValidPassword = async function (password) {
   const user = this;
   try {
     return await bcrypt.compare(password, user.password);
@@ -37,6 +37,6 @@ AltStudentSchema.methods.isValidPassword = async function (password) {
   }
 };
 
-const AltStudent = mongoose.model('AltStudent', AltStudentSchema);
+const Student = mongoose.model('AltStudent', studentSchema);
 
-module.exports = AltStudent;
+module.exports = Student;
