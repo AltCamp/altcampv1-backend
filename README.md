@@ -34,10 +34,10 @@ This project is licensed under the MIT License - see the [LICENSE](/LICENSE) fil
 
 ## Contributors
 
-- **Jane Doe**: [GitHub]() - [LinkedIn]() - [Twitter]() - [Portfolio]() - [Blog]()
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+
 <table>
   <tbody>
     <tr>
