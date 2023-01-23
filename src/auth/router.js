@@ -7,5 +7,4 @@ router.post('/mentor', registerMentor);
 router.post('/student', registerStudent);
 router.post('/student/login', studentLogin);
 
-
 module.exports = router;

@@ -8,6 +8,4 @@ const authRouter = require('../src/auth/router');
 router.use('/auth', authRouter);
 // router.use('/mentor', mentorRouter);
 
-
-
 module.exports = router;

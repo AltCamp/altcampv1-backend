@@ -35,7 +35,7 @@ const registerMentor = async (req, res) => {
   res.status(201).json({
     msg: 'Mentor created successfully',
     account,
-    ...mentor,
+    mentor,
     token,
   });
 };
@@ -62,7 +62,7 @@ const registerStudent = async (req, res) => {
   res.status(201).json({
     msg: 'Student created successfully',
     account,
-    ...student,
+    student,
     token,
   });
 };

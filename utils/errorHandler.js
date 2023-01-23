@@ -1,6 +1,6 @@
 function errorHandler(err, req, res, next) {
   let customError = {
-    msg: err.msg || 'Something went wrong',
+    msg: err.msg || err.message || 'Something went wrong',
     statusCode: err.statusCode || 500,
   };
   if (err.name === 'ValidationError') {

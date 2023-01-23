@@ -46,5 +46,5 @@ module.exports = {
   BadRequestError,
   UnprocessableEntity,
   ForbiddenResourceError,
-  NotFoundError
+  NotFoundError,
 };
