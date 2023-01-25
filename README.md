@@ -1,9 +1,7 @@
 # StudyBuddyv1-backend
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
-
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## About StudyBuddy
@@ -40,11 +38,11 @@ This project is licensed under the MIT License - see the [LICENSE](/LICENSE) fil
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
-
 <table>
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="http://thepda.tech"><img src="https://avatars.githubusercontent.com/u/71160347?v=4?s=100" width="100px;" alt="Precious Abubakar"/><br /><sub><b>Precious Abubakar</b></sub></a><br /><a href="https://github.com/StudyBuddyv1/studybuddyv1-backend/commits?author=misspee007" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tobisupreme"><img src="https://avatars.githubusercontent.com/u/98078707?v=4?s=100" width="100px;" alt="Tobi Balogun"/><br /><sub><b>Tobi Balogun</b></sub></a><br /><a href="#maintenance-tobisupreme" title="Maintenance">🚧</a></td>
     </tr>
   </tbody>
 </table>
