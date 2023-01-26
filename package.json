@@ -15,7 +15,10 @@
     "debug": "~2.6.9",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^9.0.0",
+    "lodash": "^4.17.21",
     "mongoose": "^6.8.4",
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
@@ -26,8 +29,8 @@
     "eslint": "^8.32.0",
     "jest": "^29.3.1",
     "mongodb-memory-server": "^8.11.3",
-    "supertest": "^6.3.3",
     "nodemon": "^2.0.20",
-    "prettier": "^2.8.3"
+    "prettier": "^2.8.3",
+    "supertest": "^6.3.3"
   }
 }
