@@ -18,15 +18,15 @@ async function getSingleStudent(req, res) {
 
 async function updateStudent(req, res) {
   const { firstname, lastname } = req.body;
-  const stundent = await Account.findByIdAndUpdate(
+  const student = await Account.findByIdAndUpdate(
     req.user.id,
     { firstname, lastname },
     { new: true }
   );
-  if (!stundent) {
+  if (!student) {
     throw new NotFoundError('Student not found!');
   }
-  res.json(stundent);
+  res.json(student);
 }
 
 async function changeStudentPassword(req, res) {

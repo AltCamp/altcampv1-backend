@@ -3,43 +3,43 @@ const Account = require('../../model/account');
 const { NotFoundError } = require('../../utils/customError');
 
 async function getMentors(req, res) {
-  const students = await Account.find({
+  const mentors = await Account.find({
     accountType: ACCOUNT_TYPES.MENTOR,
   }).populate('owner');
-  res.json(students);
+  res.json(mentors);
 }
 
 async function getSingleMentor(req, res) {
-  const student = await Account.findOne({
+  const mentor = await Account.findOne({
     accountType: ACCOUNT_TYPES.MENTOR,
   }).populate('owner');
-  res.json(student);
+  res.json(mentor);
 }
 
 async function updateMentor(req, res) {
   const { firstname, lastname } = req.body;
-  const stundent = await Account.findByIdAndUpdate(
+  const mentor = await Account.findByIdAndUpdate(
     req.user.id,
     { firstname, lastname },
     { new: true }
   );
-  if (!stundent) {
+  if (!mentor) {
     throw new NotFoundError('Student not found!');
   }
-  res.json(stundent);
+  res.json(mentor);
 }
 
 async function changeMentorPassword(req, res) {
   const { password } = req.body;
-  const student = await Account.findByIdAndUpdate(
+  const mentor = await Account.findByIdAndUpdate(
     req.user.id,
     { password },
     { new: true }
   );
-  if (!student) {
+  if (!mentor) {
     throw new NotFoundError('Student not found!');
   }
-  res.json(student);
+  res.json(mentor);
 }
 
 module.exports = {
