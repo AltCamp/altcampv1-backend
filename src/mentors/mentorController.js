@@ -24,7 +24,7 @@ async function updateMentor(req, res) {
     { new: true }
   );
   if (!mentor) {
-    throw new NotFoundError('Student not found!');
+    throw new NotFoundError('Mentor not found!');
   }
   res.json(mentor);
 }
@@ -37,7 +37,7 @@ async function changeMentorPassword(req, res) {
     { new: true }
   );
   if (!mentor) {
-    throw new NotFoundError('Student not found!');
+    throw new NotFoundError('Mentor not found!');
   }
   res.json(mentor);
 }
