@@ -14,13 +14,13 @@ const registerMentor = async (req, res) => {
     password,
     track,
     specialization,
-    yearsOrExperience,
+    yearsOfExperience,
   } = req.body;
-  const mentorExisit = await Account.findOne({ email });
-  if (mentorExisit) {
+  const mentorExist = await Account.findOne({ email });
+  if (mentorExist) {
     throw new ConflitError('Mentor already exist!');
   }
-  const mentor = await Mentor.create({ specialization, yearsOrExperience });
+  const mentor = await Mentor.create({ specialization, yearsOfExperience });
   let account = await Account.create({
     firstname,
     lastname,
@@ -28,7 +28,7 @@ const registerMentor = async (req, res) => {
     password,
     track,
     owner: mentor.id,
-    accountType: ACCOUNT_TYPES.MENTORn,
+    accountType: ACCOUNT_TYPES.MENTOR,
   });
   account = omit(account.toObject(), ['password']);
   const token = createToken(account);
@@ -75,11 +75,11 @@ const studentLogin = async (req, res) => {
     throw new UnAuthorizedError('Invalid credentials!');
   }
   account = omit(account.toObject(), ['password']);
-  const acessToken = createToken(account);
+  const accessToken = createToken(account);
 
   res.status(200).json({
     msg: 'Login successful!',
-    acessToken,
+    accessToken,
   });
 };
 

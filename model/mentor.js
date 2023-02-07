@@ -6,7 +6,7 @@ const MentorSchema = new Schema({
   specialization: {
     type: String,
   },
-  yearsOrExperience: {
+  yearsOfExperience: {
     type: Number,
   },
 });
