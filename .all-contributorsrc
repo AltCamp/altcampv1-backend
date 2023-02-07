@@ -32,6 +32,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Skywonda",
+      "name": "skyreal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/102043619?v=4",
+      "profile": "https://emerge-testing.vercel.app/signup",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
