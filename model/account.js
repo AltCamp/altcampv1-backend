@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { ACCOUNT_TYPES } = require('../constant');
+const bcrypt = require('bcrypt');
 
 const Schema = mongoose.Schema;
 
@@ -48,6 +49,28 @@ const accountSchema = new Schema(
   { timestamps: true }
 );
 
+accountSchema.pre('save', async function (next) {
+  const user = this;
+  try {
+    if (user.isModified('password') || user.isNew) {
+      await hashPassword(user);
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 const Account = mongoose.model('Account', accountSchema);
 
 module.exports = Account;
+
+async function hashPassword(user) {
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(user.password, salt);
+    user.password = hashedPassword;
+  } catch (error) {
+    throw new Error('Hashing failed:', error);
+  }
+}
