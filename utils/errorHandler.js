@@ -6,8 +6,8 @@ function errorHandler(err, req, res, next) {
   if (err.name === 'ValidationError') {
     customError.msg = err.errors
       ? Object.values(err.errors)
-        .map((item) => item.message)
-        .join('.   ')
+          .map((item) => item.message)
+          .join('.   ')
       : err.details.map((item) => item.message).join('.   ');
     customError.statusCode = 422;
   }
