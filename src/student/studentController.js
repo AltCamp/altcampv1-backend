@@ -12,6 +12,7 @@ async function getStudents(req, res) {
 async function getSingleStudent(req, res) {
   const student = await Account.findOne({
     accountType: ACCOUNT_TYPES.STUDENT,
+    owner: req.user.id
   }).populate('owner');
   res.json(student);
 }
