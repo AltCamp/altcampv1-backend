@@ -12,15 +12,16 @@ async function getStudents(req, res) {
 async function getSingleStudent(req, res) {
   const student = await Account.findOne({
     accountType: ACCOUNT_TYPES.STUDENT,
-    id: req.user.id
+    _id: req.user?.id || req.params.id
   }).populate('owner');
+  if (!student) throw new NotFoundError('Student not found!');
   res.json(student);
 }
 
 async function updateStudent(req, res) {
   const { firstname, lastname } = req.body;
   const student = await Account.findByIdAndUpdate(
-    req.user.id,
+    req.user?.id || req.params.id,
     { firstname, lastname },
     { new: true }
   );
