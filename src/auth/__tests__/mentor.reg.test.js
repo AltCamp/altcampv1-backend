@@ -2,7 +2,6 @@ const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const app = require('../../../app');
 const { dbConnect, dbCleanUP, dbDisconnect } = require('../../../test/test.db');
-const AccountModel = require('../../../model/account');
 
 describe('Auth: Mentor registration', () => {
   beforeAll(async () => {
