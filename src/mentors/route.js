@@ -1,21 +1,18 @@
-const Passport = require('passport');
-const mentorController = require('./mentorController');
-const login = require('../../utils/authUtils').login;
+const router = require('express').Router();
 
-const mentorRouter = require('express').Router();
+const {
+  getMentors,
+  getSingleMentor,
+  updateMentor,
+  changeMentorPassword,
+} = require('./mentorController');
 
-// register
-mentorRouter.post(
-  '/register',
-  Passport.authenticate('signup_mentor', { session: false }),
-  mentorController.registerNewMentor
-);
+router.route('/').get(getMentors);
 
-// login
-mentorRouter.post('/login', async (req, res, next) =>
-  Passport.authenticate('login_mentor', (err, user, info) => {
-    login(req, res, next, { err, user, info });
-  })(req, res, next)
-);
+router
+  .route('/:id')
+  .get(getSingleMentor)
+  .put(updateMentor)
+  .put(changeMentorPassword);
 
-module.exports = mentorRouter;
+module.exports = router;

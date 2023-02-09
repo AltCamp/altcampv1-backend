@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "start:dev": "nodemon ./bin/www",
-    "lint": "eslint .",
-    "format:check": "npx prettier --check .",
-    "format:write": "npx prettier --write ."
+    "start": "cross-env node ./bin/www",
+    "start:dev": "cross-env nodemon ./bin/www",
+    "lint": "cross-env eslint .",
+    "format:check": "cross-env npx prettier --check .",
+    "format:write": "cross-env npx prettier --write .",
+    "test": "cross-env NODE_ENV=test jest --runInBand"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
@@ -15,7 +16,11 @@
     "debug": "~2.6.9",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "http-status-codes": "^2.2.0",
+    "joi": "^17.7.0",
     "jsonwebtoken": "^9.0.0",
+    "lodash": "^4.17.21",
     "mongoose": "^6.8.4",
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
@@ -23,11 +28,12 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint": "^8.32.0",
     "jest": "^29.3.1",
     "mongodb-memory-server": "^8.11.3",
-    "supertest": "^6.3.3",
     "nodemon": "^2.0.20",
-    "prettier": "^2.8.3"
+    "prettier": "^2.8.3",
+    "supertest": "^6.3.3"
   }
 }

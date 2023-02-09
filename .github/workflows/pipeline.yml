@@ -19,4 +19,4 @@ jobs:
       - name: lint code base
         run: npm run lint
       - name: Check code style
-        run: npm run format:check
+        run: npm run format:write

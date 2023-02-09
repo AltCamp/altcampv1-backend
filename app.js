@@ -1,15 +1,10 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const errorHandler = require('./utils/errorHandler');
+const { errorHandler } = require('./utils/errorHandler');
+require('express-async-errors');
 
-// Signup and login authentication middleware
-require('./utils/passport');
-require('./src/mentors/passport');
-require('./src/students/passport');
-require('./src/altStudents/passport');
-
-const indexRouter = require('./routes');
+const indexRouter = require('./routes/index');
 
 const app = express();
 
@@ -17,6 +12,11 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.get('/', (req, res) => {
+  res.json({ hello: 'Welcome to StudyBuddy' });
+});
+
 app.use('/', indexRouter);
 
 // Error handler
