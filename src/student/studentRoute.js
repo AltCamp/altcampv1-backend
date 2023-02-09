@@ -12,8 +12,8 @@ router.route('/').get(getStudents);
 
 router
   .route('/:id')
-  .get(getSingleStudent)
   .all(authenticate.verifyUser)
+  .get(getSingleStudent)
   .put(updateStudent, changeStudentPassword);
 
 module.exports = router;
