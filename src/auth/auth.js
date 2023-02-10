@@ -67,7 +67,7 @@ const registerStudent = async (req, res) => {
   });
 };
 
-const studentLogin = async (req, res) => {
+const userLogin = async (req, res) => {
   const { email, password } = req.body;
 
   let account = await validateCredentials(email, password);
@@ -86,5 +86,5 @@ const studentLogin = async (req, res) => {
 module.exports = {
   registerMentor,
   registerStudent,
-  studentLogin,
+  userLogin,
 };
