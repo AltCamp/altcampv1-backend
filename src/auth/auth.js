@@ -3,7 +3,7 @@ const { ACCOUNT_TYPES } = require('../../constant');
 const Account = require('../../model/account');
 const Mentor = require('../../model/mentor');
 const Student = require('../../model/student');
-const { ConflitError, UnAuthorizedError } = require('../../utils/customError');
+const { ConflictError, UnAuthorizedError } = require('../../utils/customError');
 const { createToken, validateCredentials } = require('../../utils/helper');
 
 const registerMentor = async (req, res) => {
@@ -18,7 +18,7 @@ const registerMentor = async (req, res) => {
   } = req.body;
   const mentorExist = await Account.findOne({ email });
   if (mentorExist) {
-    throw new ConflitError('Mentor already exist!');
+    throw new ConflictError('Mentor already exists!');
   }
   const mentor = await Mentor.create({ specialization, yearsOfExperience });
   let account = await Account.create({
@@ -46,7 +46,7 @@ const registerStudent = async (req, res) => {
   // throw new Error('okay')
   const studentExist = await Account.findOne({ email });
   if (studentExist) {
-    throw new ConflitError('Student Exist already!');
+    throw new ConflictError('Student Exist already!');
   }
   const student = await Student.create({ matric, stack, gender });
   let account = await Account.create({

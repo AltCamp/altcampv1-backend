@@ -1,4 +1,4 @@
-class ConflitError extends Error {
+class ConflictError extends Error {
   constructor(message) {
     super(message);
     this.statusCode = 409;
@@ -41,7 +41,7 @@ class ForbiddenResourceError extends Error {
 }
 
 module.exports = {
-  ConflitError,
+  ConflictError,
   UnAuthorizedError,
   BadRequestError,
   UnprocessableEntity,
