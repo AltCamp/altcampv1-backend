@@ -20,3 +20,5 @@ jobs:
         run: npm run lint
       - name: Check code style
         run: npm run format:write
+      - name: Run tests
+        run: npm run test
