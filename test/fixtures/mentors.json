@@ -1,0 +1,27 @@
+[
+  {
+    "_id": "bacbc27f3dfd0dcba587760f",
+    "specialization": "Product Design",
+    "yearsOfExperience": 2
+  },
+  {
+    "_id": "79919bdba8bdd1caf9a0d1dc",
+    "specialization": "Cloud Engineering",
+    "yearsOfExperience": 4
+  },
+  {
+    "_id": "1b7e7ae63afbf3327fd9cbcb",
+    "specialization": "Data Engineering",
+    "yearsOfExperience": 4
+  },
+  {
+    "_id": "c3cedab3448e06cad589bdd0",
+    "specialization": "Product Design",
+    "yearsOfExperience": 6
+  },
+  {
+    "_id": "523a63a9eaaecbe1c3b71b7e",
+    "specialization": "Data Engineering",
+    "yearsOfExperience": 8
+  }
+]
