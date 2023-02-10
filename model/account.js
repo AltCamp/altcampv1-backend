@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { ACCOUNT_TYPES } = require('../constant');
 const bcrypt = require('bcrypt');
+const { UnprocessableEntity } = require('../utils/customError');
 
 const Schema = mongoose.Schema;
 
@@ -49,16 +50,28 @@ const accountSchema = new Schema(
   { timestamps: true }
 );
 
+// encrypt password before saving document
 accountSchema.pre('save', async function (next) {
   const user = this;
+
+  // do nothing if the password is not modified
+  if (!user.isModified('password')) return next();
+
+  // check password validity
+  if (!validatePassword(user.password)) {
+    throw new UnprocessableEntity(
+      'password must contain uppercase, lowercase, number and special character'
+    );
+  }
+
+  // hash the password using our new salt
   try {
-    if (user.isModified('password') || user.isNew) {
-      await hashPassword(user);
-    }
-    next();
+    await hashPassword(user);
   } catch (error) {
     next(error);
   }
+
+  next();
 });
 
 const Account = mongoose.model('Account', accountSchema);
@@ -73,4 +86,10 @@ async function hashPassword(user) {
   } catch (error) {
     throw new Error('Hashing failed:', error);
   }
+}
+
+function validatePassword(password) {
+  const pattern =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return pattern.test(password);
 }
