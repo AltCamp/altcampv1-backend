@@ -2,9 +2,9 @@ name: Deployment pipeline
 
 on:
   push:
-    branches:
-      - main
-      - dev
+    branches: [main, dev]
+  pull_request: 
+    branches: [main, dev]
 
 jobs:
   simple_deployment_pipeline:
@@ -16,9 +16,11 @@ jobs:
           node-version: '16'
       - name: Install dependencies
         run: npm install
-      - name: lint code base
-        run: npm run lint
       - name: Check code style
-        run: npm run format:write
+        run: npm run format:check
+      - name: Lint code base
+        run: npm run lint
+      - name: Prepare .env
+        run: cp example.env .env
       - name: Run tests
         run: npm run test
