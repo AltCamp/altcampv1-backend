@@ -2,9 +2,9 @@ name: Deployment pipeline
 
 on:
   push:
-    branches:
-      - main
-      - dev
+    branches: [main, dev, test/ci]
+  pull_request: 
+    branches: [main, dev, test/ci]
 
 jobs:
   simple_deployment_pipeline:
@@ -20,5 +20,7 @@ jobs:
         run: npm run lint
       - name: Check code style
         run: npm run format:write
+      - name: Prepare .env
+        run: cp example.env .env
       - name: Run tests
         run: npm run test
