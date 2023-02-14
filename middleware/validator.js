@@ -48,10 +48,17 @@ const studentValidator = Joi.object({
     'string.empty': 'Email is required',
     'any.required': 'Email is required',
   }),
-  password: Joi.string().required().messages({
-    'string.empty': 'Password is required',
-    'any.required': 'Password is required',
-  }),
+  password: Joi.string()
+    .required()
+    .min(8)
+    .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'))
+    .messages({
+      'string.pattern.base':
+        'password must contain uppercase, lowercase, number and special character',
+      'string.min': 'Password must be at least 8 characters long',
+      'string.empty': 'Password is required',
+      'any.required': 'Password is required',
+    }),
   track: Joi.string().required().messages({
     'string.empty': 'Track is required',
     'any.required': 'Track is required',
@@ -75,10 +82,17 @@ const mentorValidator = Joi.object({
     'string.empty': 'Email is required',
     'any.required': 'Email is required',
   }),
-  password: Joi.string().required().messages({
-    'string.empty': 'Password is required',
-    'any.required': 'Password is required',
-  }),
+  password: Joi.string()
+    .required()
+    .min(8)
+    .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'))
+    .messages({
+      'string.pattern.base':
+        'password must contain uppercase, lowercase, number and special character',
+      'string.min': 'Password must be at least 8 characters long',
+      'string.empty': 'Password is required',
+      'any.required': 'Password is required',
+    }),
   track: Joi.string().required().messages({
     'string.empty': 'Track is required',
     'any.required': 'Track is required',
@@ -94,10 +108,17 @@ const loginValidator = Joi.object({
     'string.empty': 'Email is required',
     'any.required': 'Email is required',
   }),
-  password: Joi.string().required().messages({
-    'string.empty': 'Password is required',
-    'any.required': 'Password is required',
-  }),
+  password: Joi.string()
+    .required()
+    .min(8)
+    .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'))
+    .messages({
+      'string.pattern.base':
+        'password must contain uppercase, lowercase, number and special character',
+      'string.min': 'too short, lepa',
+      'string.empty': 'Password is required',
+      'any.required': 'Password is required',
+    }),
 }).with('email', 'password');
 
 module.exports = {
