@@ -34,7 +34,7 @@ async function updateStudent(req, res) {
 async function changeStudentPassword(req, res) {
   const { password } = req.body;
   const student = await Account.findByIdAndUpdate(
-    req.user.id,
+    req.user?.id || req.params.id,
     { password },
     { new: true }
   );
