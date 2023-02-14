@@ -33,7 +33,7 @@ const registerMentor = async (req, res) => {
   const token = createToken({
     id: account.id,
     firstname,
-    lastname
+    lastname,
   });
   res
     .status(201)
@@ -66,7 +66,7 @@ const registerStudent = async (req, res) => {
   const token = createToken({
     id: account.id,
     firstname,
-    lastname
+    lastname,
   });
   res
     .status(201)

@@ -12,7 +12,7 @@ async function getStudents(req, res) {
 async function getSingleStudent(req, res) {
   const student = await Account.findOne({
     accountType: ACCOUNT_TYPES.STUDENT,
-    _id: req.user?.id || req.params.id
+    _id: req.user?.id || req.params.id,
   }).populate('owner');
   if (!student) throw new NotFoundError('Student not found!');
   res.json(student);
