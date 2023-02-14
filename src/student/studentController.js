@@ -12,7 +12,7 @@ async function getStudents(req, res) {
 async function getSingleStudent(req, res) {
   const student = await Account.findOne({
     accountType: ACCOUNT_TYPES.STUDENT,
-    _id: req.user?.id || req.params.id,
+    _id: req.user.id,
   }).populate('owner');
   if (!student) throw new NotFoundError('Student not found!');
   res.json(student);
@@ -21,7 +21,7 @@ async function getSingleStudent(req, res) {
 async function updateStudent(req, res) {
   const { firstname, lastname } = req.body;
   const student = await Account.findByIdAndUpdate(
-    req.user?.id || req.params.id,
+    req.user.id,
     { firstname, lastname },
     { new: true }
   );
@@ -34,7 +34,7 @@ async function updateStudent(req, res) {
 async function changeStudentPassword(req, res) {
   const { password } = req.body;
   const student = await Account.findByIdAndUpdate(
-    req.user?.id || req.params.id,
+    req.user.id,
     { password },
     { new: true }
   );
