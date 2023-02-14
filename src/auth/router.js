@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const { registerMentor, registerStudent, studentLogin } = require('./auth');
+const { registerMentor, registerStudent, userLogin } = require('./auth');
 const {
   studentValidatorMiddleware,
   mentorValidatorMiddleware,
@@ -8,8 +8,7 @@ const {
 } = require('../../middleware/validator');
 
 router.post('/mentor', mentorValidatorMiddleware, registerMentor);
-
 router.post('/student', studentValidatorMiddleware, registerStudent);
-router.post('/student/login', loginValidatorMiddleware, studentLogin);
+router.post('/login', loginValidatorMiddleware, userLogin);
 
 module.exports = router;

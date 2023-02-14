@@ -6,6 +6,6 @@ const mentorRouter = require('../src/mentors/route');
 
 router.use('/auth', authRouter);
 router.use('/students', studentRouter);
-router.use('/mentor', mentorRouter);
+router.use('/mentors', mentorRouter);
 
 module.exports = router;

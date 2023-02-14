@@ -87,6 +87,7 @@ describe('Auth: Mentor registration', () => {
           password: '',
         });
       expect(response.status).toBe(422);
+      expect(response.body).toHaveProperty('msg', 'Password is required');
     });
 
     it('should not register a new mentor if email is not provided', async () => {
@@ -97,6 +98,7 @@ describe('Auth: Mentor registration', () => {
           email: '',
         });
       expect(response.status).toBe(422);
+      expect(response.body).toHaveProperty('msg', 'Email is required');
     });
 
     it('should not register a new mentor if firstname is not provided', async () => {
@@ -107,6 +109,7 @@ describe('Auth: Mentor registration', () => {
           firstname: '',
         });
       expect(response.status).toBe(422);
+      expect(response.body).toHaveProperty('msg', 'Firstname is required');
     });
 
     it('should not register a new mentor if lastname is not provided', async () => {
@@ -117,6 +120,7 @@ describe('Auth: Mentor registration', () => {
           lastname: '',
         });
       expect(response.status).toBe(422);
+      expect(response.body).toHaveProperty('msg', 'Lastname is required');
     });
 
     it('should not register a new mentor if track is not provided', async () => {
@@ -127,6 +131,7 @@ describe('Auth: Mentor registration', () => {
           track: '',
         });
       expect(response.status).toBe(422);
+      expect(response.body).toHaveProperty('msg', 'Track is required');
     });
 
     describe('Mentor registration: password validation', () => {
@@ -138,6 +143,10 @@ describe('Auth: Mentor registration', () => {
             password: 'password',
           });
         expect(response.status).toBe(422);
+        expect(response.body).toHaveProperty(
+          'msg',
+          'password must contain uppercase, lowercase, number and special character'
+        );
       });
 
       it('should not register a new mentor if password does not contain uppercase,lowercase, number and special character', async () => {
@@ -148,6 +157,10 @@ describe('Auth: Mentor registration', () => {
             password: 'PASSWORD',
           });
         expect(response.status).toBe(422);
+        expect(response.body).toHaveProperty(
+          'msg',
+          'password must contain uppercase, lowercase, number and special character'
+        );
       });
 
       it('should not register a new mentor if password does not contain uppercase,lowercase, number and special character', async () => {
@@ -158,6 +171,10 @@ describe('Auth: Mentor registration', () => {
             password: 'Password',
           });
         expect(response.status).toBe(422);
+        expect(response.body).toHaveProperty(
+          'msg',
+          'password must contain uppercase, lowercase, number and special character'
+        );
       });
 
       it('should not register a new mentor if password does not contain uppercase,lowercase, number and special character', async () => {
@@ -168,6 +185,10 @@ describe('Auth: Mentor registration', () => {
             password: 'Password1',
           });
         expect(response.status).toBe(422);
+        expect(response.body).toHaveProperty(
+          'msg',
+          'password must contain uppercase, lowercase, number and special character'
+        );
       });
     });
   });

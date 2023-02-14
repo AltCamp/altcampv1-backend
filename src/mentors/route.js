@@ -9,10 +9,8 @@ const {
 
 router.route('/').get(getMentors);
 
-router
-  .route('/:id')
-  .get(getSingleMentor)
-  .put(updateMentor)
-  .put(changeMentorPassword);
+router.route('/change-password/:id').put(changeMentorPassword);
+
+router.route('/:id').get(getSingleMentor).put(updateMentor);
 
 module.exports = router;
