@@ -4,7 +4,12 @@ const JwtStrategy = require('passport-jwt').Strategy;
 
 const config = require('../config/index');
 
-const cookieExtractor = function (req) {
+const tokenExtractor = function (req) {
+  let authorization = req.headers.authorization;
+  if (authorization) {
+    authorization = authorization.split(' ')[1];
+    return authorization;
+  }
   let token = null;
   if (req && req.cookies) {
     token = req.cookies['jwt_token'];
@@ -13,7 +18,7 @@ const cookieExtractor = function (req) {
 };
 
 const opts = {};
-opts.jwtFromRequest = cookieExtractor;
+opts.jwtFromRequest = tokenExtractor;
 opts.secretOrKey = config.jwt.secret;
 
 exports.jwtPassport = passport.use(
