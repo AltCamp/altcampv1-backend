@@ -30,14 +30,20 @@ const registerMentor = async (req, res) => {
     owner: mentor.id,
     accountType: ACCOUNT_TYPES.MENTOR,
   });
-  account = omit(account.toObject(), ['password']);
-  const token = createToken(account);
-  res.status(201).json({
-    msg: 'Mentor created successfully',
-    account,
-    mentor,
-    token,
+  const token = createToken({
+    id: account.id,
+    firstname,
+    lastname,
   });
+  res
+    .status(201)
+    .cookie('jwt_token', token)
+    .json({
+      msg: 'Mentor created successfully',
+      account: omit(account.toObject(), ['password']),
+      mentor,
+      token,
+    });
 };
 
 const registerStudent = async (req, res) => {
@@ -57,14 +63,20 @@ const registerStudent = async (req, res) => {
     track,
     owner: student.id,
   });
-  account = omit(account.toObject(), ['password']);
-  const token = createToken(account);
-  res.status(201).json({
-    msg: 'Student created successfully',
-    account,
-    student,
-    token,
+  const token = createToken({
+    id: account.id,
+    firstname,
+    lastname,
   });
+  res
+    .status(201)
+    .cookie('jwt_token', token)
+    .json({
+      msg: 'Student created successfully',
+      account: omit(account.toObject(), ['password']),
+      student,
+      token,
+    });
 };
 
 const userLogin = async (req, res) => {
@@ -74,10 +86,11 @@ const userLogin = async (req, res) => {
   if (!account) {
     throw new UnAuthorizedError('Invalid credentials!');
   }
-  account = omit(account.toObject(), ['password']);
-  const accessToken = createToken(account);
+  const accessToken = createToken({
+    id: account.id,
+  });
 
-  res.status(200).json({
+  res.status(200).cookie('jwt_token', accessToken).json({
     msg: 'Login successful!',
     accessToken,
   });

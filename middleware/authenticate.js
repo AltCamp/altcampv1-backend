@@ -1,10 +1,15 @@
 const passport = require('passport');
-const User = require('../model/student');
+const Account = require('../model/account');
 const JwtStrategy = require('passport-jwt').Strategy;
 
 const config = require('../config/index');
 
-const cookieExtractor = function (req) {
+const tokenExtractor = function (req) {
+  let authorization = req.headers.authorization;
+  if (authorization) {
+    authorization = authorization.split(' ')[1];
+    return authorization;
+  }
   let token = null;
   if (req && req.cookies) {
     token = req.cookies['jwt_token'];
@@ -13,12 +18,12 @@ const cookieExtractor = function (req) {
 };
 
 const opts = {};
-opts.jwtFromRequest = cookieExtractor;
+opts.jwtFromRequest = tokenExtractor;
 opts.secretOrKey = config.jwt.secret;
 
 exports.jwtPassport = passport.use(
   new JwtStrategy(opts, (payload, done) => {
-    User.findById(payload._id, (err, user) => {
+    Account.findById(payload.id, (err, user) => {
       if (err) {
         return done(err, false);
       } else if (user) {
