@@ -82,7 +82,7 @@ describe('Auth: Mentor registration', () => {
           ...user,
           password: '',
         });
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(422);
       expect(response.body).toHaveProperty('msg', 'Password is required');
     });
 
@@ -93,7 +93,7 @@ describe('Auth: Mentor registration', () => {
           ...user,
           email: '',
         });
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(422);
       expect(response.body).toHaveProperty('msg', 'Email is required');
     });
 
@@ -104,7 +104,7 @@ describe('Auth: Mentor registration', () => {
           ...user,
           firstname: '',
         });
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(422);
       expect(response.body).toHaveProperty('msg', 'Firstname is required');
     });
 
@@ -115,7 +115,7 @@ describe('Auth: Mentor registration', () => {
           ...user,
           lastname: '',
         });
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(422);
       expect(response.body).toHaveProperty('msg', 'Lastname is required');
     });
 
@@ -126,7 +126,7 @@ describe('Auth: Mentor registration', () => {
           ...user,
           track: '',
         });
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(422);
       expect(response.body).toHaveProperty('msg', 'Track is required');
     });
 
