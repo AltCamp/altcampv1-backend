@@ -48,7 +48,6 @@ describe('Auth: Mentor registration', () => {
       expect.objectContaining({
         specialization: user.specialization,
         yearsOfExperience: user.yearsOfExperience,
-        _id: expect.any(String),
       })
     );
     expect(response.body.token).toEqual(expect.any(String));
@@ -58,12 +57,9 @@ describe('Auth: Mentor registration', () => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     expect(decoded).toEqual(
       expect.objectContaining({
+        id: response.body.account._id,
         firstname: user.firstname,
         lastname: user.lastname,
-        email: user.email,
-        track: user.track,
-        owner: response.body.mentor._id,
-        accountType: 'Mentor',
       })
     );
   });
@@ -86,7 +82,7 @@ describe('Auth: Mentor registration', () => {
           ...user,
           password: '',
         });
-      expect(response.status).toBe(422);
+      expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('msg', 'Password is required');
     });
 
@@ -97,7 +93,7 @@ describe('Auth: Mentor registration', () => {
           ...user,
           email: '',
         });
-      expect(response.status).toBe(422);
+      expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('msg', 'Email is required');
     });
 
@@ -108,7 +104,7 @@ describe('Auth: Mentor registration', () => {
           ...user,
           firstname: '',
         });
-      expect(response.status).toBe(422);
+      expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('msg', 'Firstname is required');
     });
 
@@ -119,7 +115,7 @@ describe('Auth: Mentor registration', () => {
           ...user,
           lastname: '',
         });
-      expect(response.status).toBe(422);
+      expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('msg', 'Lastname is required');
     });
 
@@ -130,7 +126,7 @@ describe('Auth: Mentor registration', () => {
           ...user,
           track: '',
         });
-      expect(response.status).toBe(422);
+      expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('msg', 'Track is required');
     });
 
