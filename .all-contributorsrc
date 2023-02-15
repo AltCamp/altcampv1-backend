@@ -15,6 +15,43 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "tobisupreme",
+      "name": "Tobi Balogun",
+      "avatar_url": "https://avatars.githubusercontent.com/u/98078707?v=4",
+      "profile": "https://github.com/tobisupreme",
+      "contributions": [
+        "maintenance",
+        "code"
+      ]
+    },
+    {
+      "login": "jhhornn",
+      "name": "Awosise Oluwaseun",
+      "avatar_url": "https://avatars.githubusercontent.com/u/66667958?v=4",
+      "profile": "https://github.com/jhhornn",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Boye95",
+      "name": "Samuel Adeboye Folaranmi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/74235313?v=4",
+      "profile": "https://boyei.tech/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Skywonda",
+      "name": "skyreal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/102043619?v=4",
+      "profile": "https://emerge-testing.vercel.app/signup",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

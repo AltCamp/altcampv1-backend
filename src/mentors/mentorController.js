@@ -1,16 +1,57 @@
-const registerNewMentor = async (req, res) => {
-  delete req.user.password;
-  return res.status(201).json({
-    message: 'Mentor signup successful',
-    user: {
-      id: req.user._id,
-      name: `${req.user.firstname} ${req.user.lastname}`,
-      email: req.user.email,
-      createdAt: req.user.createdAt,
-    },
-  });
-};
+const { ACCOUNT_TYPES } = require('../../constant');
+const Account = require('../../model/account');
+const { NotFoundError } = require('../../utils/customError');
+const { omit } = require('lodash');
+
+async function getMentors(req, res) {
+  const mentors = await Account.find({
+    accountType: ACCOUNT_TYPES.MENTOR,
+  }).populate('owner');
+  res.json(mentors);
+}
+
+async function getSingleMentor(req, res) {
+  const mentor = await Account.findOne({
+    accountType: ACCOUNT_TYPES.MENTOR,
+  }).populate('owner');
+  res.json(mentor);
+}
+
+async function updateMentor(req, res) {
+  const { firstname, lastname } = req.body;
+  const mentor = await Account.findByIdAndUpdate(
+    req.user.id,
+    { firstname, lastname },
+    { new: true }
+  );
+  if (!mentor) {
+    throw new NotFoundError('Mentor not found!');
+  }
+  res.json(mentor);
+}
+
+async function changeMentorPassword(req, res) {
+  const { password } = req.body;
+
+  let mentor = await Account.findById(req.user.id);
+  if (!mentor) {
+    throw new NotFoundError('Mentor not found!');
+  }
+
+  // save password from request
+  mentor.password = password;
+  await mentor.save();
+
+  // prepare response data
+  omit(mentor.toObject(), ['password']);
+  mentor = omit(mentor.toObject(), ['password']);
+
+  res.json(mentor);
+}
 
 module.exports = {
-  registerNewMentor,
+  getMentors,
+  getSingleMentor,
+  updateMentor,
+  changeMentorPassword,
 };
