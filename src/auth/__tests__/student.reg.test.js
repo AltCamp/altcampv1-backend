@@ -52,7 +52,9 @@ describe('Auth: Student registration', () => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     expect(decoded).toEqual(
       expect.objectContaining({
-        id: expect.any(String),
+        id: response.body.account._id,
+        firstname: user.firstname,
+        lastname: user.lastname,
       })
     );
   });
@@ -82,7 +84,7 @@ describe('Auth: Student registration', () => {
         ...user,
         password: '',
       });
-      expect(response.status).toBe(422);
+      expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('msg', 'Password is required');
     });
 
@@ -91,7 +93,7 @@ describe('Auth: Student registration', () => {
         ...user,
         email: '',
       });
-      expect(response.status).toBe(422);
+      expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('msg', 'Email is required');
     });
 
@@ -100,7 +102,7 @@ describe('Auth: Student registration', () => {
         ...user,
         firstname: '',
       });
-      expect(response.status).toBe(422);
+      expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('msg', 'Firstname is required');
     });
 
@@ -109,7 +111,7 @@ describe('Auth: Student registration', () => {
         ...user,
         lastname: '',
       });
-      expect(response.status).toBe(422);
+      expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('msg', 'Lastname is required');
     });
 
@@ -118,12 +120,12 @@ describe('Auth: Student registration', () => {
         ...user,
         track: '',
       });
-      expect(response.status).toBe(422);
+      expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('msg', 'Track is required');
     });
 
     describe('Student registration: password validation', () => {
-      it('should not register a new student if password does not contain uppercase,lowercase, number and special character', async () => {
+      it('should not register a new student if password does not contain uppercase, lowercase, number and special character', async () => {
         const response = await api.post('/auth/student').send({
           ...user,
           password: 'password',
@@ -135,7 +137,7 @@ describe('Auth: Student registration', () => {
         );
       });
 
-      it('should not register a new student if password does not contain uppercase,lowercase, number and special character and is less than 8 characters', async () => {
+      it('should not register a new student if password does not contain uppercase, lowercase, number and special character and is less than 8 characters', async () => {
         const response = await api.post('/auth/student').send({
           ...user,
           password: 'PASSWORD',
@@ -147,7 +149,7 @@ describe('Auth: Student registration', () => {
         );
       });
 
-      it('should not register a new student if password does not contain uppercase,lowercase, number and special character', async () => {
+      it('should not register a new student if password does not contain uppercase, lowercase, number and special character', async () => {
         const response = await api.post('/auth/student').send({
           ...user,
           password: 'Password',
@@ -159,7 +161,7 @@ describe('Auth: Student registration', () => {
         );
       });
 
-      it('should not register a new student if password does not contain uppercase,lowercase, number and special character', async () => {
+      it('should not register a new student if password does not contain uppercase, lowercase, number and special character', async () => {
         const response = await api.post('/auth/student').send({
           ...user,
           password: 'Password1',

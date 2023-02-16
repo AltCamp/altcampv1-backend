@@ -12,7 +12,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/71160347?v=4",
       "profile": "http://thepda.tech",
       "contributions": [
-        "code"
+        "code",
+        "test"
       ]
     },
     {
@@ -50,6 +51,15 @@
       "profile": "https://emerge-testing.vercel.app/signup",
       "contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "iamaamunir",
+      "name": "Munir Abdullahi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/94959280?v=4",
+      "profile": "https://github.com/iamaamunir",
+      "contributions": [
+        "ideas"
       ]
     }
   ],
