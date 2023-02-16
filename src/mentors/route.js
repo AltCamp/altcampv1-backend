@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const verifyUser = require('../../middleware/verifyUserToken');
 
 const {
   getMentors,
@@ -7,10 +8,13 @@ const {
   changeMentorPassword,
 } = require('./mentorController');
 
-router.route('/').get(getMentors);
+router.route('/').get(verifyUser, getMentors);
 
-router.route('/change-password/:id').put(changeMentorPassword);
+router.route('/change-password/:id').put(verifyUser, changeMentorPassword);
 
-router.route('/:id').get(getSingleMentor).put(updateMentor);
+router
+  .route('/:id')
+  .get(verifyUser, getSingleMentor)
+  .put(verifyUser, updateMentor);
 
 module.exports = router;
