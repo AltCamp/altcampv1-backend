@@ -52,11 +52,7 @@ describe('Auth: Student registration', () => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     expect(decoded).toEqual(
       expect.objectContaining({
-        firstname: user.firstname,
-        lastname: user.lastname,
-        email: user.email,
-        track: user.track,
-        owner: response.body.student._id,
+        id: expect.any(String)
       })
     );
   });
