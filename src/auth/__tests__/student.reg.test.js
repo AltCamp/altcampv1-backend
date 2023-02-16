@@ -52,7 +52,7 @@ describe('Auth: Student registration', () => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     expect(decoded).toEqual(
       expect.objectContaining({
-        id: expect.any(String)
+        id: expect.any(String),
       })
     );
   });
