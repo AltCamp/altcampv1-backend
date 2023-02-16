@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const authenticate = require('../../middleware/authenticate');
+const { verifyUser } = require('../../middleware/authenticate');
 
 const {
   getStudents,
@@ -9,11 +9,10 @@ const {
 } = require('./studentController');
 
 router.route('/').get(getStudents);
+router.route('/:id').get(getSingleStudent);
 
-router
-  .route('/:id')
-  .get(getSingleStudent)
-  .all(authenticate.verifyUser)
-  .put(updateStudent, changeStudentPassword);
+router.use(verifyUser);
+router.route('/change-password').put(changeStudentPassword);
+router.route('/update-profile').put(updateStudent);
 
 module.exports = router;

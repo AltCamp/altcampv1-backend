@@ -3,7 +3,7 @@ const { ACCOUNT_TYPES } = require('../../constant');
 const Account = require('../../model/account');
 const Mentor = require('../../model/mentor');
 const Student = require('../../model/student');
-const { ConflitError, UnAuthorizedError } = require('../../utils/customError');
+const { ConflictError, UnAuthorizedError } = require('../../utils/customError');
 const { createToken, validateCredentials } = require('../../utils/helper');
 
 const registerMentor = async (req, res) => {
@@ -18,7 +18,7 @@ const registerMentor = async (req, res) => {
   } = req.body;
   const mentorExist = await Account.findOne({ email });
   if (mentorExist) {
-    throw new ConflitError('Mentor already exist!');
+    throw new ConflictError('Mentor already exists!');
   }
   const mentor = await Mentor.create({ specialization, yearsOfExperience });
   let account = await Account.create({
@@ -30,14 +30,20 @@ const registerMentor = async (req, res) => {
     owner: mentor.id,
     accountType: ACCOUNT_TYPES.MENTOR,
   });
-  account = omit(account.toObject(), ['password']);
-  const token = createToken(account);
-  res.status(201).json({
-    msg: 'Mentor created successfully',
-    account,
-    mentor,
-    token,
+  const token = createToken({
+    id: account.id,
+    firstname,
+    lastname,
   });
+  res
+    .status(201)
+    .cookie('jwt_token', token)
+    .json({
+      msg: 'Mentor created successfully',
+      account: omit(account.toObject(), ['password']),
+      mentor,
+      token,
+    });
 };
 
 const registerStudent = async (req, res) => {
@@ -46,7 +52,7 @@ const registerStudent = async (req, res) => {
   // throw new Error('okay')
   const studentExist = await Account.findOne({ email });
   if (studentExist) {
-    throw new ConflitError('Student Exist already!');
+    throw new ConflictError('Student Exist already!');
   }
   const student = await Student.create({ matric, stack, gender });
   let account = await Account.create({
@@ -57,27 +63,34 @@ const registerStudent = async (req, res) => {
     track,
     owner: student.id,
   });
-  account = omit(account.toObject(), ['password']);
-  const token = createToken(account);
-  res.status(201).json({
-    msg: 'Student created successfully',
-    account,
-    student,
-    token,
+  const token = createToken({
+    id: account.id,
+    firstname,
+    lastname,
   });
+  res
+    .status(201)
+    .cookie('jwt_token', token)
+    .json({
+      msg: 'Student created successfully',
+      account: omit(account.toObject(), ['password']),
+      student,
+      token,
+    });
 };
 
-const studentLogin = async (req, res) => {
+const userLogin = async (req, res) => {
   const { email, password } = req.body;
 
   let account = await validateCredentials(email, password);
   if (!account) {
     throw new UnAuthorizedError('Invalid credentials!');
   }
-  account = omit(account.toObject(), ['password']);
-  const accessToken = createToken(account);
+  const accessToken = createToken({
+    id: account.id,
+  });
 
-  res.status(200).json({
+  res.status(200).cookie('jwt_token', accessToken).json({
     msg: 'Login successful!',
     accessToken,
   });
@@ -86,5 +99,5 @@ const studentLogin = async (req, res) => {
 module.exports = {
   registerMentor,
   registerStudent,
-  studentLogin,
+  userLogin,
 };

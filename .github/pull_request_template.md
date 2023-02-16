@@ -12,7 +12,8 @@ This PR...
 - [ ] tested locally
 - [ ] added new dependencies
 - [ ] updated the docs
-- [ ] linter passes
 - [ ] added a test
+- [ ] linter passes
+- [ ] format check passes
 
 Fixes #

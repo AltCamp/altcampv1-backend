@@ -12,7 +12,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/71160347?v=4",
       "profile": "http://thepda.tech",
       "contributions": [
-        "code"
+        "code",
+        "test"
       ]
     },
     {
@@ -21,7 +22,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/98078707?v=4",
       "profile": "https://github.com/tobisupreme",
       "contributions": [
-        "maintenance"
+        "maintenance",
+        "code"
       ]
     },
     {
@@ -48,6 +50,24 @@
       "name": "skyreal",
       "avatar_url": "https://avatars.githubusercontent.com/u/102043619?v=4",
       "profile": "https://emerge-testing.vercel.app/signup",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "iamaamunir",
+      "name": "Munir Abdullahi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/94959280?v=4",
+      "profile": "https://github.com/iamaamunir",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "AnthoniaNwanya",
+      "name": "Anthonia Nwanya",
+      "avatar_url": "https://avatars.githubusercontent.com/u/105661899?v=4",
+      "profile": "https://github.com/AnthoniaNwanya",
       "contributions": [
         "code"
       ]
