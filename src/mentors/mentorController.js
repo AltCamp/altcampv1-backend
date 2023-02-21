@@ -11,9 +11,12 @@ async function getMentors(req, res) {
 }
 
 async function getSingleMentor(req, res) {
-  const mentor = await Account.findOne({
-    accountType: ACCOUNT_TYPES.MENTOR,
-  }).populate('owner');
+  const mentor = await Account.findById(req.params.id);
+
+  if (!mentor || mentor.accountType !== ACCOUNT_TYPES.MENTOR) {
+    throw new NotFoundError('Mentor not found!');
+  }
+
   res.json(mentor);
 }
 
@@ -24,7 +27,7 @@ async function updateMentor(req, res) {
     { firstname, lastname },
     { new: true }
   );
-  if (!mentor) {
+  if (!mentor || mentor.accountType !== ACCOUNT_TYPES.MENTOR) {
     throw new NotFoundError('Mentor not found!');
   }
   res.json(mentor);
