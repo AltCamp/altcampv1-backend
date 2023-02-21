@@ -13,7 +13,9 @@
       "profile": "http://thepda.tech",
       "contributions": [
         "code",
-        "test"
+        "test",
+        "maintenance",
+        "review"
       ]
     },
     {
