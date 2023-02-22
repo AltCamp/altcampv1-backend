@@ -35,7 +35,7 @@ const accountSchema = new Schema(
     },
     owner: {
       type: mongoose.Types.ObjectId,
-      function() {
+      ref: function () {
         switch (this.accountType) {
           case ACCOUNT_TYPES.MENTOR:
             return ACCOUNT_TYPES.MENTOR;
