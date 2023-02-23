@@ -4,6 +4,26 @@ const validate = async (validator, payload) => {
   await validator.validateAsync(payload, { abortEarly: false });
 };
 
+const updateProfileValidatorMiddleware = async (req, res, next) => {
+  const payload = req.body;
+  try {
+    await validate(profileValidator, payload);
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+const updatePasswordValidatorMiddleware = async (req, res, next) => {
+  const payload = req.body;
+  try {
+    await validate(passwordValidator, payload);
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
 const studentValidatorMiddleware = async (req, res, next) => {
   const payload = req.body;
   try {
@@ -33,6 +53,25 @@ const loginValidatorMiddleware = async (req, res, next) => {
     next(err);
   }
 };
+
+const passwordValidator = Joi.object({
+  password: Joi.string()
+    .required()
+    .min(8)
+    .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'))
+    .messages({
+      'string.pattern.base':
+        'password must contain uppercase, lowercase, number and special character',
+      'string.min': 'Password must be at least 8 characters long',
+      'string.empty': 'Password is required',
+      'any.required': 'Password is required',
+    }),
+});
+
+const profileValidator = Joi.object({
+  firstname: Joi.string().optional(),
+  lastname: Joi.string().optional(),
+});
 
 const studentValidator = Joi.object({
   firstname: Joi.string().required().messages({
@@ -125,4 +164,6 @@ module.exports = {
   studentValidatorMiddleware,
   mentorValidatorMiddleware,
   loginValidatorMiddleware,
+  updatePasswordValidatorMiddleware,
+  updateProfileValidatorMiddleware,
 };
