@@ -96,8 +96,19 @@ const userLogin = async (req, res) => {
   });
 };
 
+const logout = async (req, res) => {
+  if (req.user) {
+    req.logout();
+  }
+  res.clearCookie('jwt_token');
+  res.status(200).json({
+    msg: 'You have been logged out',
+  });
+};
+
 module.exports = {
   registerMentor,
   registerStudent,
   userLogin,
+  logout,
 };
