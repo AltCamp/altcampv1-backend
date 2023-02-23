@@ -39,4 +39,7 @@ module.exports = {
   accounts: accounts.map((account) => Account.create(account)),
   students: students.map((student) => Student.create(student)),
   mentors: mentors.map((mentor) => Mentor.create(mentor)),
+  accountsAsJson: accounts,
+  studentsAsJson: students,
+  mentorsAsJson: mentors,
 };
