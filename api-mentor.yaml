@@ -1,0 +1,314 @@
+openapi: 3.0.0
+info:
+  title: CoStudy Mentors Docs
+  description: CoStudy is an e-learning platform that allows students to post messages to the discussion threads, interact and receive feedback from other students and instructors, and hence create a deeper understanding of the subject matter being discussed. This documentation covers the Mentors' routes
+  version: 1.0.0
+servers:
+  - url: '{protocol}://localhost:8000'
+    variables:
+      protocol:
+        enum:
+          - http
+          - https
+        default: http
+
+paths:
+  /auth/mentor:
+    post:
+      tags:
+        - Auth
+      summary: This route creates a mentor details in the database
+      requestBody:
+        description: Mentors' details passed in the body as a request
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/signUpMentorRequest'
+      responses:
+        '201':
+          description: 'Mentor is Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Created'
+        '422':
+          description: One or more user input not validated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '409':
+          description: There is a conflict error as User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictError'
+
+      deprecated: false
+      security: []
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: logs in user and return a message
+      requestBody:
+        description: Accepts Mentors' email and password into the body as a request
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/loginMentorRequest'
+        required: true
+      responses:
+        '200':
+          description: 'Returns a bearer token'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserToken'
+          headers: {}
+        '401':
+          description: 'Token is  invalid. User not authorized'
+          content:
+            application/json::
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+      deprecated: false
+      security: []
+
+  /mentors/{mentorID}:
+    get:
+      tags:
+        - Mentor
+      summary: This returns a single mentor
+      description: Accepts the ID of a user and search the database if the user exists
+      operationId: getSingleMentorById
+      parameters:
+        - name: mentorID
+          in: path
+          description: Mentor ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns a single mentor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/loginMentorRequest'
+
+        '404':
+          description: Mentor Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+  /mentors:
+    get:
+      tags:
+        - Mentor
+      summary: Returns an array of Mentor.
+      description: This simply returns all registed mentors found in the database
+      responses:
+        '200':
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /mentors/update-profile:
+    put:
+      tags:
+        - Mentor
+      security:
+        - bearer: []
+      summary: update mentor details
+      description: The accepts the mentor firstname, lastname or both and updates the profile in the database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/updateMentorRequest'
+      responses:
+        '200':
+          description: Returns mentor updated profile
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+
+        '404':
+          description: Mentor Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+  /mentors/change-password:
+    put:
+      tags:
+        - Mentor
+      security:
+        - bearer: []
+      summary: update mentor password
+      description: This updates the mentors' password who must be logged in
+      requestBody:
+        description: Accepts Mentors' password in the body as a request
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/updateMentorPasswordRequest'
+      responses:
+        '200':
+          description: Returns the updated Mentor profile
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+
+        '404':
+          description: Mentor Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+components:
+  schemas:
+    signUpMentorRequest:
+      title: sign up mentor request
+      required:
+        - firstname
+        - lastname
+        - email
+        - track
+        - specialization
+        - yearsOfExperience
+        - password
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'
+          description: password must contain uppercase, lowercase, number and special character
+        track:
+          type: string
+        specialization:
+          type: string
+        yearsOfExperience:
+          type: number
+      example:
+        firstname: test
+        lastname: sample
+        email: test@gmail.com
+        password: Test12345%
+        track: testing
+        specialization: sampling
+        yearsOfExperience: 1000
+
+    loginMentorRequest:
+      title: login mentor request
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'
+          description: password must contain uppercase, lowercase, number and special character
+      example:
+        email: test@gmail.com
+        password: Test12345%
+
+    updateMentorRequest:
+      title: update mentor details
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+      example:
+        firstname: newTest
+        lastname: newSampling
+    updateMentorPasswordRequest:
+      title: update mentor api
+      type: object
+      properties:
+        password:
+          type: string
+      example:
+        password: newTestPassword1@
+
+    ValidationError:
+      type: object
+      properties:
+        msg:
+          type: string
+
+    ConflictError:
+      type: object
+      properties:
+        msg:
+          type: string
+
+    Created:
+      type: object
+      properties:
+        msg:
+          type: string
+        account:
+          type: object
+        mentor:
+          type: object
+        token:
+          type: string
+
+    UserToken:
+      type: object
+      properties:
+        msg:
+          type: string
+        token:
+          type: string
+
+    UnauthorizedError:
+      type: object
+      properties:
+        msg:
+          type: string
+
+    NotFoundError:
+      type: object
+      properties:
+        msg:
+          type: string
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+security: []
