@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: CoStudy Mentors Docs
+  title: CoStudy API Docs
   description: CoStudy is an e-learning platform that allows students to post messages to the discussion threads, interact and receive feedback from other students and instructors, and hence create a deeper understanding of the subject matter being discussed. This documentation covers the Mentors' routes
   version: 1.0.0
 servers:
