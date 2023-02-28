@@ -12,7 +12,7 @@ const indexRouter = require('./routes/index');
 
 const app = express();
 
-app.use('/api-docs-mentor', swaggerUI.serve, swaggerUI.setup(swaggerJsDocs));
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDocs));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
