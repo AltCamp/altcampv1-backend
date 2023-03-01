@@ -119,6 +119,26 @@ function generateBioData() {
 }
 
 /**
+ * Generate question
+ * @return {{}} A question object
+ */
+function generateQuestion() {
+  const accountIds = [
+    'f48bded06c714ab2db26afc4',
+    'd7aebfdadd09c1db42abe3c4',
+    'cf5eb0beed7ccf6aac8731df',
+    'c5dfc38b35a8dda8abc311ab',
+    '4bcebfd7489feca57be23aff',
+  ];
+  return {
+    _id: faker.database.mongodbObjectId(),
+    title: faker.lorem.sentence(),
+    body: faker.lorem.paragraphs(),
+    author: faker.helpers.arrayElement(accountIds),
+  };
+}
+
+/**
  * Generate user information to send to server via http requests
  * @param {string} userType - The type of user to create.
  * @return {{}} An object with properties of associated user type.
@@ -143,4 +163,5 @@ function createUserForReq(type) {
 module.exports = {
   createUser,
   createUserForReq,
+  generateQuestion,
 };
