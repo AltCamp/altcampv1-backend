@@ -37,7 +37,7 @@ const question = Joi.object({
 
 const questionUpdate = Joi.object({
   title: Joi.string().optional().min(16).max(100),
-  body: Joi.string().optional().min(128),
+  body: Joi.string().optional().min(16),
 });
 
 module.exports = {
