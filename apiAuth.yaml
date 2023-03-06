@@ -1,0 +1,216 @@
+openapi: 3.0.0
+info:
+  title: CoStudy API Documentation
+  description: Authentication routes documentation
+  version: "1.0"
+servers:
+- url: '{protocol}://localhost:8000'
+  description: Local host
+  variables:
+      protocol:
+        enum:
+          - http
+          - https
+        default: http
+
+paths:
+  /auth/mentor:
+    post:
+      tags:
+      - Authy
+      summary: register mentor
+      parameters: []
+      requestBody:
+        description: 'Mentor registering route'
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/registermentorrequest'
+              - example:
+                  firstname: Benny3
+                  lastname: Howe3
+                  email: Benny_Howe3@getnada.com
+                  password: 8XLxWgzXSPh9ABS!
+                  track: Product Management
+                  specialization: Product Management
+                  yearsOfExperience: 4
+                  
+            example:
+              firstname: Benny3
+              lastname: Howe3
+              email: Benny_Howe3@getnada.com
+              password: 8XLxWgzXSPh9ABS!
+              track: Product Management
+              specialization: Product Management
+              yearsOfExperience: 4
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+
+  /auth/student:
+    post:
+      tags:
+      - Authy
+      summary: register student
+      parameters: []
+      requestBody:
+        description: 'Student registering route'
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/registerstudentrequest'
+              - example:
+                  firstname: Mack2
+                  lastname: Marvin2
+                  email: Mack280@getnada.com
+                  password: HwEzG1pm4JeR_17!
+                  track: Data Engineering
+                  
+            example:
+              firstname: Mack2
+              lastname: Marvin2
+              email: Mack280@getnada.com
+              password: HwEzG1pm4JeR_17!
+              track: Data Engineering
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+
+  /auth/login:
+    post:
+      tags:
+      - Authy
+      summary: login user
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/loginuserrequest'
+              - example:
+                  email: Mack280@getnada.com
+                  password: HwEzG1pm4JeR_17!
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+      
+components:
+  schemas:
+    registermentorrequest:
+      title: register mentor request
+      required:
+      - firstname
+      - lastname
+      - email
+      - password
+      - track
+
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+          pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])"
+          description: value must be alphanumeric(lower and upper case) and special character
+        track:
+          type: string
+        specialization:
+          type: string
+        yearsOfExperience:
+          type: number
+
+      example:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+          pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])"
+          description: value must be alphanumeric(lower and upper case) and special character
+        track:
+          type: string
+
+    registerstudentrequest:
+      title: register student request
+      required:
+      - firstname
+      - lastname
+      - email
+      - password
+      - track
+
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+          pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])"
+          description: value must be alphanumeric(lower and upper case) and special character
+        track:
+          type: string
+
+      example:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+          pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])"
+          description: value must be alphanumeric(lower and upper case) and special character
+        track:
+          type: string
+
+    loginuserrequest:
+      title: login user request
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+          pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])"
+
+      example:
+        email: Mack280@getnada.com
+        password: HwEzG1pm4JeR_17!
+
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+security: []
