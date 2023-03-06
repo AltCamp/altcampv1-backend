@@ -31,7 +31,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Created'
+                $ref: '#/components/schemas/MentorCreated'
         '422':
           description: One or more user input not validated.
           content:
@@ -188,6 +188,150 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
 
+  /auth/student:
+    post:
+      tags:
+        - Auth
+      summary: This route creates a student details in the database
+      requestBody:
+        description: Students' details passed in the body as a request
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/signUpStudentRequest'
+      responses:
+        '201':
+          description: 'Student is Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentCreated'
+        '422':
+          description: One or more user input not validated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '409':
+          description: There is a conflict error as User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConflictError'
+
+      deprecated: false
+      security: []
+
+  /students/{studentID}:
+    get:
+      tags:
+        - Student
+      summary: This returns a single student
+      description: Accepts the ID of a user and search the database if the user exists
+      operationId: getSingleStudentById
+      parameters:
+        - name: studentID
+          in: path
+          description: Student ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns a single student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/loginStudentRequest'
+
+        '404':
+          description: Student Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+  /students:
+    get:
+      tags:
+        - Student
+      summary: Returns an array of Student.
+      description: This simply returns all registed students found in the database
+      responses:
+        '200':
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /students/update-profile:
+    put:
+      tags:
+        - Student
+      security:
+        - bearer: []
+      summary: update student details
+      description: The accepts the student firstname, lastname or both and updates the profile in the database
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/updateStudentRequest'
+      responses:
+        '200':
+          description: Returns student updated profile
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+
+        '404':
+          description: Student Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+  /students/change-password:
+    put:
+      tags:
+        - Student
+      security:
+        - bearer: []
+      summary: update student password
+      description: This updates the students' password who must be logged in
+      requestBody:
+        description: Accepts Students' password in the body as a request
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/updateStudentPasswordRequest'
+      responses:
+        '200':
+          description: Returns the updated Student profile
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+
+        '404':
+          description: Student Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
 components:
   schemas:
     signUpMentorRequest:
@@ -255,8 +399,91 @@ components:
       example:
         firstname: newTest
         lastname: newSampling
+
     updateMentorPasswordRequest:
       title: update mentor api
+      type: object
+      properties:
+        password:
+          type: string
+      example:
+        password: newTestPassword1@
+
+    signUpStudentRequest:
+      title: sign up student request
+      required:
+        - firstname
+        - lastname
+        - email
+        - track
+        - password
+        - matric
+        - stack
+        - gender
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'
+          description: password must contain uppercase, lowercase, number and special character
+        track:
+          type: string
+        stack:
+          type: string
+        matric:
+          type: string
+        gender:
+          type: string
+          enum:
+            - male
+            - female
+      example:
+        firstname: test
+        lastname: sample
+        email: test@gmail.com
+        password: Test12345%
+        track: testing
+        stack: backend
+        matric: randomMatric123
+        gender: male
+
+    loginStudentRequest:
+      title: login student request
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'
+          description: password must contain uppercase, lowercase, number and special character
+      example:
+        email: test@gmail.com
+        password: Test12345%
+
+    updateStudentRequest:
+      title: update student details
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+      example:
+        firstname: newTest
+        lastname: newSampling
+
+    updateStudentPasswordRequest:
+      title: update student api
       type: object
       properties:
         password:
@@ -276,7 +503,7 @@ components:
         msg:
           type: string
 
-    Created:
+    MentorCreated:
       type: object
       properties:
         msg:
@@ -284,6 +511,18 @@ components:
         account:
           type: object
         mentor:
+          type: object
+        token:
+          type: string
+
+    StudentCreated:
+      type: object
+      properties:
+        msg:
+          type: string
+        account:
+          type: object
+        student:
           type: object
         token:
           type: string
@@ -307,8 +546,17 @@ components:
       properties:
         msg:
           type: string
+
   securitySchemes:
     bearer:
       type: http
       scheme: bearer
 security: []
+
+tags:
+  - name: Auth
+    description: ''
+  - name: Mentor
+    description: ''
+  - name: Student
+    description: ''
