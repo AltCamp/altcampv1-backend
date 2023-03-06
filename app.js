@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const { errorHandler } = require('./utils/errorHandler');
 require('express-async-errors');
-var cors = require('cors');
+const cors = require('cors');
 const swaggerJsDocs = YAML.load('./api-docs.yaml');
 
 const indexRouter = require('./routes/index');
