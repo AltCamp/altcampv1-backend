@@ -3,9 +3,11 @@ const router = express.Router();
 const authRouter = require('../src/auth/router');
 const studentRouter = require('../src/student/studentRoute');
 const mentorRouter = require('../src/mentors/route');
+const apiDocs = require('../src/docs');
 
 router.use('/auth', authRouter);
 router.use('/students', studentRouter);
 router.use('/mentors', mentorRouter);
+router.use('/api-docs', apiDocs);
 
 module.exports = router;
