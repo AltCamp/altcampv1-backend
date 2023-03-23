@@ -6,15 +6,11 @@ const {
   userLogin,
   logout,
 } = require('./auth');
-const {
-  studentValidatorMiddleware,
-  mentorValidatorMiddleware,
-  loginValidatorMiddleware,
-} = require('../../middleware/validator');
+const validatorMiddleware = require('../../middleware/validator');
 
-router.post('/mentor', mentorValidatorMiddleware, registerMentor);
-router.post('/student', studentValidatorMiddleware, registerStudent);
-router.post('/login', loginValidatorMiddleware, userLogin);
+router.post('/mentor', validatorMiddleware('mentorValidator'), registerMentor);
+router.post('/student', validatorMiddleware('studentValidator'), registerStudent);
+router.post('/login', validatorMiddleware('loginValidator'), userLogin);
 router.post('/logout', logout);
 
 module.exports = router;

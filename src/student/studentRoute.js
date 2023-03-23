@@ -1,9 +1,6 @@
 const router = require('express').Router();
 const { verifyUser } = require('../../middleware/authenticate');
-const {
-  updatePasswordValidatorMiddleware,
-  updateProfileValidatorMiddleware,
-} = require('../../middleware/validator');
+const validatorMiddleware = require('../../middleware/validator');
 
 const {
   getStudents,
@@ -18,9 +15,9 @@ router.route('/:id').get(getSingleStudent);
 router.use(verifyUser);
 router
   .route('/change-password')
-  .put(updatePasswordValidatorMiddleware, changeStudentPassword);
+  .put(validatorMiddleware('passwordValidator'), changeStudentPassword);
 router
   .route('/update-profile')
-  .put(updateProfileValidatorMiddleware, updateStudent);
+  .put(validatorMiddleware('profileValidator'), updateStudent);
 
 module.exports = router;
