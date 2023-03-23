@@ -9,7 +9,11 @@ const {
 const validatorMiddleware = require('../../middleware/validator');
 
 router.post('/mentor', validatorMiddleware('mentorValidator'), registerMentor);
-router.post('/student', validatorMiddleware('studentValidator'), registerStudent);
+router.post(
+  '/student',
+  validatorMiddleware('studentValidator'),
+  registerStudent
+);
 router.post('/login', validatorMiddleware('loginValidator'), userLogin);
 router.post('/logout', logout);
 
