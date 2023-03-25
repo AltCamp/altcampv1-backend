@@ -1,7 +1,8 @@
-const { ACCOUNT_TYPES } = require('../../constant');
+const { ACCOUNT_TYPES, RESPONSE_MESSAGE } = require('../../constant');
 const Account = require('../../model/account');
 const { NotFoundError } = require('../../utils/customError');
 const { omit } = require('lodash');
+const responseHandler = require('../../utils/responseHandler');
 
 async function getStudents(req, res) {
   const students = await Account.find({
@@ -17,7 +18,7 @@ async function getSingleStudent(req, res) {
     throw new NotFoundError('Student not found!');
   }
 
-  res.json(student);
+  new responseHandler(res, student, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
 async function updateStudent(req, res) {
@@ -30,7 +31,7 @@ async function updateStudent(req, res) {
   if (!student) {
     throw new NotFoundError('Student not found!');
   }
-  res.json(student);
+  new responseHandler(res, student, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
 async function changeStudentPassword(req, res) {
@@ -49,7 +50,7 @@ async function changeStudentPassword(req, res) {
   omit(student.toObject(), ['password']);
   student = omit(student.toObject(), ['password']);
 
-  res.json(student);
+  new responseHandler(res, student, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
 module.exports = {

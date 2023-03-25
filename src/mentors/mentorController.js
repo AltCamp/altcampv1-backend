@@ -1,7 +1,8 @@
-const { ACCOUNT_TYPES } = require('../../constant');
+const { ACCOUNT_TYPES, RESPONSE_MESSAGE } = require('../../constant');
 const Account = require('../../model/account');
 const { NotFoundError } = require('../../utils/customError');
 const { omit } = require('lodash');
+const responseHandler = require('../../utils/responseHandler');
 
 async function getMentors(req, res) {
   const mentors = await Account.find({
@@ -17,7 +18,7 @@ async function getSingleMentor(req, res) {
     throw new NotFoundError('Mentor not found!');
   }
 
-  res.json(mentor);
+  new responseHandler(res, mentor, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
 async function updateMentor(req, res) {
@@ -30,7 +31,7 @@ async function updateMentor(req, res) {
   if (!mentor || mentor.accountType !== ACCOUNT_TYPES.MENTOR) {
     throw new NotFoundError('Mentor not found!');
   }
-  res.json(mentor);
+  new responseHandler(res, mentor, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
 async function changeMentorPassword(req, res) {
@@ -49,7 +50,7 @@ async function changeMentorPassword(req, res) {
   omit(mentor.toObject(), ['password']);
   mentor = omit(mentor.toObject(), ['password']);
 
-  res.json(mentor);
+  new responseHandler(res, mentor, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
 module.exports = {

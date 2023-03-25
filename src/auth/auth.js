@@ -1,5 +1,5 @@
 const { omit } = require('lodash');
-const { ACCOUNT_TYPES } = require('../../constant');
+const { ACCOUNT_TYPES, RESPONSE_MESSAGE } = require('../../constant');
 const Account = require('../../model/account');
 const Mentor = require('../../model/mentor');
 const Student = require('../../model/student');
@@ -18,7 +18,7 @@ const registerMentor = async (req, res) => {
   } = req.body;
   const mentorExist = await Account.findOne({ email });
   if (mentorExist) {
-    throw new ConflictError('Mentor already exists!');
+    throw new ConflictError(RESPONSE_MESSAGE.CONFLICT('Mentor'));
   }
   const mentor = await Mentor.create({ specialization, yearsOfExperience });
   let account = await Account.create({
@@ -39,20 +39,24 @@ const registerMentor = async (req, res) => {
     .status(201)
     .cookie('jwt_token', token)
     .json({
-      msg: 'Mentor created successfully',
-      account: omit(account.toObject(), ['password']),
-      mentor,
-      token,
+      statusCode: 201,
+      message: RESPONSE_MESSAGE.CREATE_SUCCESSFUL('Mentor'),
+      data: {
+        token,
+        user: {
+          account: omit(account.toObject(), ['password']),
+          mentor,
+        },
+      },
     });
 };
 
 const registerStudent = async (req, res) => {
   const { firstname, lastname, email, password, track, matric, stack, gender } =
     req.body;
-  // throw new Error('okay')
   const studentExist = await Account.findOne({ email });
   if (studentExist) {
-    throw new ConflictError('Student Exist already!');
+    throw new ConflictError(RESPONSE_MESSAGE.CONFLICT('Student'));
   }
   const student = await Student.create({ matric, stack, gender });
   let account = await Account.create({
@@ -72,10 +76,12 @@ const registerStudent = async (req, res) => {
     .status(201)
     .cookie('jwt_token', token)
     .json({
-      msg: 'Student created successfully',
-      account: omit(account.toObject(), ['password']),
-      student,
-      token,
+      statusCode: 201,
+      message: RESPONSE_MESSAGE.CREATE_SUCCESSFUL('Student'),
+      data: {
+        token,
+        user: { account: omit(account.toObject(), ['password']), student },
+      },
     });
 };
 
@@ -102,7 +108,8 @@ const logout = async (req, res) => {
   }
   res.clearCookie('jwt_token');
   res.status(200).json({
-    msg: 'You have been logged out',
+    statusCode: 200,
+    message: RESPONSE_MESSAGE.SUCCESS,
   });
 };
 
