@@ -9,7 +9,9 @@ async function verifyPassword(plain, hashed) {
 }
 
 async function validateCredentials(email, password) {
-  const user = await Account.findOne({ email }).select('+password');
+  const user = await Account.findOne({ email })
+    .select('+password')
+    .populate('owner', { __v: 0 });
   if (!user) return false;
   const passwordMatch = await verifyPassword(password, user.password);
   if (!passwordMatch) return false;

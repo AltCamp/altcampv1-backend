@@ -96,10 +96,18 @@ const userLogin = async (req, res) => {
     id: account.id,
   });
 
-  res.status(200).cookie('jwt_token', accessToken).json({
-    msg: 'Login successful!',
-    accessToken,
-  });
+  const user = omit(account.toObject(), 'password', '__v');
+  res
+    .status(200)
+    .cookie('jwt_token', accessToken)
+    .json({
+      statusCode: 200,
+      message: RESPONSE_MESSAGE.SUCCESS,
+      data: {
+        token: accessToken,
+        user,
+      },
+    });
 };
 
 const logout = async (req, res) => {
