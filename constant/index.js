@@ -7,4 +7,11 @@ module.exports = {
     MENTOR: 'Mentor',
     ADMIN: 'Admin',
   },
+
+  RESPONSE_MESSAGE: {
+    SUCCESS: 'Request Successful!',
+    FAILED: 'Request Failed!',
+    CREATE_SUCCESSFUL: (entity) => `${entity} created successfully`,
+    CONFLICT: (entity) => `${entity} exists already`,
+  },
 };
