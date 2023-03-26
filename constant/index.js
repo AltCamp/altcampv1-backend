@@ -11,7 +11,8 @@ module.exports = {
   RESPONSE_MESSAGE: {
     SUCCESS: 'Request Successful!',
     FAILED: 'Request Failed!',
+    LOGOUT: 'You have been logged out!',
     CREATE_SUCCESSFUL: (entity) => `${entity} created successfully`,
-    CONFLICT: (entity) => `${entity} exists already`,
+    CONFLICT: (entity) => `${entity} already exists!`,
   },
 };

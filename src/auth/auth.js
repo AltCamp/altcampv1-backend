@@ -117,7 +117,7 @@ const logout = async (req, res) => {
   res.clearCookie('jwt_token');
   res.status(200).json({
     statusCode: 200,
-    message: RESPONSE_MESSAGE.SUCCESS,
+    message: RESPONSE_MESSAGE.LOGOUT,
   });
 };
 
