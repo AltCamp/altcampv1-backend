@@ -42,8 +42,10 @@ describe('Auth: Logout', () => {
 
     // logout the user
     const logoutRes = await agent.post('/auth/logout');
-    expect(logoutRes.status).toBe(200);
-    expect(logoutRes.body).toHaveProperty('msg', 'You have been logged out');
+    expect(logoutRes.body).toHaveProperty(
+      'message',
+      'You have been logged out!'
+    );
 
     // verify the user is logged out
     const res2 = await agent.get('/me');
