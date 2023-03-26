@@ -35,18 +35,21 @@ describe('Sample test', () => {
 
     // run tests against the received response
     expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty('msg', 'Mentor created successfully');
-    expect(response.body).toHaveProperty('account');
-    expect(response.body).toHaveProperty('mentor');
-    expect(response.body).toHaveProperty('token');
-    expect(response.body.account).toEqual(
+    expect(response.body).toHaveProperty(
+      'message',
+      'Mentor created successfully'
+    );
+    expect(response.body.data.user).toHaveProperty('account');
+    expect(response.body.data.user).toHaveProperty('mentor');
+    expect(response.body.data).toHaveProperty('token');
+    expect(response.body.data.user.account).toEqual(
       expect.objectContaining({
         firstname: user.firstname,
         lastname: user.lastname,
         email: user.email,
         track: user.track,
         accountType: 'Mentor',
-        owner: response.body.mentor._id,
+        owner: response.body.data.user.mentor._id,
         _id: expect.any(String),
         createdAt: expect.any(String),
         updatedAt: expect.any(String),

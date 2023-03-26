@@ -56,8 +56,8 @@ describe('Updating a mentor', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({ firstname, lastname });
 
-    expect(response.body).toHaveProperty('firstname', firstname);
-    expect(response.body).toHaveProperty('lastname', lastname);
+    expect(response.body.data).toHaveProperty('firstname', firstname);
+    expect(response.body.data).toHaveProperty('lastname', lastname);
   });
 
   it('with secure password is successful', async () => {
@@ -78,7 +78,7 @@ describe('Updating a mentor', () => {
       .send({ email: user.email, password });
 
     expect(loginAttempt.status).toBe(200);
-    expect(loginAttempt.body).toHaveProperty('accessToken');
+    expect(loginAttempt.body.data).toHaveProperty('token');
   });
 
   it('with unsecure password is not successful', async () => {
@@ -103,7 +103,7 @@ afterAll(async () => {
 async function login({ email, password }) {
   const response = await api.post('/auth/login').send({ email, password });
   if (response.status === 200) {
-    token = response.body.accessToken;
+    token = response.body.data.token;
     return;
   }
   token = null;

@@ -21,23 +21,29 @@ describe('Auth: Student registration', () => {
     const response = await api.post('/auth/student').send(user);
 
     expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty('msg', 'Student created successfully');
-    expect(response.body).toHaveProperty('account');
-    expect(response.body).toHaveProperty('student');
-    expect(response.body).toHaveProperty('token');
-    expect(response.body.account).toEqual(
+    expect(response.body).toHaveProperty('statusCode', response.status);
+    expect(response.body).toHaveProperty(
+      'message',
+      'Student created successfully'
+    );
+    expect(response.body).toHaveProperty('data');
+    expect(response.body.data).toHaveProperty('token');
+    expect(response.body.data).toHaveProperty('user');
+    expect(response.body.data.user).toHaveProperty('account');
+    expect(response.body.data.user).toHaveProperty('student');
+    expect(response.body.data.user.account).toEqual(
       expect.objectContaining({
         firstname: user.firstname,
         lastname: user.lastname,
         email: user.email,
         track: user.track,
-        owner: response.body.student._id,
+        owner: response.body.data.user.student._id,
         _id: expect.any(String),
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
       })
     );
-    expect(response.body.student).toEqual(
+    expect(response.body.data.user.student).toEqual(
       expect.objectContaining({
         matric: user.matric,
         stack: user.stack,
@@ -45,14 +51,14 @@ describe('Auth: Student registration', () => {
         _id: expect.any(String),
       })
     );
-    expect(response.body.token).toEqual(expect.any(String));
+    expect(response.body.data.token).toEqual(expect.any(String));
 
     // Verify token
-    const token = response.body.token;
+    const token = response.body.data.token;
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     expect(decoded).toEqual(
       expect.objectContaining({
-        id: response.body.account._id,
+        id: response.body.data.user.account._id,
         firstname: user.firstname,
         lastname: user.lastname,
       })
@@ -67,7 +73,10 @@ describe('Auth: Student registration', () => {
     it('should not register a new student if email already exists', async () => {
       const response = await api.post('/auth/student').send(user);
       expect(response.status).toBe(409);
-      expect(response.body).toHaveProperty('msg', 'Student Exist already!');
+      expect(response.body).toHaveProperty(
+        'message',
+        'Student already exists!'
+      );
     });
 
     it('should not register a new student if email is invalid', async () => {
@@ -76,7 +85,10 @@ describe('Auth: Student registration', () => {
         email: 'wrong@mail',
       });
       expect(response.status).toBe(422);
-      expect(response.body).toHaveProperty('msg', 'Not a valid email address');
+      expect(response.body).toHaveProperty(
+        'message',
+        'Not a valid email address'
+      );
     });
 
     it('should not register a new student if password is not provided', async () => {
@@ -85,7 +97,7 @@ describe('Auth: Student registration', () => {
         password: '',
       });
       expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty('msg', 'Password is required');
+      expect(response.body).toHaveProperty('message', 'Password is required');
     });
 
     it('should not register a new student if email is not provided', async () => {
@@ -94,7 +106,7 @@ describe('Auth: Student registration', () => {
         email: '',
       });
       expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty('msg', 'Email is required');
+      expect(response.body).toHaveProperty('message', 'Email is required');
     });
 
     it('should not register a new student if firstname is not provided', async () => {
@@ -103,7 +115,7 @@ describe('Auth: Student registration', () => {
         firstname: '',
       });
       expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty('msg', 'Firstname is required');
+      expect(response.body).toHaveProperty('message', 'Firstname is required');
     });
 
     it('should not register a new student if lastname is not provided', async () => {
@@ -112,7 +124,7 @@ describe('Auth: Student registration', () => {
         lastname: '',
       });
       expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty('msg', 'Lastname is required');
+      expect(response.body).toHaveProperty('message', 'Lastname is required');
     });
 
     it('should not register a new student if track is not provided', async () => {
@@ -121,7 +133,7 @@ describe('Auth: Student registration', () => {
         track: '',
       });
       expect(response.status).toBe(400);
-      expect(response.body).toHaveProperty('msg', 'Track is required');
+      expect(response.body).toHaveProperty('message', 'Track is required');
     });
 
     describe('Student registration: password validation', () => {
@@ -132,7 +144,7 @@ describe('Auth: Student registration', () => {
         });
         expect(response.status).toBe(422);
         expect(response.body).toHaveProperty(
-          'msg',
+          'message',
           'password must contain uppercase, lowercase, number and special character'
         );
       });
@@ -144,7 +156,7 @@ describe('Auth: Student registration', () => {
         });
         expect(response.status).toBe(422);
         expect(response.body).toHaveProperty(
-          'msg',
+          'message',
           'password must contain uppercase, lowercase, number and special character'
         );
       });
@@ -156,7 +168,7 @@ describe('Auth: Student registration', () => {
         });
         expect(response.status).toBe(422);
         expect(response.body).toHaveProperty(
-          'msg',
+          'message',
           'password must contain uppercase, lowercase, number and special character'
         );
       });
@@ -168,7 +180,7 @@ describe('Auth: Student registration', () => {
         });
         expect(response.status).toBe(422);
         expect(response.body).toHaveProperty(
-          'msg',
+          'message',
           'password must contain uppercase, lowercase, number and special character'
         );
       });
@@ -180,7 +192,7 @@ describe('Auth: Student registration', () => {
         });
         expect(response.status).toBe(422);
         expect(response.body).toHaveProperty(
-          'msg',
+          'message',
           'Password must be at least 8 characters long'
         );
       });
