@@ -90,7 +90,7 @@ paths:
         - Mentor
       summary: This returns a single mentor
       description: Accepts the ID of a user and search the database if the user exists
-      operationId: getSingleMentorById
+      operationId: getMentorById
       parameters:
         - name: mentorID
           in: path
@@ -105,7 +105,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/loginMentorRequest'
+                $ref: '#/components/schemas/getUser'
 
         '404':
           description: Mentor Not Found
@@ -126,9 +126,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
+                $ref: '#/components/schemas/getAllUsers'
 
   /mentors/update-profile:
     put:
@@ -150,9 +148,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  type: string
+                $ref: '#/components/schemas/getUser'
 
         '404':
           description: Mentor Not Found
@@ -182,9 +178,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  type: string
+                $ref: '#/components/schemas/updateUserPassword'
 
         '404':
           description: Mentor Not Found
@@ -249,7 +243,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/loginStudentRequest'
+                $ref: '#/components/schemas/getUser'
 
         '404':
           description: Student Not Found
@@ -270,9 +264,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
+                $ref: '#/components/schemas/getAllUsers'
 
   /students/update-profile:
     put:
@@ -294,9 +286,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  type: string
+                $ref: '#/components/schemas/getUser'
 
         '404':
           description: Student Not Found
@@ -326,9 +316,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  type: string
+                $ref: '#/components/schemas/getUser'
 
         '404':
           description: Student Not Found
@@ -375,6 +363,94 @@ components:
         track: testing
         specialization: sampling
         yearsOfExperience: 1000
+
+    getAllUsers:
+      title: get all mentor request
+      type: array
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+          firstname:
+            type: string
+          lastname:
+            type: string
+          email:
+            type: string
+          track:
+            type: string
+          accountType:
+            type: string
+          owner:
+            type: object
+            properties:
+              _id:
+                type: string
+              specialization:
+                type: string
+              yearsOfExperience:
+                type: integer
+
+    getUser:
+      title: get single user request
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            _id:
+              type: string
+            firstname:
+              type: string
+            lastname:
+              type: string
+            email:
+              type: string
+            track:
+              type: string
+            accountType:
+              type: string
+            owner:
+              type: string
+            createdAt:
+              type: number
+            updatedAt:
+              type: number
+
+    updateUserPassword:
+      title: get single user request
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            _id:
+              type: string
+            firstname:
+              type: string
+            lastname:
+              type: string
+            email:
+              type: string
+            track:
+              type: string
+            accountType:
+              type: string
+            owner:
+              type: string
+            createdAt:
+              type: number
+            updatedAt:
+              type: number
 
     loginMentorRequest:
       title: login mentor request
@@ -476,7 +552,7 @@ components:
         password: Test12345%
 
     updateStudentRequest:
-      title: update student details
+      title: update user details
       type: object
       properties:
         firstname:
@@ -499,57 +575,180 @@ components:
     ValidationError:
       type: object
       properties:
-        msg:
+        messsage:
           type: string
+        statusCode:
+          type: number
+        error:
+          type: string
+      example:
+        statusCode: 422
+        message: One or more of user input not validated
+        error: Server Error
 
     ConflictError:
       type: object
       properties:
-        msg:
+        message:
           type: string
+        statusCode:
+          type: number
+        error:
+          type: string
+      example:
+        statusCode: 409
+        message: User already exists!
+        error: Conflict
 
     MentorCreated:
       type: object
       properties:
-        msg:
+        message:
           type: string
-        account:
+        user:
           type: object
+          properties:
+            account:
+              type: object
+              properties:
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                email:
+                  type: string
+                track:
+                  type: string
+                accountType:
+                  type: string
+                owner:
+                  type: string
+                _id:
+                  type: string
+                createdAt:
+                  type: number
+                updatedAt:
+                  type: number
         mentor:
           type: object
-        token:
-          type: string
+          properties:
+            specialization:
+              type: string
+            yearsOfExperience:
+              type: integer
+            _id:
+              type: string
+        data:
+          type: object
+          properties:
+            token:
+              type: string
 
     StudentCreated:
       type: object
       properties:
-        msg:
+        message:
           type: string
-        account:
+        user:
           type: object
+          properties:
+            account:
+              type: object
+              properties:
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                email:
+                  type: string
+                track:
+                  type: string
+                accountType:
+                  type: string
+                owner:
+                  type: integer
+                _id:
+                  type: string
+                createdAt:
+                  type: number
+                updatedAt:
+                  type: number
         student:
           type: object
-        token:
-          type: string
+          properties:
+            matric:
+              type: string
+            stack:
+              type: string
+            gender:
+              type: string
+            _id:
+              type: string
+        data:
+          type: object
+          properties:
+            token:
+              type: string
 
     UserToken:
       type: object
       properties:
-        msg:
+        statusCode:
+          type: integer
+        message:
           type: string
-        token:
-          type: string
+        data:
+          type: object
+          properties:
+            token:
+              type: string
+        user:
+          type: object
+          properties:
+            _id:
+              type: string
+            firstname:
+              type: string
+            lastname:
+              type: string
+            email:
+              type: string
+            track:
+              type: string
+            accountType:
+              type: string
+            owner:
+              type: object
+              properties:
+                _id:
+                  type: string
+                specialization:
+                  type: string
+                yearsOfExperience:
+                  type: integer
+            createdAt:
+              type: number
+            updatedAt:
+              type: number
 
     UnauthorizedError:
       type: object
       properties:
-        msg:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        error:
           type: string
 
     NotFoundError:
       type: object
       properties:
-        msg:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        error:
           type: string
 
   securitySchemes:
