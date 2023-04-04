@@ -243,7 +243,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getUser'
+                $ref: '#/components/schemas/getStudent'
 
         '404':
           description: Student Not Found
@@ -256,7 +256,7 @@ paths:
     get:
       tags:
         - Student
-      summary: Returns an array of Student.
+      summary: Returns an array of Students
       description: This simply returns all registed students found in the database
       responses:
         '200':
@@ -264,7 +264,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getAllUsers'
+                $ref: '#/components/schemas/getAllStudents'
 
   /students/update-profile:
     put:
@@ -391,6 +391,82 @@ components:
                 type: string
               yearsOfExperience:
                 type: integer
+          createdAt:
+            type: string
+            default: '2023-01-01T00:10:52.567Z'
+          updatedAt:
+            type: string
+            default: '2023-01-01T00:10:52.567Z'
+
+    getAllStudents:
+      title: Get all students request
+      type: array
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+          firstname:
+            type: string
+          lastname:
+            type: string
+          email:
+            type: string
+          track:
+            type: string
+          accountType:
+            type: string
+          owner:
+            type: object
+            properties:
+              _id:
+                type: string
+              matric:
+                type: string
+              stack:
+                type: string
+              gender:
+                type: string
+          createdAt:
+            type: string
+            default: '2023-01-01T00:10:52.567Z'
+          updatedAt:
+            type: string
+            default: '2023-01-01T00:10:52.567Z'
+
+    getStudent:
+      title: Get all students request
+      type: object
+      properties:
+        _id:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        track:
+          type: string
+        accountType:
+          type: string
+        owner:
+          type: object
+          properties:
+            _id:
+              type: string
+            matric:
+              type: string
+            stack:
+              type: string
+            gender:
+              type: string
+        createdAt:
+          type: string
+          default: '2023-01-01T00:10:52.567Z'
+        updatedAt:
+          type: string
+          default: '2023-01-01T00:10:52.567Z'
 
     getUser:
       title: get single user request
@@ -398,6 +474,7 @@ components:
       properties:
         statusCode:
           type: integer
+          default: 200
         message:
           type: string
         data:
@@ -418,9 +495,11 @@ components:
             owner:
               type: string
             createdAt:
-              type: number
+              type: string
+              default: '2023-01-01T00:10:52.567Z'
             updatedAt:
-              type: number
+              type: string
+              default: '2023-01-01T00:10:52.567Z'
 
     updateUserPassword:
       title: get single user request
@@ -428,6 +507,7 @@ components:
       properties:
         statusCode:
           type: integer
+          default: 200
         message:
           type: string
         data:
@@ -448,9 +528,11 @@ components:
             owner:
               type: string
             createdAt:
-              type: number
+              type: string
+              default: '2023-01-01T00:10:52.567Z'
             updatedAt:
-              type: number
+              type: string
+              default: '2023-01-01T00:10:52.567Z'
 
     loginMentorRequest:
       title: login mentor request
@@ -579,6 +661,7 @@ components:
           type: string
         statusCode:
           type: number
+          default: 422
         error:
           type: string
       example:
@@ -593,6 +676,7 @@ components:
           type: string
         statusCode:
           type: number
+          default: 409
         error:
           type: string
       example:
@@ -626,9 +710,11 @@ components:
                 _id:
                   type: string
                 createdAt:
-                  type: number
+                  type: string
+                  default: '2023-01-01T00:10:52.567Z'
                 updatedAt:
-                  type: number
+                  type: string
+                  default: '2023-01-01T00:10:52.567Z'
         mentor:
           type: object
           properties:
@@ -670,9 +756,11 @@ components:
                 _id:
                   type: string
                 createdAt:
-                  type: number
+                  type: string
+                  default: '2023-01-01T00:10:52.567Z'
                 updatedAt:
-                  type: number
+                  type: string
+                  default: '2023-01-01T00:10:52.567Z'
         student:
           type: object
           properties:
@@ -695,6 +783,7 @@ components:
       properties:
         statusCode:
           type: integer
+          default: 200
         message:
           type: string
         data:
@@ -727,15 +816,18 @@ components:
                 yearsOfExperience:
                   type: integer
             createdAt:
-              type: number
+              type: string
+              default: '2023-01-01T00:10:52.567Z'
             updatedAt:
-              type: number
+              type: string
+              default: '2023-01-01T00:10:52.567Z'
 
     UnauthorizedError:
       type: object
       properties:
         statusCode:
           type: integer
+          default: 401
         message:
           type: string
         error:
@@ -746,6 +838,7 @@ components:
       properties:
         statusCode:
           type: integer
+          default: 404
         message:
           type: string
         error:
