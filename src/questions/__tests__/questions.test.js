@@ -130,7 +130,7 @@ describe('Upvoting a question', () => {
 
     // send a patch request to upvote question
     await api
-      .patch(`/questions/upvote?id=${questions[0]._id.toString()}`)
+      .patch(`/questions/${questions[0]._id.toString()}/upvote`)
       .expect(401);
   });
 
@@ -145,7 +145,7 @@ describe('Upvoting a question', () => {
 
     // send a patch request to upvote question
     const response = await api
-      .patch(`/questions/upvote?id=${questions[0]._id.toString()}`)
+      .patch(`/questions/${questions[0]._id.toString()}/upvote`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -163,7 +163,7 @@ describe('Upvoting a question', () => {
 
     // send a patch request to upvote question
     const response2 = await api
-      .patch(`/questions/upvote?id=${questions[0]._id.toString()}`)
+      .patch(`/questions/${questions[0]._id.toString()}/upvote`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -186,7 +186,7 @@ test('if a user has previously upvoted removes the vote', async () => {
 
   // send a patch request to upvote question
   const response = await api
-    .patch(`/questions/upvote?id=${questions[0]._id.toString()}`)
+    .patch(`/questions/${questions[0]._id.toString()}/upvote`)
     .set('Authorization', `Bearer ${token}`)
     .expect(200)
     .expect('Content-Type', /application\/json/);
@@ -203,7 +203,7 @@ describe('Downvoting a question', () => {
 
     // send a patch request to downvote question
     await api
-      .patch(`/questions/downvote?id=${questions[0]._id.toString()}`)
+      .patch(`/questions/${questions[0]._id.toString()}/downvote`)
       .expect(401);
   });
 
@@ -218,7 +218,7 @@ describe('Downvoting a question', () => {
 
     // send a patch request to downvote question
     const response = await api
-      .patch(`/questions/downvote?id=${questions[0]._id.toString()}`)
+      .patch(`/questions/${questions[0]._id.toString()}/downvote`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -236,7 +236,7 @@ describe('Downvoting a question', () => {
 
     // send a patch request to downvote question
     const response2 = await api
-      .patch(`/questions/downvote?id=${questions[0]._id.toString()}`)
+      .patch(`/questions/${questions[0]._id.toString()}/downvote`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -257,7 +257,7 @@ describe('Downvoting a question', () => {
 
     // send a patch request to downvote question
     const response = await api
-      .patch(`/questions/downvote?id=${questions[0]._id.toString()}`)
+      .patch(`/questions/${questions[0]._id.toString()}/downvote`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -276,7 +276,7 @@ afterAll(async () => {
 async function login({ email, password }) {
   const response = await api.post('/auth/login').send({ email, password });
   if (response.status === 200) {
-    token = response.body.accessToken;
+    token = response.body.data.token;
     return;
   }
   token = null;
