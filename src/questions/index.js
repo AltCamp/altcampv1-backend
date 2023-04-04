@@ -21,4 +21,8 @@ router
   )
   .delete(verifyUser, questions.deleteQuestion);
 
+router.route('/:id/upvote').patch(questions.upvoteQuestion);
+
+router.route('/:id/downvote').patch(questions.downvoteQuestion);
+
 module.exports = router;

@@ -48,6 +48,60 @@ const isQuestionAuthor = async ({ userId, questionId }) => {
   return userId.toString() === author.toString();
 };
 
+const upvoteQuestion = async ({ userId, questionId }) => {
+  const question = await Question.findById(questionId);
+  if (!question) {
+    return false;
+  }
+
+  // Check if user has already liked photo
+  if (question.upvotedBy.includes(userId)) {
+    // Remove like
+    question.upvotes--;
+    const searchIndex = question.upvotedBy.indexOf(userId);
+    question.upvotedBy.splice(searchIndex, 1);
+
+    // Update database
+    await question.save();
+
+    return question;
+  }
+
+  // Update database
+  question.upvotes++;
+  question.upvotedBy.push(userId);
+  await question.save();
+
+  return question;
+};
+
+const downvoteQuestion = async ({ userId, questionId }) => {
+  const question = await Question.findById(questionId);
+  if (!question) {
+    return false;
+  }
+
+  // Check if user has already disliked photo
+  if (question.downvotedBy.includes(userId)) {
+    // Remove like
+    question.downvotes--;
+    const searchIndex = question.downvotedBy.indexOf(userId);
+    question.downvotedBy.splice(searchIndex, 1);
+
+    // Update database
+    await question.save();
+
+    return question;
+  }
+
+  // Update database
+  question.downvotes++;
+  question.downvotedBy.push(userId);
+  await question.save();
+
+  return question;
+};
+
 module.exports = {
   createQuestion,
   updateQuestion,
@@ -55,4 +109,6 @@ module.exports = {
   getQuestions,
   getQuestion,
   deleteQuestion,
+  upvoteQuestion,
+  downvoteQuestion,
 };

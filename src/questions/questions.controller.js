@@ -1,5 +1,11 @@
 const questionService = require('./questions.service');
-const { NotFoundError, UnAuthorizedError } = require('../../utils/customError');
+const {
+  BadRequestError,
+  NotFoundError,
+  UnAuthorizedError,
+} = require('../../utils/customError');
+const responseHandler = require('../../utils/responseHandler');
+const { RESPONSE_MESSAGE } = require('../../constant');
 
 const getQuestion = async (req, res) => {
   // grab questionID from request
@@ -9,12 +15,12 @@ const getQuestion = async (req, res) => {
 
   if (!question) throw new NotFoundError('Not Found');
 
-  return res.status(200).json({ status: 'success', data: question });
+  new responseHandler(res, question, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 
 const getAllQuestions = async (req, res) => {
   const questions = await questionService.getQuestions();
-  return res.status(200).json({ data: questions });
+  new responseHandler(res, questions, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 
 const createQuestion = async (req, res) => {
@@ -28,7 +34,7 @@ const createQuestion = async (req, res) => {
   });
 
   // send response to client
-  return res.status(201).json({ status: 'success', data: newQuestion });
+  new responseHandler(res, newQuestion, 201, RESPONSE_MESSAGE.SUCCESS);
 };
 
 const updateQuestion = async (req, res) => {
@@ -55,7 +61,7 @@ const updateQuestion = async (req, res) => {
   if (!updatedQuestion) throw new NotFoundError('Not Found');
 
   // send response to client
-  return res.status(200).json({ status: 'success', data: updatedQuestion });
+  new responseHandler(res, updatedQuestion, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 
 const deleteQuestion = async (req, res) => {
@@ -74,7 +80,39 @@ const deleteQuestion = async (req, res) => {
 
   if (!deleted) throw new NotFoundError('Not Found');
 
-  return res.status(200).json({ status: 'success', data: deleted });
+  new responseHandler(res, deleted, 200, RESPONSE_MESSAGE.SUCCESS);
+};
+
+const upvoteQuestion = async (req, res) => {
+  // grab questionID from request
+  const questionId = req.params.id;
+
+  // upvote the question
+  const upvote = await questionService.upvoteQuestion({
+    userId: req.user._id,
+    questionId,
+  });
+
+  if (!upvote) throw new BadRequestError('Unable to upvote question');
+
+  // send response to client
+  new responseHandler(res, upvote, 200, RESPONSE_MESSAGE.SUCCESS);
+};
+
+const downvoteQuestion = async (req, res) => {
+  // grab questionID from request
+  const questionId = req.params.id;
+
+  // upvote the question
+  const downvote = await questionService.downvoteQuestion({
+    userId: req.user._id,
+    questionId,
+  });
+
+  if (!downvote) throw new BadRequestError('Unable to upvote question');
+
+  // send response to client
+  new responseHandler(res, downvote, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 
 module.exports = {
@@ -83,4 +121,6 @@ module.exports = {
   getAllQuestions,
   getQuestion,
   deleteQuestion,
+  upvoteQuestion,
+  downvoteQuestion,
 };
