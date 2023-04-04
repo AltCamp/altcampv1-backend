@@ -10,7 +10,7 @@ StudyBuddy by AltSchool is an e-learning platform that allows students to post m
 
 ## API Documentation
 
-The API documentation can be found [here]().
+The API documentation can be found [here](https://fundaorcostudy.onrender.com/api-docs).
 
 ## Contributing
 
