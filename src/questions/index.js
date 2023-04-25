@@ -2,6 +2,7 @@ const router = require('express').Router();
 const questions = require('./questions.controller');
 const { verifyUser } = require('../../middleware/authenticate');
 const validatorMiddleware = require('../../middleware/validator');
+const answers = require('../answers/answers.controller');
 
 router.use(verifyUser);
 router
@@ -24,5 +25,10 @@ router
 router.route('/:id/upvote').patch(questions.upvoteQuestion);
 
 router.route('/:id/downvote').patch(questions.downvoteQuestion);
+
+
+// answers to questions route
+router.post('/:questionId/answers', answers.createAnswer);
+
 
 module.exports = router;
