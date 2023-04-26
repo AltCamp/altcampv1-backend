@@ -1,12 +1,12 @@
-# StudyBuddyv1-backend
+# AltCampv1-backend
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-## About StudyBuddy
+## About AltCamp
 
-StudyBuddy by AltSchool is an e-learning platform that allows students to post messages to the discussion threads, interact and receive feedback from other students and instructors, and hence create a deeper understanding of the subject matter being discussed.
+AltCamp by AltSchool is an e-learning platform that allows students to post messages to the discussion threads, interact and receive feedback from other students and instructors, and hence create a deeper understanding of the subject matter being discussed.
 
 ## API Documentation
 

@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: CoStudy API Docs
-  description: CoStudy is an e-learning platform that allows students to post messages to the discussion threads, interact and receive feedback from other students and instructors, and hence create a deeper understanding of the subject matter being discussed. This documentation covers the Mentors' routes
+  title: AltCamp API Docs
+  description: AltCamp is an e-learning platform that allows students to post messages to the discussion threads, interact and receive feedback from other students and instructors, and hence create a deeper understanding of the subject matter being discussed. This documentation covers the Mentors' routes
   version: 1.0.0
 servers:
   - url: '{scheme}://{host}'
@@ -12,10 +12,10 @@ servers:
           - http
           - https
       host:
-        default: fundaorcostudy.onrender.com # Production server
+        default: thealtcamp.onrender.com # Production server
         enum:
           - localhost:8000 # Development server
-          - fundaorcostudy.onrender.com # Production server
+          - thealtcamp.onrender.com # Production server
 
 paths:
   /auth/mentor:

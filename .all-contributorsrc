@@ -86,6 +86,6 @@
   "skipCi": true,
   "repoType": "github",
   "repoHost": "https://github.com",
-  "projectName": "studybuddyv1-backend",
-  "projectOwner": "StudyBuddyv1"
+  "projectName": "AltCampv1-backend",
+  "projectOwner": "AltCamp"
 }
