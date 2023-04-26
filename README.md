@@ -10,7 +10,7 @@ AltCamp by AltSchool is an e-learning platform that allows students to post mess
 
 ## API Documentation
 
-The API documentation can be found [here](https://thealtcamp.onrender.com/api-docs).
+The API documentation can be found [here](https://the-altcamp.onrender.com/api-docs).
 
 ## Contributing
 
