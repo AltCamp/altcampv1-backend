@@ -81,7 +81,7 @@ describe('Creating answer to a question', () => {
     expect(response.body.data).toHaveProperty('question', question._id);
   });
 
-  it('updates the answer field in question model', async () => {
+  it('updates the question with answer', async () => {
     // get questions from DB
     const questions = await helper.questionsInDb();
 
@@ -93,6 +93,81 @@ describe('Creating answer to a question', () => {
       answer.toString()
     );
     expect(stringedObjectIdAnswerArray).toContain(responseAnswerId);
+  });
+});
+
+describe('Modifying an answer', () => {
+  it('fails if a user is not logged in', async () => {
+   // get question from question json
+   const question = helper.questionsAsJson[1]._id;
+
+    // send a patch request to update answer
+    await api
+      .patch(
+        `/questions/${question._id.toString()}/answers/${responseAnswerId.toString()}`
+      )
+      .send({
+        body: 'An updated body of a question to aid testing. Let us get it!',
+      })
+      .expect(401);
+  });
+
+  it('fails if a logged in user is not the author', async () => {
+   // get question from question json
+   const question = helper.questionsAsJson[1]._id;
+
+    // Log in as a student
+    const user = helper.accountsAsJson[1];
+    await login(user);
+
+    // send a patch request to update answer
+    await api
+      .patch(
+        `/questions/${question._id.toString()}/answers/${responseAnswerId.toString()}`
+      )
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        body: 'updating answer',
+      })
+      .expect(401)
+      .expect('Content-Type', /application\/json/);
+  });
+
+  it('is successful if a logged in user is the author', async () => {
+    // get question from question json
+    const question = helper.questionsAsJson[1]._id;
+
+    // get answers from DB
+    const answers = await helper.answersInDb();
+
+    // find the answer from answers fetched from DB
+    const answer = answers.find(
+      (answer) => answer._id.toString() === responseAnswerId
+    );
+    console.log(answer);
+
+    // Log in as a student
+    const users = helper.accountsAsJson;
+    const user = users.find((user) => user._id.toString() === answer.author.toString());
+    console.log(user);
+    await login(user);
+
+    // send a patch request to update answer
+    const body = 'updating answer';
+
+    const response = await api
+      .patch(
+        `/questions/${question._id}/answers/${responseAnswerId.toString()}`
+      )
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        body,
+      })
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    // check response for specific properties
+    expect(response.body.data).toHaveProperty('body', body);
   });
 });
 
