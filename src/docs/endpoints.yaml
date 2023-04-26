@@ -12,10 +12,10 @@ servers:
           - http
           - https
       host:
-        default: thealtcamp.onrender.com # Production server
+        default: the-altcamp.onrender.com # Production server
         enum:
           - localhost:8000 # Development server
-          - thealtcamp.onrender.com # Production server
+          - the-altcamp.onrender.com # Production server
 
 paths:
   /auth/mentor:
