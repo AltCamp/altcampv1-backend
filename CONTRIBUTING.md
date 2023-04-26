@@ -1,6 +1,6 @@
 # Contributing to StuddyBuddyv1 Backend
 
-First of all, thank you for considering being a part of this amazing project. 🤩 When contributing to this repository, please first discuss the change you wish to make via [issue](https://github.com/StudyBuddyv1/studybuddyv1-backend/issues) or any other method with the owners of this repository before making a change.
+First of all, thank you for considering being a part of this amazing project. 🤩 When contributing to this repository, please first discuss the change you wish to make via [issue](https://github.com/AltCamp/altcampv1-backend/issues) or any other method with the owners of this repository before making a change.
 
 We love pull requests! We can't wait to collaborate with you. Please note that we have a [Code of Conduct](/CODE_OF_CONDUCT.md), kindly follow it in all your interactions with the project.
 
@@ -34,13 +34,13 @@ These instructions will get you a copy of the project up and running on your loc
 1. Fork the repository and clone it to your local machine.
 
 ```
-$ git clone https://github.com/YOUR_GITHUB_USERNAME/studybuddyv1-backend.git
+$ git clone https://github.com/YOUR_GITHUB_USERNAME/altcampv1-backend.git
 ```
 
 2. Navigate to the project directory.
 
 ```
-$ cd studybuddyv1-backend
+$ cd altcampv1-backend
 ```
 
 3. Install the project dependencies.
@@ -101,7 +101,7 @@ We use Jest for testing, and require contributors to follow a Test Driven Develo
 1. Navigate to the project directory.
 
 ```
-$ cd studybuddyv1-backend
+$ cd altcampv1-backend
 ```
 
 2. Run the tests.

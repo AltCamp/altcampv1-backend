@@ -14,6 +14,7 @@ app.use(
       'http://localhost:5173',
       'http://127.0.0.1:5173',
       'https://stdybdyv1.netlify.app',
+      'https://altcampv1.netlify.app',
     ],
   })
 );
@@ -23,7 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.get('/', (req, res) => {
-  res.json({ hello: 'Welcome to StudyBuddy' });
+  res.json({ hello: 'Welcome to AltCamp' });
 });
 
 app.use('/', indexRouter);

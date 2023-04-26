@@ -43,12 +43,12 @@ body:
       label: Specific File Path(s) on the Repo to be Modified/Refered to
       description: Please share the specific file path(s) to be modified/referred to in the codebase.
       placeholder: |
-        e.g. https://github.com/StudyBuddyv1/studybuddyv1-backend/blob/dev/src/auth/auth.js
+        e.g. https://github.com/AltCamp/altcampv1-backend/blob/dev/src/auth/auth.js
   - type: checkboxes
     id: terms
     attributes:
       label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/StudyBuddyv1/studybuddyv1-backend/blob/dev/CODE_OF_CONDUCT.md)
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/AltCamp/altcampv1-backend/blob/dev/CODE_OF_CONDUCT.md)
       options:
         - label: I agree to follow this project's Code of Conduct
           required: true
