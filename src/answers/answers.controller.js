@@ -1,4 +1,9 @@
 const answerService = require('./answers.service');
+const {
+  // BadRequestError,
+  NotFoundError,
+  UnAuthorizedError,
+} = require('../../utils/customError');
 const responseHandler = require('../../utils/responseHandler');
 const { RESPONSE_MESSAGE } = require('../../constant');
 
@@ -21,7 +26,33 @@ const createAnswer = async (req, res) => {
 };
 
 const updateAnswer = async (req, res) => {
-  return res.send('postAnswer');
+  // grab questionID from request
+  const questionId = req.params.questionId;
+
+  // grab answerID from request
+  const answerId = req.params.answerId;
+
+  // check if user is answer author
+  const isAuthor = await answerService.isAnswerAuthor({
+    userId: req.user._id,
+    answerId,
+  });
+
+  if (!isAuthor) throw new UnAuthorizedError('Unauthorized');
+
+  // grab request data
+  const answer = { ...req.body };
+
+  // update answerzqa
+  const updatedAnswer = await answerService.updateAnswer(questionId, {
+    answerId,
+    answer,
+  });
+
+  if (!updatedAnswer) throw new NotFoundError('Not Found');
+
+  // send response to client
+  new responseHandler(res, updatedAnswer, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 
 const deleteAnswer = async (req, res) => {

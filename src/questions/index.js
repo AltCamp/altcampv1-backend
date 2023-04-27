@@ -26,9 +26,8 @@ router.route('/:id/upvote').patch(questions.upvoteQuestion);
 
 router.route('/:id/downvote').patch(questions.downvoteQuestion);
 
-
 // answers to questions route
-router.post('/:questionId/answers', answers.createAnswer);
-
+router.route('/:questionId/answers').post(answers.createAnswer);
+router.route('/:questionId/answers/:answerId').patch(answers.updateAnswer);
 
 module.exports = router;

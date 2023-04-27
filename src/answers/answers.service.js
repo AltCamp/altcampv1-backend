@@ -13,4 +13,23 @@ const createAnswer = async (questionId, answer) => {
   return newAnswer;
 };
 
-module.exports = { createAnswer };
+const updateAnswer = async (questionId, { answerId, answer }) => {
+  const updatedAnswer = await Answer.findOneAndUpdate(
+    { where: { _id: answerId, question: questionId } },
+    answer,
+    {
+      new: true,
+      runValidators: true,
+      context: 'query',
+    }
+  );
+
+  return updatedAnswer;
+};
+
+const isAnswerAuthor = async ({ userId, answerId }) => {
+  const { author } = await Answer.findById(answerId);
+  return userId.toString() === author.toString();
+};
+
+module.exports = { createAnswer, updateAnswer, isAnswerAuthor };
