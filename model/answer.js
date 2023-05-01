@@ -8,13 +8,25 @@ const answerSchema = new Schema(
       required: true,
     },
     upvotes: {
-      type: [mongoose.Types.ObjectId],
-      ref: 'Account',
+      type: Number,
+      default: 0,
     },
+    upvotedBy: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: 'Account',
+      },
+    ],
     downvotes: {
-      type: [mongoose.Types.ObjectId],
-      ref: 'Account',
+      type: Number,
+      default: 0,
     },
+    downvotedBy: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: 'Account',
+      },
+    ],
     question: {
       type: mongoose.Types.ObjectId,
       ref: 'Question',

@@ -1,7 +1,19 @@
 const answerService = require('./answers.service');
-const { NotFoundError, UnAuthorizedError } = require('../../utils/customError');
+const {
+  BadRequestError,
+  NotFoundError,
+  UnAuthorizedError,
+} = require('../../utils/customError');
 const responseHandler = require('../../utils/responseHandler');
 const { RESPONSE_MESSAGE } = require('../../constant');
+
+const getAnswers = async (req, res) => {
+  const { questionId } = req.params;
+
+  const answers = await answerService.getAnswers(questionId);
+
+  new responseHandler(res, answers, 200, RESPONSE_MESSAGE.SUCCESS);
+};
 
 const createAnswer = async (req, res) => {
   const { questionId } = req.params;
@@ -37,7 +49,36 @@ const updateAnswer = async (req, res) => {
   new responseHandler(res, updatedAnswer, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 
+const upvoteAnswer = async (req, res) => {
+  const { answerId } = req.params;
+
+  const upvote = await answerService.upvoteAnswer({
+    userId: req.user._id,
+    answerId,
+  });
+
+  if (!upvote) throw new BadRequestError('Unable to upvote answer');
+
+  new responseHandler(res, upvote, 200, RESPONSE_MESSAGE.SUCCESS);
+};
+
+const downvoteAnswer = async (req, res) => {
+  const { answerId } = req.params;
+
+  const downvote = await answerService.downvoteAnswer({
+    userId: req.user._id,
+    answerId,
+  });
+
+  if (!downvote) throw new BadRequestError('Unable to downvote answer');
+
+  new responseHandler(res, downvote, 200, RESPONSE_MESSAGE.SUCCESS);
+};
+
 module.exports = {
+  getAnswers,
   createAnswer,
   updateAnswer,
+  upvoteAnswer,
+  downvoteAnswer,
 };
