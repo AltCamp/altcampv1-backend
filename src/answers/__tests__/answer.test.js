@@ -11,7 +11,6 @@ async function login({ email, password }) {
   const response = await api.post('/auth/login').send({ email, password });
   if (response.status === 200) {
     token = response.body.data.token;
-    // authorId = response.body.id;
     return;
   }
   token = null;
@@ -98,14 +97,12 @@ describe('Creating answer to a question', () => {
 
 describe('Modifying an answer', () => {
   it('fails if a user is not logged in', async () => {
-   // get question from question json
-   const question = helper.questionsAsJson[1]._id;
+    // get question from question json
+    const question = helper.questionsAsJson[1]._id;
 
     // send a patch request to update answer
     await api
-      .patch(
-        `/questions/${question._id.toString()}/answers/${responseAnswerId.toString()}`
-      )
+      .patch(`/questions/${question.id}/answers/${responseAnswerId}`)
       .send({
         body: 'An updated body of a question to aid testing. Let us get it!',
       })
@@ -113,8 +110,8 @@ describe('Modifying an answer', () => {
   });
 
   it('fails if a logged in user is not the author', async () => {
-   // get question from question json
-   const question = helper.questionsAsJson[1]._id;
+    // get question from question json
+    const question = helper.questionsAsJson[1]._id;
 
     // Log in as a student
     const user = helper.accountsAsJson[1];
@@ -122,9 +119,7 @@ describe('Modifying an answer', () => {
 
     // send a patch request to update answer
     await api
-      .patch(
-        `/questions/${question._id.toString()}/answers/${responseAnswerId.toString()}`
-      )
+      .patch(`/questions/${question}/answers/${responseAnswerId}`)
       .set('Authorization', `Bearer ${token}`)
       .send({
         body: 'updating answer',
@@ -144,21 +139,19 @@ describe('Modifying an answer', () => {
     const answer = answers.find(
       (answer) => answer._id.toString() === responseAnswerId
     );
-    console.log(answer);
 
     // Log in as a student
     const users = helper.accountsAsJson;
-    const user = users.find((user) => user._id.toString() === answer.author.toString());
-    console.log(user);
+    const user = users.find(
+      (user) => user._id.toString() === answer.author.toString()
+    );
     await login(user);
 
     // send a patch request to update answer
     const body = 'updating answer';
 
     const response = await api
-      .patch(
-        `/questions/${question._id}/answers/${responseAnswerId.toString()}`
-      )
+      .patch(`/questions/${question}/answers/${responseAnswerId.toString()}`)
       .set('Authorization', `Bearer ${token}`)
       .send({
         body,
