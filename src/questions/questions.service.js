@@ -54,7 +54,7 @@ const upvoteQuestion = async ({ userId, questionId }) => {
     return false;
   }
 
-  // Check if user has already liked photo
+  // Check if user has already liked question
   if (question.upvotedBy.includes(userId)) {
     // Remove like
     question.upvotes--;
@@ -81,9 +81,9 @@ const downvoteQuestion = async ({ userId, questionId }) => {
     return false;
   }
 
-  // Check if user has already disliked photo
+  // Check if user has already downvoted question
   if (question.downvotedBy.includes(userId)) {
-    // Remove like
+    // Remove downvote
     question.downvotes--;
     const searchIndex = question.downvotedBy.indexOf(userId);
     question.downvotedBy.splice(searchIndex, 1);

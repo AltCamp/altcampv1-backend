@@ -172,28 +172,27 @@ describe('Upvoting a question', () => {
     expect(response2.body.data.upvotes).toBe(questions[0].upvotes + 1);
     expect(response2.body.data.upvotedBy).toContain(user._id);
   });
-});
 
-// eslint-disable-next-line
-test('if a user has previously upvoted removes the vote', async () => {
-  // get questions from DB
-  const questions = await helper.questionsInDb();
+  test('if a user has previously upvoted removes the vote', async () => {
+    // get questions from DB
+    const questions = await helper.questionsInDb();
 
-  // Log in as a user
-  const users = helper.accountsAsJson;
-  const user = users[0];
-  await login(user);
+    // Log in as a user
+    const users = helper.accountsAsJson;
+    const user = users[0];
+    await login(user);
 
-  // send a patch request to upvote question
-  const response = await api
-    .patch(`/questions/${questions[0]._id.toString()}/upvote`)
-    .set('Authorization', `Bearer ${token}`)
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
+    // send a patch request to upvote question
+    const response = await api
+      .patch(`/questions/${questions[0]._id.toString()}/upvote`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
 
-  // check response for specific properties
-  expect(response.body.data.upvotes).toBe(questions[0].upvotes - 1);
-  expect(response.body.data.upvotedBy).not.toContain(user._id);
+    // check response for specific properties
+    expect(response.body.data.upvotes).toBe(questions[0].upvotes - 1);
+    expect(response.body.data.upvotedBy).not.toContain(user._id);
+  });
 });
 
 describe('Downvoting a question', () => {
