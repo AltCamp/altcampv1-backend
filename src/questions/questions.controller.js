@@ -109,7 +109,7 @@ const downvoteQuestion = async (req, res) => {
     questionId,
   });
 
-  if (!downvote) throw new BadRequestError('Unable to upvote question');
+  if (!downvote) throw new BadRequestError('Unable to downvote question');
 
   // send response to client
   new responseHandler(res, downvote, 200, RESPONSE_MESSAGE.SUCCESS);
