@@ -11,6 +11,25 @@ const track = [
   'Data Engineering',
   'Data Science',
 ];
+const accountIds = [
+  'f48bded06c714ab2db26afc4',
+  'd7aebfdadd09c1db42abe3c4',
+  'cf5eb0beed7ccf6aac8731df',
+  'c5dfc38b35a8dda8abc311ab',
+  '4bcebfd7489feca57be23aff',
+];
+const questionIds = [
+  'f70c979585d37f3f9aebe3de',
+  '21485ecedaef0d036bdc2df6',
+  '3d94b658d7507bda7bb02c83',
+  'f0bcdbcbfea5b580cb6984da',
+  '7bb894b5e781903be51f2f68',
+  'f4eff86ac1acbcee2de57dff',
+  'a25397c3afcf1451ff72fbc7',
+  'bab5e4b5b49691e3db8489b4',
+  'c0fc763a9b3aa5e2bdc8b85c',
+  'fdc0f999b4bb5950a659d9ca',
+];
 
 /**
  * Create a user.
@@ -123,13 +142,6 @@ function generateBioData() {
  * @return {{}} A question object
  */
 function generateQuestion() {
-  const accountIds = [
-    'f48bded06c714ab2db26afc4',
-    'd7aebfdadd09c1db42abe3c4',
-    'cf5eb0beed7ccf6aac8731df',
-    'c5dfc38b35a8dda8abc311ab',
-    '4bcebfd7489feca57be23aff',
-  ];
   return {
     _id: faker.database.mongodbObjectId(),
     title: faker.lorem.sentence(),
@@ -143,26 +155,6 @@ function generateQuestion() {
  * @return {{}} An answer object
  */
 function generateAnswer() {
-  const accountIds = [
-    'f48bded06c714ab2db26afc4',
-    'd7aebfdadd09c1db42abe3c4',
-    'cf5eb0beed7ccf6aac8731df',
-    'c5dfc38b35a8dda8abc311ab',
-    '4bcebfd7489feca57be23aff',
-  ];
-
-  const questionIds = [
-    'f70c979585d37f3f9aebe3de',
-    '21485ecedaef0d036bdc2df6',
-    '3d94b658d7507bda7bb02c83',
-    'f0bcdbcbfea5b580cb6984da',
-    '7bb894b5e781903be51f2f68',
-    'f4eff86ac1acbcee2de57dff',
-    'a25397c3afcf1451ff72fbc7',
-    'bab5e4b5b49691e3db8489b4',
-    'c0fc763a9b3aa5e2bdc8b85c',
-    'fdc0f999b4bb5950a659d9ca',
-  ];
   return {
     _id: faker.database.mongodbObjectId(),
     body: faker.lorem.paragraph(),
