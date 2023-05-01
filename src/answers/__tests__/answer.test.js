@@ -74,8 +74,10 @@ describe('Creating answer to a question', () => {
     // check response for specific properties
     expect(response.body.data).toHaveProperty('_id');
     expect(response.body.data).toHaveProperty('body', answer.body);
-    expect(response.body.data).toHaveProperty('upvotes', []);
-    expect(response.body.data).toHaveProperty('downvotes', []);
+    expect(response.body.data).toHaveProperty('upvotes');
+    expect(response.body.data).toHaveProperty('upvotedBy');
+    expect(response.body.data).toHaveProperty('downvotes');
+    expect(response.body.data).toHaveProperty('downvotedBy');
     expect(response.body.data).toHaveProperty('author', user._id);
     expect(response.body.data).toHaveProperty('question', question._id);
   });
@@ -161,6 +163,154 @@ describe('Modifying an answer', () => {
 
     // check response for specific properties
     expect(response.body.data).toHaveProperty('body', body);
+  });
+});
+
+describe('Upvoting an answer', () => {
+  let user, answer;
+  it('fails if a user is not logged in', async () => {
+    const answers = await helper.answersInDb();
+    answer = answers[0];
+
+    await api
+      .patch(
+        `/questions/${answer.question.toString()}/answers/upvote/${answer._id.toString()}`
+      )
+      .expect(401);
+  });
+
+  it('is successful if a user is logged in', async () => {
+    // Log in as a user
+    const users = helper.accountsAsJson;
+    user = users[0];
+    await login(user);
+
+    // send a patch request to upvote answer
+    const response = await api
+      .patch(
+        `/questions/${answer.question.toString()}/answers/upvote/${answer._id.toString()}`
+      )
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    // check response for specific properties
+    expect(response.body.data.upvotes).toBe(answer.upvotes + 1);
+    expect(response.body.data.upvotedBy).toContain(user._id);
+
+    // Log in as another user
+    const user2 = users[1];
+    await login(user2);
+
+    // send a patch request to upvote answer
+    const response2 = await api
+      .patch(
+        `/questions/${answer.question.toString()}/answers/upvote/${answer._id.toString()}`
+      )
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    // check response2 for specific properties
+    expect(response2.body.data.upvotes).toBe(answer.upvotes + 2);
+    expect(response2.body.data.upvotedBy).toContain(user2._id);
+  });
+
+  it('if a user has previously upvoted removes the vote', async () => {
+    const answers = await helper.answersInDb();
+    answer = answers.find(
+      (ans) => ans._id.toString() === answer._id.toString()
+    );
+
+    // Log in as a user
+    await login(user);
+
+    // send a patch request to upvote answer
+    const response = await api
+      .patch(
+        `/questions/${answer.question.toString()}/answers/upvote/${answer._id.toString()}`
+      )
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    // check response for specific properties
+    expect(response.body.data.upvotes).toBe(answer.upvotes - 1);
+    expect(response.body.data.upvotedBy).not.toContain(user._id);
+  });
+});
+
+describe('Downvoting an answer', () => {
+  let user, answer;
+  it('fails if a user is not logged in', async () => {
+    const answers = await helper.answersInDb();
+    answer = answers[0];
+
+    await api
+      .patch(
+        `/questions/${answer.question.toString()}/answers/downvote/${answer._id.toString()}`
+      )
+      .expect(401);
+  });
+
+  it('is successful if a user is logged in', async () => {
+    // Log in as a user
+    const users = helper.accountsAsJson;
+    user = users[0];
+    await login(user);
+
+    // send a patch request to upvote answer
+    const response = await api
+      .patch(
+        `/questions/${answer.question.toString()}/answers/downvote/${answer._id.toString()}`
+      )
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    // check response for specific properties
+    expect(response.body.data.downvotes).toBe(answer.downvotes + 1);
+    expect(response.body.data.downvotedBy).toContain(user._id);
+
+    // Log in as another user
+    const user2 = users[1];
+    await login(user2);
+
+    // send a patch request to upvote answer
+    const response2 = await api
+      .patch(
+        `/questions/${answer.question.toString()}/answers/downvote/${answer._id.toString()}`
+      )
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    // check response2 for specific properties
+    expect(response2.body.data.downvotes).toBe(answer.downvotes + 2);
+    expect(response2.body.data.downvotedBy).toContain(user2._id);
+  });
+
+  it('if a user has previously downvoted removes the vote', async () => {
+    const answers = await helper.answersInDb();
+    answer = answers.find(
+      (ans) => ans._id.toString() === answer._id.toString()
+    );
+
+    // Log in as a user
+    await login(user);
+
+    // send a patch request to upvote answer
+    const response = await api
+      .patch(
+        `/questions/${answer.question.toString()}/answers/downvote/${answer._id.toString()}`
+      )
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    // check response for specific properties
+    expect(response.body.data.downvotes).toBe(answer.downvotes - 1);
+    expect(response.body.data.downvotedBy).not.toContain(user._id);
   });
 });
 
