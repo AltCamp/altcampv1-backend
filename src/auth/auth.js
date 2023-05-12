@@ -30,6 +30,7 @@ const registerMentor = async (req, res) => {
     owner: mentor.id,
     accountType: ACCOUNT_TYPES.MENTOR,
   });
+  await account.populate('owner');
   const token = createToken({
     id: account.id,
     firstname,
@@ -43,10 +44,7 @@ const registerMentor = async (req, res) => {
       message: RESPONSE_MESSAGE.CREATE_SUCCESSFUL('Mentor'),
       data: {
         token,
-        user: {
-          account: omit(account.toObject(), ['password']),
-          mentor,
-        },
+        user: omit(account.toObject(), ['password']),
       },
     });
 };
@@ -67,6 +65,7 @@ const registerStudent = async (req, res) => {
     track,
     owner: student.id,
   });
+  await account.populate('owner');
   const token = createToken({
     id: account.id,
     firstname,
@@ -80,7 +79,7 @@ const registerStudent = async (req, res) => {
       message: RESPONSE_MESSAGE.CREATE_SUCCESSFUL('Student'),
       data: {
         token,
-        user: { account: omit(account.toObject(), ['password']), student },
+        user: omit(account.toObject(), ['password']),
       },
     });
 };
