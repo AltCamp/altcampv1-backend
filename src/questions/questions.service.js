@@ -49,7 +49,10 @@ const isQuestionAuthor = async ({ userId, questionId }) => {
 };
 
 const upvoteQuestion = async ({ userId, questionId }) => {
-  const question = await Question.findById(questionId);
+  const question = await Question.findById(questionId).populate('author', {
+    firstname: 1,
+    lastname: 1,
+  });
   if (!question) {
     return false;
   }
@@ -76,7 +79,10 @@ const upvoteQuestion = async ({ userId, questionId }) => {
 };
 
 const downvoteQuestion = async ({ userId, questionId }) => {
-  const question = await Question.findById(questionId);
+  const question = await Question.findById(questionId).populate('author', {
+    firstname: 1,
+    lastname: 1,
+  });
   if (!question) {
     return false;
   }
