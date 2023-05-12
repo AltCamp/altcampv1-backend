@@ -35,25 +35,20 @@ describe('Auth: Mentor registration', () => {
     expect(response.body).toHaveProperty('data');
     expect(response.body.data).toHaveProperty('token');
     expect(response.body.data).toHaveProperty('user');
-    expect(response.body.data.user).toHaveProperty('account');
-    expect(response.body.data.user).toHaveProperty('mentor');
-    expect(response.body.data.user.account).toEqual(
+    expect(response.body.data.user).toEqual(
       expect.objectContaining({
         firstname: user.firstname,
         lastname: user.lastname,
         email: user.email,
         track: user.track,
         accountType: 'Mentor',
-        owner: response.body.data.user.mentor._id,
+        owner: expect.objectContaining({
+          specialization: user.specialization,
+          yearsOfExperience: user.yearsOfExperience,
+        }),
         _id: expect.any(String),
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
-      })
-    );
-    expect(response.body.data.user.mentor).toEqual(
-      expect.objectContaining({
-        specialization: user.specialization,
-        yearsOfExperience: user.yearsOfExperience,
       })
     );
     expect(response.body.data.token).toEqual(expect.any(String));
@@ -63,7 +58,7 @@ describe('Auth: Mentor registration', () => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     expect(decoded).toEqual(
       expect.objectContaining({
-        id: response.body.data.user.account._id,
+        id: response.body.data.user._id,
         firstname: user.firstname,
         lastname: user.lastname,
       })

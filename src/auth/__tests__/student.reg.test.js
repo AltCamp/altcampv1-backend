@@ -29,26 +29,21 @@ describe('Auth: Student registration', () => {
     expect(response.body).toHaveProperty('data');
     expect(response.body.data).toHaveProperty('token');
     expect(response.body.data).toHaveProperty('user');
-    expect(response.body.data.user).toHaveProperty('account');
-    expect(response.body.data.user).toHaveProperty('student');
-    expect(response.body.data.user.account).toEqual(
+    expect(response.body.data.user).toEqual(
       expect.objectContaining({
         firstname: user.firstname,
         lastname: user.lastname,
         email: user.email,
         track: user.track,
-        owner: response.body.data.user.student._id,
+        owner: expect.objectContaining({
+          matric: user.matric,
+          stack: user.stack,
+          gender: user.gender,
+          _id: expect.any(String),
+        }),
         _id: expect.any(String),
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
-      })
-    );
-    expect(response.body.data.user.student).toEqual(
-      expect.objectContaining({
-        matric: user.matric,
-        stack: user.stack,
-        gender: user.gender,
-        _id: expect.any(String),
       })
     );
     expect(response.body.data.token).toEqual(expect.any(String));
@@ -58,7 +53,7 @@ describe('Auth: Student registration', () => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     expect(decoded).toEqual(
       expect.objectContaining({
-        id: response.body.data.user.account._id,
+        id: response.body.data.user._id,
         firstname: user.firstname,
         lastname: user.lastname,
       })
