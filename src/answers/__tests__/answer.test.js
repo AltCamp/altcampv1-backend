@@ -40,8 +40,13 @@ describe('Creating answer to a question', () => {
     await api
       .post(`/questions/${question._id.toString()}/answers`)
       .send({
+<<<<<<< Updated upstream
         body: answer.body,
         question: question._id,
+=======
+        content: answer.content,
+        questionId: question._id,
+>>>>>>> Stashed changes
       })
       .expect(401);
   });
@@ -61,9 +66,14 @@ describe('Creating answer to a question', () => {
       .post(`/questions/${question._id.toString()}/answers`)
       .set('Authorization', `Bearer ${token}`)
       .send({
+<<<<<<< Updated upstream
         body: answer.body,
         question: question._id,
         author: user._id,
+=======
+        content: answer.content,
+        questionId: question._id,
+>>>>>>> Stashed changes
       })
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -78,7 +88,8 @@ describe('Creating answer to a question', () => {
     expect(response.body.data).toHaveProperty('upvotedBy');
     expect(response.body.data).toHaveProperty('downvotes');
     expect(response.body.data).toHaveProperty('downvotedBy');
-    expect(response.body.data).toHaveProperty('author', user._id);
+    expect(response.body.data).toHaveProperty('author');
+    expect(response.body.data.author).toHaveProperty('_id', user._id);
     expect(response.body.data).toHaveProperty('question', question._id);
   });
 
@@ -100,20 +111,25 @@ describe('Creating answer to a question', () => {
 describe('Modifying an answer', () => {
   it('fails if a user is not logged in', async () => {
     // get question from question json
-    const question = helper.questionsAsJson[1]._id;
+    const questionId = helper.questionsAsJson[1]._id;
 
     // send a patch request to update answer
     await api
       .patch(`/questions/${question.id}/answers/${responseAnswerId}`)
       .send({
+<<<<<<< Updated upstream
         body: 'An updated body of a question to aid testing. Let us get it!',
+=======
+        content: 'An updated body of a question to aid testing. Let us get it!',
+        questionId,
+>>>>>>> Stashed changes
       })
       .expect(401);
   });
 
   it('fails if a logged in user is not the author', async () => {
     // get question from question json
-    const question = helper.questionsAsJson[1]._id;
+    const questionId = helper.questionsAsJson[1]._id;
 
     // Log in as a student
     const user = helper.accountsAsJson[1];
@@ -124,7 +140,12 @@ describe('Modifying an answer', () => {
       .patch(`/questions/${question}/answers/${responseAnswerId}`)
       .set('Authorization', `Bearer ${token}`)
       .send({
+<<<<<<< Updated upstream
         body: 'updating answer',
+=======
+        content: 'updating answer',
+        questionId,
+>>>>>>> Stashed changes
       })
       .expect(401)
       .expect('Content-Type', /application\/json/);
@@ -132,7 +153,7 @@ describe('Modifying an answer', () => {
 
   it('is successful if a logged in user is the author', async () => {
     // get question from question json
-    const question = helper.questionsAsJson[1]._id;
+    const questionId = helper.questionsAsJson[1]._id;
 
     // get answers from DB
     const answers = await helper.answersInDb();
@@ -156,7 +177,12 @@ describe('Modifying an answer', () => {
       .patch(`/questions/${question}/answers/${responseAnswerId.toString()}`)
       .set('Authorization', `Bearer ${token}`)
       .send({
+<<<<<<< Updated upstream
         body,
+=======
+        content,
+        questionId,
+>>>>>>> Stashed changes
       })
       .expect(200)
       .expect('Content-Type', /application\/json/);
