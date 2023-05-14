@@ -10,10 +10,14 @@ const {
   createMentorValidator,
   createStudentValidator,
   loginValidator,
-} = require('./auth.validator');
+} = require('./authValidator');
 const validatorMiddleware = require('../../middleware/validator');
 
-router.post('/mentor', validatorMiddleware(createMentorValidator), registerMentor);
+router.post(
+  '/mentor',
+  validatorMiddleware(createMentorValidator),
+  registerMentor
+);
 router.post(
   '/student',
   validatorMiddleware(createStudentValidator),
