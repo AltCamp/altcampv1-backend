@@ -2,7 +2,7 @@ function errorHandler(err, req, res, next) {
   let customError = {
     msg: err.msg || err.message || 'Something went wrong',
     statusCode: err.statusCode || 500,
-    error: err.error || 'Server Error',
+    error: err.error || 'Something went wrong!',
   };
 
   if (err.name === 'CastError') {
@@ -22,6 +22,13 @@ function errorHandler(err, req, res, next) {
       : err.details.map((item) => item.message).join('.   ');
     customError.statusCode = errStatusCode ? errStatusCode : 422;
   }
+
+  if (err.type === 'query' || err.type === 'params') {
+    customError.statusCode = 422;
+    customError.msg = err.error.details[0].message;
+    customError.error = 'Validation Error';
+  }
+
   res.status(customError.statusCode).json({
     statusCode: customError.statusCode,
     message: customError.msg,

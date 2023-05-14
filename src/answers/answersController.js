@@ -7,8 +7,16 @@ const {
 const responseHandler = require('../../utils/responseHandler');
 const { RESPONSE_MESSAGE } = require('../../constant');
 
+const getAnswer = async (req, res) => {
+  const { id } = req.params;
+
+  const answers = await answerService.getAnswer(id);
+
+  new responseHandler(res, answers, 200, RESPONSE_MESSAGE.SUCCESS);
+};
+
 const getAnswers = async (req, res) => {
-  const { questionId } = req.params;
+  const { questionId } = req.query;
 
   const answers = await answerService.getAnswers(questionId);
 
@@ -71,6 +79,7 @@ const downvoteAnswer = async (req, res) => {
 };
 
 module.exports = {
+  getAnswer,
   getAnswers,
   createAnswer,
   updateAnswer,
