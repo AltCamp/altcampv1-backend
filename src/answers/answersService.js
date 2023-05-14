@@ -1,6 +1,12 @@
 const Answer = require('../../model/answer');
 const Question = require('../../model/question');
 
+const getAnswer = async (id) => {
+  const answers = await Answer.find({ id }).populate('author');
+
+  return answers;
+};
+
 const getAnswers = async (questionId) => {
   const answers = await Answer.find({
     question: questionId,
@@ -97,6 +103,7 @@ const isAnswerAuthor = async ({ userId, answerId }) => {
 };
 
 module.exports = {
+  getAnswer,
   getAnswers,
   createAnswer,
   updateAnswer,

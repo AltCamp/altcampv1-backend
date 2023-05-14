@@ -12,6 +12,20 @@ const createAnswerValidator = Joi.object({
   }),
 });
 
+const getAnswerValidator = Joi.object({
+  id: Joi.objectId().required().messages({
+    'string.empty': 'questionId is required',
+    'any.required': 'questionId is required',
+  }),
+});
+
+const getAnswersValidator = Joi.object({
+  questionId: Joi.objectId().required().messages({
+    'string.empty': 'questionId is required',
+    'any.required': 'questionId is required',
+  }),
+});
+
 const updateAnswerValidator = Joi.object({
   content: Joi.string().required().min(3).messages({
     'string.empty': 'Content is required',
@@ -21,5 +35,7 @@ const updateAnswerValidator = Joi.object({
 
 module.exports = {
   createAnswerValidator,
+  getAnswerValidator,
+  getAnswersValidator,
   updateAnswerValidator,
 };
