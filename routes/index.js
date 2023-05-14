@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authRouter = require('../src/auth');
 const studentRouter = require('../src/students');
-const mentorRouter = require('../src/mentors/route');
+const mentorRouter = require('../src/mentors');
 const apiDocs = require('../src/docs');
 const questionsRouter = require('../src/questions');
 
