@@ -1,18 +1,18 @@
 const { ACCOUNT_TYPES, RESPONSE_MESSAGE } = require('../../constant');
-const Account = require('../../model/account');
 const { NotFoundError } = require('../../utils/customError');
-const { omit } = require('lodash');
 const responseHandler = require('../../utils/responseHandler');
+const mentorsService = require('./mentorsService');
 
 async function getMentors(req, res) {
-  const mentors = await Account.find({
-    accountType: ACCOUNT_TYPES.MENTOR,
-  }).populate('owner');
-  res.json(mentors);
+  const mentors = await mentorsService.getMentors();
+
+  new responseHandler(res, mentors, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
 async function getSingleMentor(req, res) {
-  const mentor = await Account.findById(req.params.id);
+  const { id } = req.params;
+
+  const mentor = await mentorsService.getSingleMentor(id);
 
   if (!mentor || mentor.accountType !== ACCOUNT_TYPES.MENTOR) {
     throw new NotFoundError('Mentor not found!');
@@ -22,12 +22,11 @@ async function getSingleMentor(req, res) {
 }
 
 async function updateMentor(req, res) {
-  const { firstname, lastname } = req.body;
-  const mentor = await Account.findByIdAndUpdate(
-    req.user.id,
-    { firstname, lastname },
-    { new: true }
-  );
+  const payload = { ...req.body };
+  const mentor = await mentorsService.updateMentor({
+    id: req.user.id,
+    payload,
+  });
   if (!mentor || mentor.accountType !== ACCOUNT_TYPES.MENTOR) {
     throw new NotFoundError('Mentor not found!');
   }
@@ -37,20 +36,15 @@ async function updateMentor(req, res) {
 async function changeMentorPassword(req, res) {
   const { password } = req.body;
 
-  let mentor = await Account.findById(req.user.id);
-  if (!mentor) {
-    throw new NotFoundError('Mentor not found!');
+  const updatedMentor = await mentorsService.changeMentorPassword({
+    id: req.user.id,
+    password,
+  });
+  if (!updatedMentor) {
+    throw new NotFoundError('Student not found!');
   }
 
-  // save password from request
-  mentor.password = password;
-  await mentor.save();
-
-  // prepare response data
-  omit(mentor.toObject(), ['password']);
-  mentor = omit(mentor.toObject(), ['password']);
-
-  new responseHandler(res, mentor, 200, RESPONSE_MESSAGE.SUCCESS);
+  new responseHandler(res, updatedMentor, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
 module.exports = {

@@ -156,10 +156,8 @@ function generateQuestion() {
  */
 function generateAnswer() {
   return {
-    _id: faker.database.mongodbObjectId(),
-    body: faker.lorem.paragraph(),
-    question: faker.helpers.arrayElement(questionIds),
-    author: faker.helpers.arrayElement(accountIds),
+    content: faker.lorem.paragraph(),
+    questionId: faker.helpers.arrayElement(questionIds),
   };
 }
 

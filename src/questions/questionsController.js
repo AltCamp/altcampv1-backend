@@ -1,4 +1,4 @@
-const questionService = require('./questions.service');
+const questionsService = require('./questionsService');
 const {
   BadRequestError,
   NotFoundError,
@@ -11,7 +11,7 @@ const getQuestion = async (req, res) => {
   // grab questionID from request
   const questionId = req.params.id;
 
-  const question = await questionService.getQuestion(questionId);
+  const question = await questionsService.getQuestion(questionId);
 
   if (!question) throw new NotFoundError('Not Found');
 
@@ -19,7 +19,7 @@ const getQuestion = async (req, res) => {
 };
 
 const getAllQuestions = async (req, res) => {
-  const questions = await questionService.getQuestions();
+  const questions = await questionsService.getQuestions();
   new responseHandler(res, questions, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 
@@ -28,7 +28,7 @@ const createQuestion = async (req, res) => {
   const question = { ...req.body };
 
   // create question
-  const newQuestion = await questionService.createQuestion({
+  const newQuestion = await questionsService.createQuestion({
     ...question,
     author: req.user._id,
   });
@@ -42,7 +42,7 @@ const updateQuestion = async (req, res) => {
   const questionId = req.params.id;
 
   // check if user is question author
-  const isAuthor = await questionService.isQuestionAuthor({
+  const isAuthor = await questionsService.isQuestionAuthor({
     userId: req.user._id,
     questionId,
   });
@@ -53,7 +53,7 @@ const updateQuestion = async (req, res) => {
   const question = { ...req.body };
 
   // update question
-  const updatedQuestion = await questionService.updateQuestion({
+  const updatedQuestion = await questionsService.updateQuestion({
     questionId,
     question,
   });
@@ -69,14 +69,14 @@ const deleteQuestion = async (req, res) => {
   const questionId = req.params.id;
 
   // check if user is question author
-  const isAuthor = await questionService.isQuestionAuthor({
+  const isAuthor = await questionsService.isQuestionAuthor({
     userId: req.user._id,
     questionId,
   });
 
   if (!isAuthor) throw new UnAuthorizedError('Unauthorized');
 
-  const deleted = await questionService.deleteQuestion(questionId);
+  const deleted = await questionsService.deleteQuestion(questionId);
 
   if (!deleted) throw new NotFoundError('Not Found');
 
@@ -88,7 +88,7 @@ const upvoteQuestion = async (req, res) => {
   const questionId = req.params.id;
 
   // upvote the question
-  const upvote = await questionService.upvoteQuestion({
+  const upvote = await questionsService.upvoteQuestion({
     userId: req.user._id,
     questionId,
   });
@@ -104,7 +104,7 @@ const downvoteQuestion = async (req, res) => {
   const questionId = req.params.id;
 
   // upvote the question
-  const downvote = await questionService.downvoteQuestion({
+  const downvote = await questionsService.downvoteQuestion({
     userId: req.user._id,
     questionId,
   });

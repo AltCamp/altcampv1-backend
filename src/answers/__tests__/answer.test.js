@@ -38,10 +38,10 @@ describe('Creating answer to a question', () => {
     const answer = helper.generateAnswer();
 
     await api
-      .post(`/questions/${question._id.toString()}/answers`)
+      .post('/answers')
       .send({
-        body: answer.body,
-        question: question._id,
+        content: answer.content,
+        questionId: question._id,
       })
       .expect(401);
   });
@@ -58,12 +58,11 @@ describe('Creating answer to a question', () => {
     const answer = helper.generateAnswer();
 
     const response = await api
-      .post(`/questions/${question._id.toString()}/answers`)
+      .post('/answers')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        body: answer.body,
-        question: question._id,
-        author: user._id,
+        content: answer.content,
+        questionId: question._id,
       })
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -73,12 +72,13 @@ describe('Creating answer to a question', () => {
 
     // check response for specific properties
     expect(response.body.data).toHaveProperty('_id');
-    expect(response.body.data).toHaveProperty('body', answer.body);
+    expect(response.body.data).toHaveProperty('content', answer.content);
     expect(response.body.data).toHaveProperty('upvotes');
     expect(response.body.data).toHaveProperty('upvotedBy');
     expect(response.body.data).toHaveProperty('downvotes');
     expect(response.body.data).toHaveProperty('downvotedBy');
-    expect(response.body.data).toHaveProperty('author', user._id);
+    expect(response.body.data).toHaveProperty('author');
+    expect(response.body.data.author).toHaveProperty('_id', user._id);
     expect(response.body.data).toHaveProperty('question', question._id);
   });
 
@@ -100,40 +100,35 @@ describe('Creating answer to a question', () => {
 describe('Modifying an answer', () => {
   it('fails if a user is not logged in', async () => {
     // get question from question json
-    const question = helper.questionsAsJson[1]._id;
+    const questionId = helper.questionsAsJson[1]._id;
 
     // send a patch request to update answer
     await api
-      .patch(`/questions/${question.id}/answers/${responseAnswerId}`)
+      .patch(`/answers/${responseAnswerId}`)
       .send({
-        body: 'An updated body of a question to aid testing. Let us get it!',
+        content: 'An updated body of a question to aid testing. Let us get it!',
+        questionId,
       })
       .expect(401);
   });
 
   it('fails if a logged in user is not the author', async () => {
-    // get question from question json
-    const question = helper.questionsAsJson[1]._id;
-
     // Log in as a student
     const user = helper.accountsAsJson[1];
     await login(user);
 
     // send a patch request to update answer
     await api
-      .patch(`/questions/${question}/answers/${responseAnswerId}`)
+      .patch(`/answers/${responseAnswerId}`)
       .set('Authorization', `Bearer ${token}`)
       .send({
-        body: 'updating answer',
+        content: 'updating answer',
       })
       .expect(401)
       .expect('Content-Type', /application\/json/);
   });
 
   it('is successful if a logged in user is the author', async () => {
-    // get question from question json
-    const question = helper.questionsAsJson[1]._id;
-
     // get answers from DB
     const answers = await helper.answersInDb();
 
@@ -150,19 +145,19 @@ describe('Modifying an answer', () => {
     await login(user);
 
     // send a patch request to update answer
-    const body = 'updating answer';
+    const content = 'updating answer';
 
     const response = await api
-      .patch(`/questions/${question}/answers/${responseAnswerId.toString()}`)
+      .patch(`/answers/${responseAnswerId}`)
       .set('Authorization', `Bearer ${token}`)
       .send({
-        body,
+        content,
       })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
     // check response for specific properties
-    expect(response.body.data).toHaveProperty('body', body);
+    expect(response.body.data).toHaveProperty('content', content);
   });
 });
 
@@ -172,11 +167,7 @@ describe('Upvoting an answer', () => {
     const answers = await helper.answersInDb();
     answer = answers[0];
 
-    await api
-      .patch(
-        `/questions/${answer.question.toString()}/answers/upvote/${answer._id.toString()}`
-      )
-      .expect(401);
+    await api.patch(`/answers/upvote/${answer._id.toString()}`).expect(401);
   });
 
   it('is successful if a user is logged in', async () => {
@@ -187,9 +178,7 @@ describe('Upvoting an answer', () => {
 
     // send a patch request to upvote answer
     const response = await api
-      .patch(
-        `/questions/${answer.question.toString()}/answers/upvote/${answer._id.toString()}`
-      )
+      .patch(`/answers/upvote/${answer._id.toString()}`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -204,9 +193,7 @@ describe('Upvoting an answer', () => {
 
     // send a patch request to upvote answer
     const response2 = await api
-      .patch(
-        `/questions/${answer.question.toString()}/answers/upvote/${answer._id.toString()}`
-      )
+      .patch(`/answers/upvote/${answer._id.toString()}`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -227,9 +214,7 @@ describe('Upvoting an answer', () => {
 
     // send a patch request to upvote answer
     const response = await api
-      .patch(
-        `/questions/${answer.question.toString()}/answers/upvote/${answer._id.toString()}`
-      )
+      .patch(`/answers/upvote/${answer._id.toString()}`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -246,11 +231,7 @@ describe('Downvoting an answer', () => {
     const answers = await helper.answersInDb();
     answer = answers[0];
 
-    await api
-      .patch(
-        `/questions/${answer.question.toString()}/answers/downvote/${answer._id.toString()}`
-      )
-      .expect(401);
+    await api.patch(`/answers/downvote/${answer._id.toString()}`).expect(401);
   });
 
   it('is successful if a user is logged in', async () => {
@@ -261,9 +242,7 @@ describe('Downvoting an answer', () => {
 
     // send a patch request to upvote answer
     const response = await api
-      .patch(
-        `/questions/${answer.question.toString()}/answers/downvote/${answer._id.toString()}`
-      )
+      .patch(`/answers/downvote/${answer._id.toString()}`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -278,9 +257,7 @@ describe('Downvoting an answer', () => {
 
     // send a patch request to upvote answer
     const response2 = await api
-      .patch(
-        `/questions/${answer.question.toString()}/answers/downvote/${answer._id.toString()}`
-      )
+      .patch(`/answers/downvote/${answer._id.toString()}`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
@@ -301,9 +278,7 @@ describe('Downvoting an answer', () => {
 
     // send a patch request to upvote answer
     const response = await api
-      .patch(
-        `/questions/${answer.question.toString()}/answers/downvote/${answer._id.toString()}`
-      )
+      .patch(`/answers/downvote/${answer._id.toString()}`)
       .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);

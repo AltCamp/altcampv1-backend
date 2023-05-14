@@ -4,40 +4,41 @@ const Question = require('../../model/question');
 const getAnswers = async (questionId) => {
   const answers = await Answer.find({
     question: questionId,
-  });
+  }).populate('author');
 
   return answers;
 };
 
-const createAnswer = async (questionId, answer) => {
+const createAnswer = async (answer) => {
   const newAnswer = await Answer.create(answer);
-  newAnswer.question = questionId;
+  newAnswer.question = answer.question;
 
-  const question = await Question.findById({ _id: questionId });
+  const question = await Question.findById({ _id: answer.question });
   question.answer = question.answer.concat(newAnswer._id);
 
   await question.save();
   await newAnswer.save();
+  await newAnswer.populate('author');
 
   return newAnswer;
 };
 
-const updateAnswer = async (questionId, { answerId, answer }) => {
+const updateAnswer = async (id, { content }) => {
   const updatedAnswer = await Answer.findOneAndUpdate(
-    { where: { _id: answerId, question: questionId } },
-    answer,
+    { where: { _id: id } },
+    { content },
     {
       new: true,
       runValidators: true,
       context: 'query',
     }
-  );
+  ).populate('author');
 
   return updatedAnswer;
 };
 
-const upvoteAnswer = async ({ userId, answerId }) => {
-  const answer = await Answer.findById(answerId);
+const upvoteAnswer = async ({ id, userId }) => {
+  const answer = await Answer.findById(id).populate('author');
   if (!answer) {
     return false;
   }
@@ -63,8 +64,8 @@ const upvoteAnswer = async ({ userId, answerId }) => {
   return answer;
 };
 
-const downvoteAnswer = async ({ userId, answerId }) => {
-  const answer = await Answer.findById(answerId);
+const downvoteAnswer = async ({ id, userId }) => {
+  const answer = await Answer.findById(id).populate('author');
   if (!answer) {
     return false;
   }
