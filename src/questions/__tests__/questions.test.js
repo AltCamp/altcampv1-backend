@@ -3,6 +3,7 @@ const app = require('../../../app');
 const supertest = require('supertest');
 const api = supertest(app);
 const helper = require('../../../test/testHelper');
+const { generateSlug } = require('../../../utils/helper');
 
 let token;
 
@@ -42,6 +43,7 @@ describe('Creating a question', () => {
 
     // generate a question
     const { title, body } = helper.generateQuestion();
+    const slug = generateSlug(title);
 
     // send a post request with generated question
     const response = await api
@@ -61,6 +63,7 @@ describe('Creating a question', () => {
     expect(response.body.data).toHaveProperty('upvotes', 0);
     expect(response.body.data).toHaveProperty('downvotes', 0);
     expect(response.body.data).toHaveProperty('author', user._id);
+    expect(response.body.data).toHaveProperty('slug', slug);
   });
 });
 
@@ -110,16 +113,19 @@ describe('Modifying a question', () => {
 
     // send a patch request to update question
     const body = 'An updated body of a question to aid testing. Let us get it!';
+    const title = 'Will Manchester City win the 2023 Champions League?';
+    const slug = generateSlug(title);
 
     const response = await api
       .patch(`/questions/${questions[0]._id.toString()}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ body })
+      .send({ body, title })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
     // check response for specific properties
     expect(response.body.data).toHaveProperty('body', body);
+    expect(response.body.data).toHaveProperty('slug', slug);
   });
 });
 
