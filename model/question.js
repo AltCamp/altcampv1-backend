@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { generateSlug, sanitiseHTML } = require('../utils/helper');
 
 const questionSchema = new mongoose.Schema(
   {
@@ -8,6 +9,10 @@ const questionSchema = new mongoose.Schema(
       unique: true,
     },
     body: {
+      type: String,
+      required: true,
+    },
+    slug: {
       type: String,
       required: true,
     },
@@ -45,6 +50,38 @@ const questionSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+questionSchema.pre('findOneAndUpdate', async function (next) {
+  let update = this.getUpdate();
+  const { title, body } = update;
+
+  if (title) {
+    const slug = generateSlug(title);
+    update = { ...update, slug };
+    this.setUpdate(update);
+  }
+
+  if (body) {
+    const purifiedBody = sanitiseHTML(body);
+    update = { ...update, body: purifiedBody };
+    this.setUpdate(update);
+  }
+
+  next();
+});
+
+questionSchema.pre('validate', function (next) {
+  if (this.body) {
+    this.body = sanitiseHTML(this.body);
+  }
+
+  if (this.isModified('title')) {
+    const slug = generateSlug(this.title);
+    this.slug = slug;
+  }
+
+  next();
+});
 
 const Question = mongoose.model('Question', questionSchema);
 
