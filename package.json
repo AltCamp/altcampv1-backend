@@ -8,8 +8,7 @@
     "lint": "cross-env eslint .",
     "format:check": "cross-env npx prettier --check .",
     "format:write": "cross-env npx prettier --write .",
-    "test": "cross-env NODE_ENV=test jest --runInBand",
-    "prestart:dev": "npm run format:write && npm run lint"
+    "test": "cross-env NODE_ENV=test jest --runInBand"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
