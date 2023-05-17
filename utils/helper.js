@@ -2,7 +2,10 @@ const Account = require('../model/account');
 const bcrypt = require('bcrypt');
 const config = require('../config/index');
 const crypto = require('crypto');
+const createDomPurify = require('dompurify');
 const jwt = require('jsonwebtoken');
+const { JSDOM } = require('jsdom');
+const domPurify = createDomPurify(new JSDOM().window);
 const slugify = require('slugify');
 
 const createHashedToken = (token) => {
@@ -19,6 +22,14 @@ const createToken = (payload) => {
   return token;
 };
 
+const generateSlug = (title) => {
+  return slugify(title, { lower: true, strict: true });
+};
+
+const sanitiseHTML = (content) => {
+  return domPurify.sanitize(content);
+};
+
 async function validateCredentials(email, password) {
   const user = await Account.findOne({ email })
     .select('+password')
@@ -33,14 +44,11 @@ async function verifyPassword(plain, hashed) {
   return await bcrypt.compare(plain, hashed);
 }
 
-const generateSlug = (title) => {
-  return slugify(title, { lower: true, strict: true });
-};
-
 module.exports = {
   createHashedToken,
   createToken,
   generateSlug,
+  sanitiseHTML,
   validateCredentials,
   verifyPassword,
 };
