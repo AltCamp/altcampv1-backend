@@ -193,6 +193,38 @@ describe('Upvoting a question', () => {
     expect(response.body.data.upvotes).toBe(questions[0].upvotes - 1);
     expect(response.body.data.upvotedBy).not.toContain(user._id);
   });
+
+  test('if a user has previously downvoted removes the downvote', async () => {
+    // get questions from DB
+    const questions = await helper.questionsInDb();
+
+    // Log in as a user
+    const users = helper.accountsAsJson;
+    const user = users[0];
+    await login(user);
+
+    // send a patch request to downvote question
+    const res = await api
+      .patch(`/questions/${questions[0]._id.toString()}/downvote`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+    expect(res.body.data.downvotes).toBe(questions[0].downvotes + 1);
+    expect(res.body.data.downvotedBy).toContain(user._id);
+
+    // send a patch request to downvote question
+    const response = await api
+      .patch(`/questions/${questions[0]._id.toString()}/upvote`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    // check response for specific properties
+    expect(response.body.data.upvotes).toBe(questions[0].upvotes + 1);
+    expect(response.body.data.upvotedBy).toContain(user._id);
+    expect(response.body.data.downvotes).toBe(questions[0].downvotes);
+    expect(response.body.data.downvotedBy).not.toContain(user._id);
+  });
 });
 
 describe('Downvoting a question', () => {
@@ -264,6 +296,38 @@ describe('Downvoting a question', () => {
     // check response for specific properties
     expect(response.body.data.downvotes).toBe(questions[0].downvotes - 1);
     expect(response.body.data.downvotedBy).not.toContain(user._id);
+  });
+
+  test('if a user has previously upvoted removes the upvote', async () => {
+    // get questions from DB
+    const questions = await helper.questionsInDb();
+
+    // Log in as a user
+    const users = helper.accountsAsJson;
+    const user = users[0];
+    await login(user);
+
+    // send a patch request to upvote question
+    const res = await api
+      .patch(`/questions/${questions[0]._id.toString()}/upvote`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+    expect(res.body.data.upvotes).toBe(questions[0].upvotes + 1);
+    expect(res.body.data.upvotedBy).toContain(user._id);
+
+    // send a patch request to downvote question
+    const response = await api
+      .patch(`/questions/${questions[0]._id.toString()}/downvote`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    // check response for specific properties
+    expect(response.body.data.downvotes).toBe(questions[0].downvotes + 1);
+    expect(response.body.data.downvotedBy).toContain(user._id);
+    expect(response.body.data.upvotes).toBe(questions[0].upvotes);
+    expect(response.body.data.upvotedBy).not.toContain(user._id);
   });
 });
 
