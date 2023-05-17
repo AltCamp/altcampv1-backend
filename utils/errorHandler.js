@@ -29,6 +29,12 @@ function errorHandler(err, req, res, next) {
     customError.error = 'Validation Error';
   }
 
+  if (err.code === 11000) {
+    customError.statusCode = 409;
+    customError.msg = `${Object.keys(err.keyPattern)[0]} already exists!`;
+    customError.error = 'Conflict';
+  }
+
   res.status(customError.statusCode).json({
     statusCode: customError.statusCode,
     message: customError.msg,
