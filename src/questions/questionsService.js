@@ -70,6 +70,14 @@ const upvoteQuestion = async ({ userId, questionId }) => {
     return question;
   }
 
+  // Check if user has already disliked question
+  if (question.downvotedBy.includes(userId)) {
+    // Remove dislike
+    question.downvotes--;
+    const searchIndex = question.downvotedBy.indexOf(userId);
+    question.downvotedBy.splice(searchIndex, 1);
+  }
+
   // Update database
   question.upvotes++;
   question.upvotedBy.push(userId);
@@ -98,6 +106,14 @@ const downvoteQuestion = async ({ userId, questionId }) => {
     await question.save();
 
     return question;
+  }
+
+  // Check if user has already liked question
+  if (question.upvotedBy.includes(userId)) {
+    // Remove like
+    question.upvotes--;
+    const searchIndex = question.upvotedBy.indexOf(userId);
+    question.upvotedBy.splice(searchIndex, 1);
   }
 
   // Update database
