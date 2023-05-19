@@ -7,11 +7,11 @@ const Schema = mongoose.Schema;
 
 const accountSchema = new Schema(
   {
-    firstname: {
+    firstName: {
       type: String,
       required: true,
     },
-    lastname: {
+    lastName: {
       type: String,
       required: true,
     },
