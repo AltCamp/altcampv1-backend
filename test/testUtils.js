@@ -110,8 +110,8 @@ function createStudent({ sex }) {
 function createAccount(bioData, user) {
   return {
     _id: faker.database.mongodbObjectId(),
-    firstname: bioData.firstname,
-    lastname: bioData.lastname,
+    firstName: bioData.firstName,
+    lastName: bioData.lastName,
     email: bioData.email,
     password: faker.internet.password(20, true, /[a-z]/, '*&0A'),
     track: faker.helpers.arrayElement(track),
@@ -125,13 +125,13 @@ function createAccount(bioData, user) {
  */
 function generateBioData() {
   const sex = Math.floor(Math.random() * 10) % 2 === 0 ? 'male' : 'female';
-  const firstname = faker.name.firstName(sex);
-  const lastname = faker.name.lastName();
-  const email = faker.internet.email(firstname, lastname, 'getnada.com');
+  const firstName = faker.name.firstName(sex);
+  const lastName = faker.name.lastName();
+  const email = faker.internet.email(firstName, lastName, 'getnada.com');
 
   return {
-    firstname,
-    lastname,
+    firstName,
+    lastName,
     email,
     sex,
   };
