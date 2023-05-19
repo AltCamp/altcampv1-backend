@@ -8,8 +8,8 @@ const { createToken, validateCredentials } = require('../../utils/helper');
 
 const registerMentor = async (req, res) => {
   const {
-    firstname,
-    lastname,
+    firstName,
+    lastName,
     email,
     password,
     track,
@@ -22,8 +22,8 @@ const registerMentor = async (req, res) => {
   }
   const mentor = await Mentor.create({ specialization, yearsOfExperience });
   let account = await Account.create({
-    firstname,
-    lastname,
+    firstName,
+    lastName,
     email,
     password,
     track,
@@ -33,8 +33,8 @@ const registerMentor = async (req, res) => {
   await account.populate('owner');
   const token = createToken({
     id: account.id,
-    firstname,
-    lastname,
+    firstName,
+    lastName,
   });
   res
     .status(201)
@@ -50,7 +50,7 @@ const registerMentor = async (req, res) => {
 };
 
 const registerStudent = async (req, res) => {
-  const { firstname, lastname, email, password, track, matric, stack, gender } =
+  const { firstName, lastName, email, password, track, matric, stack, gender } =
     req.body;
   const studentExist = await Account.findOne({ email });
   if (studentExist) {
@@ -58,8 +58,8 @@ const registerStudent = async (req, res) => {
   }
   const student = await Student.create({ matric, stack, gender });
   let account = await Account.create({
-    firstname,
-    lastname,
+    firstName,
+    lastName,
     email,
     password,
     track,
@@ -68,8 +68,8 @@ const registerStudent = async (req, res) => {
   await account.populate('owner');
   const token = createToken({
     id: account.id,
-    firstname,
-    lastname,
+    firstName,
+    lastName,
   });
   res
     .status(201)

@@ -20,11 +20,11 @@ const loginValidator = Joi.object({
 }).with('email', 'password');
 
 const createStudentValidator = Joi.object({
-  firstname: Joi.string().required().messages({
+  firstName: Joi.string().required().messages({
     'string.empty': 'Firstname is required',
     'any.required': 'Firstname is required',
   }),
-  lastname: Joi.string().required().messages({
+  lastName: Joi.string().required().messages({
     'string.empty': 'Lastname is required',
     'any.required': 'Lastname is required',
   }),
@@ -54,11 +54,11 @@ const createStudentValidator = Joi.object({
 });
 
 const createMentorValidator = Joi.object({
-  firstname: Joi.string().required().messages({
+  firstName: Joi.string().required().messages({
     'string.empty': 'Firstname is required',
     'any.required': 'Firstname is required',
   }),
-  lastname: Joi.string().required().messages({
+  lastName: Joi.string().required().messages({
     'string.empty': 'Lastname is required',
     'any.required': 'Lastname is required',
   }),

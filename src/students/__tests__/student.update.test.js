@@ -56,8 +56,8 @@ describe('Updating a student', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({ firstName, lastName });
 
-    expect(response.body.data).toHaveProperty('firstname', firstName);
-    expect(response.body.data).toHaveProperty('lastname', lastName);
+    expect(response.body.data).toHaveProperty('firstName', firstName);
+    expect(response.body.data).toHaveProperty('lastName', lastName);
   });
 
   it('with secure password is successful', async () => {

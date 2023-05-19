@@ -48,16 +48,16 @@ describe('Updating a mentor', () => {
     const user = helper.accountsAsJson[4];
     await login(user);
 
-    const firstname = 'Updated';
-    const lastname = 'Elections';
+    const firstName = 'Updated';
+    const lastName = 'Elections';
 
     const response = await api
       .put('/mentors/update-profile')
       .set('Authorization', `Bearer ${token}`)
-      .send({ firstname, lastname });
+      .send({ firstName, lastName });
 
-    expect(response.body.data).toHaveProperty('firstname', firstname);
-    expect(response.body.data).toHaveProperty('lastname', lastname);
+    expect(response.body.data).toHaveProperty('firstName', firstName);
+    expect(response.body.data).toHaveProperty('lastName', lastName);
   });
 
   it('with secure password is successful', async () => {
