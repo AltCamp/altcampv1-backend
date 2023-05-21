@@ -30,8 +30,8 @@ const createAnswer = async (answer) => {
 };
 
 const updateAnswer = async (id, { content }) => {
-  const updatedAnswer = await Answer.findOneAndUpdate(
-    { where: { _id: id } },
+  const updatedAnswer = await Answer.findByIdAndUpdate(
+    id,
     { content },
     {
       new: true,
