@@ -40,7 +40,9 @@ async function uploadProfilePicture({ id, filepath }) {
       return false;
     }
 
-    const cloudinaryUpload = await cloudinary.uploader.upload(filepath);
+    const cloudinaryUpload = await cloudinary.uploader.upload(filepath, {
+      public_id: `profile-pictures/${id}`,
+    });
 
     // delete file from local storage
     fs.unlink(filepath, (err) => {
