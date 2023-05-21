@@ -420,10 +420,10 @@ paths:
         - Questions
       security:
         - bearer: []
-      summary: update Question details
+      summary: Update Question details
       description: The accepts question details and updates the profile in the database
       requestBody:
-        description: Accepts Students' password in the body as a request
+        description: Accepts the question details in the body as a request
         content:
           application/json:
             schema:
@@ -573,6 +573,7 @@ paths:
       summary: Post a new answer
       description: This posts a new answer
       requestBody:
+        description: Answer a question by passing the question ID and the answer content in the body as a request
         content:
           application/json:
             schema:
@@ -600,7 +601,7 @@ paths:
       security:
         - bearer: []
       summary: Returns posted Answers
-      description: This returns all posted Answers along side other related information
+      description: This returns all posted Answers for a question
       parameters:
         - name: questionId
           in: query
@@ -653,9 +654,9 @@ paths:
       security:
         - bearer: []
       summary: This route updates and returns a single answer
-      description: Accepts the ID of a answer and search the database if the answers exists and updates it
+      description: This accepts the ID of an answer, searches the database to determine if the answer exists, and updates it if found.
       requestBody:
-        description: Accepts Students' password in the body as a request
+        description: Accepts the answer content in the body as a request
         content:
           application/json:
             schema:
@@ -1311,6 +1312,8 @@ components:
               type: string
             body:
               type: string
+            slug:
+              type: string
             upvotes:
               type: integer
             upvotedBy:
@@ -1324,9 +1327,6 @@ components:
             _id:
               type: string
             author:
-              type: string
-
-            slug:
               type: string
             createdAt:
               type: number
@@ -1350,6 +1350,8 @@ components:
               title:
                 type: string
               body:
+                type: string
+              slug:
                 type: string
               upvotes:
                 type: integer
@@ -1398,6 +1400,8 @@ components:
               type: string
             body:
               type: string
+            slug:
+              type: string
             upvotes:
               type: integer
             upvotedBy:
@@ -1433,6 +1437,8 @@ components:
             title:
               type: string
             body:
+              type: string
+            slug:
               type: string
             upvotes:
               type: integer
