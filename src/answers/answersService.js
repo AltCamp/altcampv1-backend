@@ -2,7 +2,7 @@ const Answer = require('../../model/answer');
 const Question = require('../../model/question');
 
 const getAnswer = async (id) => {
-  const answers = await Answer.find({ id }).populate('author');
+  const answers = await Answer.findById({ id }).populate('author');
 
   return answers;
 };
