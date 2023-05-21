@@ -1,6 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const limiter = require('./src/rateLimit/rateLimit')
 const { errorHandler } = require('./utils/errorHandler');
 const cors = require('cors');
 require('express-async-errors');
@@ -8,6 +9,10 @@ require('express-async-errors');
 const indexRouter = require('./routes/index');
 
 const app = express();
+
+// applying rate limiting middleware to all requests
+app.use(limiter);
+
 app.use(
   cors({
     origin: [
