@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { ACCOUNT_TYPES } = require('../constant');
+const { ACCOUNT_TYPES, GENDER } = require('../constant');
 const bcrypt = require('bcrypt');
 const { UnprocessableEntity } = require('../utils/customError');
 
@@ -27,6 +27,10 @@ const accountSchema = new Schema(
     track: {
       type: String,
       required: true,
+    },
+    gender: {
+      type: String,
+      enum: Object.values(GENDER),
     },
     accountType: {
       type: String,
