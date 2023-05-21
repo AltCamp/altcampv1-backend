@@ -17,6 +17,8 @@ servers:
           - localhost:8000 # Development server
           - the-altcamp.onrender.com # Production server
 
+# --------------- AUTHENTICATION ---------------------------------------
+
 paths:
   /auth/mentor:
     post:
@@ -84,6 +86,7 @@ paths:
       deprecated: false
       security: []
 
+  # ------------------------------------ MENTOR -------------------------------------
   /mentors/{mentorID}:
     get:
       tags:
@@ -222,6 +225,8 @@ paths:
       deprecated: false
       security: []
 
+  # ------------------ STUDENT -----------------------------
+
   /students/{studentID}:
     get:
       tags:
@@ -324,6 +329,432 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+
+  # --------------------------------- QUESTION ----------------------
+
+  /questions:
+    post:
+      tags:
+        - Questions
+      security:
+        - bearer: []
+      summary: Post a new question
+      description: This posts a new question
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/askNewQuestion'
+      responses:
+        '201':
+          description: Returns posted question details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/newQuestionDetails'
+        '400':
+          description: Question Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+
+    # Might be added later when error is accounted for in the api
+    # '422':
+    #   description: Unprocessable Entity
+    #   content:
+    #     application/json:
+    #       schema:
+    #         $ref: '#/components/schemas/ValidationError'
+
+    get:
+      tags:
+        - Questions
+      security:
+        - bearer: []
+      summary: Returns posted questions
+      description: This returns all posted questions along side other related information
+      responses:
+        '200':
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getPostedQuestions'
+
+  /questions/{questionID}:
+    get:
+      tags:
+        - Questions
+      security:
+        - bearer: []
+      summary: This returns a single question
+      description: Accepts the ID of a question and search the database if the question exists
+      operationId: getSingleQuestionById
+      parameters:
+        - name: questionID
+          in: path
+          description: Question ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns a single question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getQuestion'
+
+        '404':
+          description: Question Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+    patch:
+      tags:
+        - Questions
+      security:
+        - bearer: []
+      summary: update Question details
+      description: The accepts question details and updates the profile in the database
+      requestBody:
+        description: Accepts Students' password in the body as a request
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/updateQuestion'
+      operationId: updateSingleQuestionById
+      parameters:
+        - name: questionID
+          in: path
+          description: Question ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns updated question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getQuestion'
+
+        '404':
+          description: Question Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+        '401':
+          description: 'Token is  invalid. User not authorized'
+          content:
+            application/json::
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+    delete:
+      tags:
+        - Questions
+      security:
+        - bearer: []
+      summary: Delete a Question
+      description: This route deletes a posted question
+      operationId: deleteSingleQuestionById
+      parameters:
+        - name: questionID
+          in: path
+          description: Question ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns deleted question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deleteQuestion'
+
+        '404':
+          description: Question Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+        '401':
+          description: 'Token is  invalid. User not authorized'
+          content:
+            application/json::
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+  /{questionID}/upvote:
+    patch:
+      tags:
+        - Questions
+      security:
+        - bearer: []
+      summary: This updates the upvote field in a question
+      description: Accepts the ID of a question and updates the upvote field
+      operationId: updateUpvoteInQuestionById
+      parameters:
+        - name: questionID
+          in: path
+          description: Question ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns a upvoted question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getQuestion'
+
+        '400':
+          description: Question Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+
+  /{questionID}/downvote:
+    patch:
+      tags:
+        - Questions
+      security:
+        - bearer: []
+      summary: This updates the downvote field in a question
+      description: Accepts the ID of a question and updates the downvote field
+      operationId: updatedownvoteInQuestionById
+      parameters:
+        - name: questionID
+          in: path
+          description: Question ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns a downvoted question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getQuestion'
+
+        '400':
+          description: Question Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+
+  # --------------- ANSWERS ------------------------
+
+  /answers:
+    post:
+      tags:
+        - Answers
+      security:
+        - bearer: []
+      summary: Post a new answer
+      description: This posts a new answer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/postNewAnswer'
+      responses:
+        '201':
+          description: Returns posted answer details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/newAnswerDetails'
+
+    # Might be added later when error is accounted for in the api
+    # '422':
+    #   description: Unprocessable Entity
+    #   content:
+    #     application/json:
+    #       schema:
+    #         $ref: '#/components/schemas/ValidationError'
+
+    get:
+      tags:
+        - Answers
+      security:
+        - bearer: []
+      summary: Returns posted Answers
+      description: This returns all posted Answers along side other related information
+      parameters:
+        - name: questionId
+          in: query
+          description: Question ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A JSON array of Answers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getPostedAnswer'
+
+  /answers/{answerID}:
+    get:
+      tags:
+        - Answers
+      security:
+        - bearer: []
+      summary: This returns a single answer
+      description: Accepts the ID of a answer and search the database if the answers exists and returns it
+      operationId: getSingleAnswerById
+      parameters:
+        - name: answerID
+          in: path
+          description: Answer ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns a single answer on a question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/newAnswerDetails'
+        '404':
+          description: Answer Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+    patch:
+      tags:
+        - Answers
+      security:
+        - bearer: []
+      summary: This route updates and returns a single answer
+      description: Accepts the ID of a answer and search the database if the answers exists and updates it
+      requestBody:
+        description: Accepts Students' password in the body as a request
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/updateAnswers'
+      operationId: updatesSingleAnswerById
+      parameters:
+        - name: answerID
+          in: path
+          description: Answer ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns a single answer on a question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/newAnswerDetails'
+        '404':
+          description: Question Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '401':
+          description: 'Token is  invalid. User not authorized'
+          content:
+            application/json::
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+  /upvote/{answerID}:
+    patch:
+      tags:
+        - Answers
+      security:
+        - bearer: []
+      summary: This updates the upvote field in a answer
+      description: Accepts the ID of a answer and updates the upvote field
+      operationId: updateUpvoteInAnswerById
+      parameters:
+        - name: answerID
+          in: path
+          description: Answer ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns a upvoted answer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/newAnswerDetails'
+
+        '400':
+          description: answer Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+
+  /downvote/{answerID}:
+    patch:
+      tags:
+        - Answers
+      security:
+        - bearer: []
+      summary: This updates the downvote field in the answer document
+      description: Accepts the ID of a answer and updates the downvote field
+      operationId: updatedownvoteInAnswerById
+      parameters:
+        - name: answerID
+          in: path
+          description: Answer ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns a downvoted question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/newAnswerDetails'
+
+        '400':
+          description: Question Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+
+# ------------------------ COMPONENTS ----------------------------
 
 components:
   schemas:
@@ -667,7 +1098,18 @@ components:
       example:
         statusCode: 422
         message: One or more of user input not validated
-        error: Server Error
+        error: Unprocessable Entity
+
+    BadRequestError:
+      type: object
+      properties:
+        messsage:
+          type: string
+        statusCode:
+          type: number
+          default: 400
+        error:
+          type: string
 
     ConflictError:
       type: object
@@ -754,6 +1196,8 @@ components:
                 owner:
                   type: integer
                 _id:
+                  type: string
+                gender:
                   type: string
                 createdAt:
                   type: string
@@ -843,6 +1287,292 @@ components:
           type: string
         error:
           type: string
+
+    askNewQuestion:
+      type: object
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+
+    newQuestionDetails:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          default: 201
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            title:
+              type: string
+            body:
+              type: string
+            upvotes:
+              type: integer
+            upvotedBy:
+              type: array
+            downvotes:
+              type: integer
+            downvotedBy:
+              type: array
+            answer:
+              type: array
+            _id:
+              type: string
+            author:
+              type: string
+
+            slug:
+              type: string
+            createdAt:
+              type: number
+            updatedAt:
+              type: number
+
+    getPostedQuestions:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+              title:
+                type: string
+              body:
+                type: string
+              upvotes:
+                type: integer
+              upvotedBy:
+                type: array
+              downvotes:
+                type: integer
+              downvotedBy:
+                type: array
+              answer:
+                type: array
+              author:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  firstname:
+                    type: string
+                  lastname:
+                    type: string
+              createdAt:
+                type: number
+              updatedAt:
+                type: number
+
+    updateQuestion:
+      type: object
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+
+    deleteQuestion:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          default: 201
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            title:
+              type: string
+            body:
+              type: string
+            upvotes:
+              type: integer
+            upvotedBy:
+              type: array
+            downvotes:
+              type: integer
+            downvotedBy:
+              type: array
+            answer:
+              type: array
+            _id:
+              type: string
+            author:
+              type: string
+
+            createdAt:
+              type: number
+            updatedAt:
+              type: number
+
+    getQuestion:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            _id:
+              type: string
+            title:
+              type: string
+            body:
+              type: string
+            upvotes:
+              type: integer
+            upvotedBy:
+              type: array
+            downvotes:
+              type: integer
+            downvotedBy:
+              type: array
+            answer:
+              type: array
+            author:
+              type: object
+              properties:
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                _id:
+                  type: string
+            createdAt:
+              type: number
+            updatedAt:
+              type: number
+
+    updateAnswers:
+      type: object
+      properties:
+        content:
+          type: string
+
+    postNewAnswer:
+      type: object
+      properties:
+        content:
+          type: string
+        questionId:
+          type: string
+
+    newAnswerDetails:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            content:
+              type: string
+            upvotes:
+              type: integer
+            upvotedBy:
+              type: array
+            downvotes:
+              type: integer
+            downvotedBy:
+              type: array
+            question:
+              type: string
+            author:
+              type: object
+              properties:
+                _id:
+                  type: string
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                email:
+                  type: string
+                track:
+                  type: string
+                accountType:
+                  type: string
+                owner:
+                  type: string
+                createdAt:
+                  type: number
+                updatedAt:
+                  type: number
+            _id:
+              type: string
+            createdAt:
+              type: number
+            updatedAt:
+              type: number
+
+    getPostedAnswers:
+      type: object
+      properties:
+        statusCode:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+              content:
+                type: string
+              upvotes:
+                type: integer
+              upvotedBy:
+                type: array
+              downvotes:
+                type: integer
+              downvotedBy:
+                type: array
+              question:
+                type: string
+              author:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  firstname:
+                    type: string
+                  lastname:
+                    type: string
+                  email:
+                    type: string
+                  track:
+                    type: string
+                  accountType:
+                    type: string
+                  owner:
+                    type: string
+                  createdAt:
+                    type: number
+                  updatedAt:
+                    type: number
+              createdAt:
+                type: number
+              updatedAt:
+                type: number
 
   securitySchemes:
     bearer:
