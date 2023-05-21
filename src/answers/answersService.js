@@ -30,8 +30,8 @@ const createAnswer = async (answer) => {
 };
 
 const updateAnswer = async (id, { content }) => {
-  const updatedAnswer = await Answer.findOneAndUpdate(
-    { where: { _id: id } },
+  const updatedAnswer = await Answer.findByIdAndUpdate(
+    id,
     { content },
     {
       new: true,
@@ -49,7 +49,7 @@ const upvoteAnswer = async ({ id, userId }) => {
     return false;
   }
 
-  // Check if user has already liked question
+  // Check if user has already liked answer
   if (answer.upvotedBy.includes(userId)) {
     // Remove like
     answer.upvotes--;
@@ -60,6 +60,14 @@ const upvoteAnswer = async ({ id, userId }) => {
     await answer.save();
 
     return answer;
+  }
+
+  // Check if user has already disliked answer
+  if (answer.downvotedBy.includes(userId)) {
+    // Remove dislike
+    answer.downvotes--;
+    const searchIndex = answer.downvotedBy.indexOf(userId);
+    answer.downvotedBy.splice(searchIndex, 1);
   }
 
   // Update database
@@ -76,7 +84,7 @@ const downvoteAnswer = async ({ id, userId }) => {
     return false;
   }
 
-  // Check if user has already downvoted question
+  // Check if user has already downvoted answer
   if (answer.downvotedBy.includes(userId)) {
     // Remove downvote
     answer.downvotes--;
@@ -87,6 +95,14 @@ const downvoteAnswer = async ({ id, userId }) => {
     await answer.save();
 
     return answer;
+  }
+
+  // Check if user has already liked answer
+  if (answer.upvotedBy.includes(userId)) {
+    // Remove like
+    answer.upvotes--;
+    const searchIndex = answer.upvotedBy.indexOf(userId);
+    answer.upvotedBy.splice(searchIndex, 1);
   }
 
   // update database
