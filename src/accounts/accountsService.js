@@ -1,6 +1,22 @@
 const { ACCOUNT_TYPES } = require('../../constant');
 const Account = require('../../model/account');
+const Mentor = require('../../model/mentor');
+const Student = require('../../model/student');
+const Model = {
+  mentor: Mentor,
+  student: Student,
+};
 const { omit } = require('lodash');
+
+async function accountExists(email) {
+  const account = await Account.findOne({ email });
+
+  if (account) {
+    return true;
+  }
+
+  return false;
+}
 
 async function getStudents() {
   const students = await Account.find({
@@ -51,7 +67,21 @@ async function changeAccountPassword({ id, password }) {
   return account;
 }
 
+async function createAccount({ category, altSchoolId, ...payload }) {
+  const obj = (altSchoolId && { altSchoolId }) || {};
+  const { _id: owner } = await Model[category.toLowerCase()].create(obj);
+  const account = await Account.create({
+    ...payload,
+    owner,
+    accountType: category,
+  });
+  await account.populate('owner');
+  return account;
+}
+
 module.exports = {
+  accountExists,
+  createAccount,
   changeAccountPassword,
   getMentors,
   getSingleAccount,

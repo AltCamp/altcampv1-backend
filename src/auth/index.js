@@ -1,12 +1,9 @@
 const router = require('express').Router();
+const { registerAccount, userLogin, userLogout } = require('./authController');
 
+const { registerMentor, registerStudent } = require('./auth');
 const {
-  registerMentor,
-  registerStudent,
-  userLogin,
-  logout,
-} = require('./auth');
-const {
+  createAccountValidator,
   createMentorValidator,
   createStudentValidator,
   loginValidator,
@@ -24,6 +21,11 @@ router.post(
   registerStudent
 );
 router.post('/login', validatorMiddleware(loginValidator), userLogin);
-router.post('/logout', logout);
+router.post('/logout', userLogout);
+router.post(
+  '/register',
+  validatorMiddleware(createAccountValidator),
+  registerAccount
+);
 
 module.exports = router;
