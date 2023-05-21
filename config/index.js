@@ -21,4 +21,9 @@ module.exports = {
     secret: process.env.JWT_SECRET,
     expiry: process.env.JWT_EXPIRY,
   },
+  cloudinary: {
+    name: process.env.CLOUDINARY_CLOUD_NAME,
+    key: process.env.CLOUDINARY_API_KEY,
+    secret: process.env.CLOUDINARY_API_SECRET,
+  },
 };

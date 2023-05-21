@@ -35,6 +35,7 @@ function errorHandler(err, req, res, next) {
     customError.error = 'Conflict';
   }
 
+  console.error(err);
   res.status(customError.statusCode).json({
     statusCode: customError.statusCode,
     message: customError.msg,

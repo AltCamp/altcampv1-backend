@@ -1,6 +1,15 @@
+const fs = require('fs');
+const { omit } = require('lodash');
+const cloudinary = require('cloudinary').v2;
+const { cloudinary: cloudinaryConfig } = require('../../config');
 const { ACCOUNT_TYPES } = require('../../constant');
 const Account = require('../../model/account');
-const { omit } = require('lodash');
+
+cloudinary.config({
+  cloud_name: cloudinaryConfig.name,
+  api_key: cloudinaryConfig.key,
+  api_secret: cloudinaryConfig.secret,
+});
 
 async function getStudents() {
   const students = await Account.find({
@@ -22,6 +31,31 @@ async function getSingleAccount(id) {
   const account = await Account.findById(id).populate('owner');
 
   return account;
+}
+
+async function uploadProfilePicture({ id, filepath }) {
+  try {
+    const account = await Account.findById(id);
+    if (!account) {
+      return false;
+    }
+
+    const cloudinaryUpload = await cloudinary.uploader.upload(filepath);
+
+    // delete file from local storage
+    fs.unlink(filepath, (err) => {
+      if (err) {
+        throw new Error(err);
+      }
+    });
+
+    account.profilePicture = cloudinaryUpload.secure_url;
+    await account.save();
+
+    return account;
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 async function updateAccount({ id, payload }) {
@@ -57,4 +91,5 @@ module.exports = {
   getSingleAccount,
   getStudents,
   updateAccount,
+  uploadProfilePicture,
 };
