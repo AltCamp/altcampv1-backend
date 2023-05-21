@@ -23,8 +23,8 @@ beforeAll(async () => {
 describe('Updating a student', () => {
   it('with profile while not logged in should fail', async () => {
     const response = await api.put('/students/update-profile').send({
-      firstname: 'Musa',
-      lastname: 'Mesly',
+      firstName: 'Musa',
+      lastName: 'Mesly',
     });
 
     expect(response.status).toBe(401);
@@ -48,16 +48,16 @@ describe('Updating a student', () => {
     const user = helper.accountsAsJson[0];
     await login(user);
 
-    const firstname = 'Updated';
-    const lastname = 'Elections';
+    const firstName = 'Updated';
+    const lastName = 'Elections';
 
     const response = await api
       .put('/students/update-profile')
       .set('Authorization', `Bearer ${token}`)
-      .send({ firstname, lastname });
+      .send({ firstName, lastName });
 
-    expect(response.body.data).toHaveProperty('firstname', firstname);
-    expect(response.body.data).toHaveProperty('lastname', lastname);
+    expect(response.body.data).toHaveProperty('firstName', firstName);
+    expect(response.body.data).toHaveProperty('lastName', lastName);
   });
 
   it('with secure password is successful', async () => {

@@ -2,8 +2,8 @@ const Question = require('../../model/question');
 
 const getQuestions = async () => {
   const questions = await Question.find({}).populate('author', {
-    firstname: 1,
-    lastname: 1,
+    firstName: 1,
+    lastName: 1,
   });
 
   return questions;
@@ -11,8 +11,8 @@ const getQuestions = async () => {
 
 const getQuestion = async (questionId) => {
   const question = await Question.findById(questionId).populate('author', {
-    firstname: 1,
-    lastname: 1,
+    firstName: 1,
+    lastName: 1,
   });
 
   return question;
@@ -50,8 +50,8 @@ const isQuestionAuthor = async ({ userId, questionId }) => {
 
 const upvoteQuestion = async ({ userId, questionId }) => {
   const question = await Question.findById(questionId).populate('author', {
-    firstname: 1,
-    lastname: 1,
+    firstName: 1,
+    lastName: 1,
   });
   if (!question) {
     return false;
@@ -70,6 +70,14 @@ const upvoteQuestion = async ({ userId, questionId }) => {
     return question;
   }
 
+  // Check if user has already disliked question
+  if (question.downvotedBy.includes(userId)) {
+    // Remove dislike
+    question.downvotes--;
+    const searchIndex = question.downvotedBy.indexOf(userId);
+    question.downvotedBy.splice(searchIndex, 1);
+  }
+
   // Update database
   question.upvotes++;
   question.upvotedBy.push(userId);
@@ -80,8 +88,8 @@ const upvoteQuestion = async ({ userId, questionId }) => {
 
 const downvoteQuestion = async ({ userId, questionId }) => {
   const question = await Question.findById(questionId).populate('author', {
-    firstname: 1,
-    lastname: 1,
+    firstName: 1,
+    lastName: 1,
   });
   if (!question) {
     return false;
@@ -98,6 +106,14 @@ const downvoteQuestion = async ({ userId, questionId }) => {
     await question.save();
 
     return question;
+  }
+
+  // Check if user has already liked question
+  if (question.upvotedBy.includes(userId)) {
+    // Remove like
+    question.upvotes--;
+    const searchIndex = question.upvotedBy.indexOf(userId);
+    question.upvotedBy.splice(searchIndex, 1);
   }
 
   // Update database

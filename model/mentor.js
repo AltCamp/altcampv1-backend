@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const MentorSchema = new Schema({
+const mentorSchema = new Schema({
   specialization: {
     type: String,
   },
@@ -11,6 +11,6 @@ const MentorSchema = new Schema({
   },
 });
 
-const Mentor = mongoose.model('Mentor', MentorSchema);
+const Mentor = mongoose.model('Mentor', mentorSchema);
 
 module.exports = Mentor;

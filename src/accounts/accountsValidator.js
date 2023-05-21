@@ -15,8 +15,8 @@ const passwordValidator = Joi.object({
 });
 
 const profileValidator = Joi.object({
-  firstname: Joi.string().optional(),
-  lastname: Joi.string().optional(),
+  firstName: Joi.string().optional(),
+  lastName: Joi.string().optional(),
 });
 
 module.exports = {

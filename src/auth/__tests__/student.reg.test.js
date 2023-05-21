@@ -31,8 +31,8 @@ describe('Auth: Student registration', () => {
     expect(response.body.data).toHaveProperty('user');
     expect(response.body.data.user).toEqual(
       expect.objectContaining({
-        firstname: user.firstname,
-        lastname: user.lastname,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         track: user.track,
         owner: expect.objectContaining({
@@ -54,8 +54,8 @@ describe('Auth: Student registration', () => {
     expect(decoded).toEqual(
       expect.objectContaining({
         id: response.body.data.user._id,
-        firstname: user.firstname,
-        lastname: user.lastname,
+        firstName: user.firstName,
+        lastName: user.lastName,
       })
     );
   });
@@ -107,7 +107,7 @@ describe('Auth: Student registration', () => {
     it('should not register a new student if firstname is not provided', async () => {
       const response = await api.post('/auth/student').send({
         ...user,
-        firstname: '',
+        firstName: '',
       });
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Firstname is required');
@@ -116,7 +116,7 @@ describe('Auth: Student registration', () => {
     it('should not register a new student if lastname is not provided', async () => {
       const response = await api.post('/auth/student').send({
         ...user,
-        lastname: '',
+        lastName: '',
       });
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Lastname is required');

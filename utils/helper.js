@@ -1,12 +1,34 @@
-const bcrypt = require('bcrypt');
 const Account = require('../model/account');
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 const config = require('../config/index');
+const crypto = require('crypto');
+const createDomPurify = require('dompurify');
+const jwt = require('jsonwebtoken');
+const { JSDOM } = require('jsdom');
+const domPurify = createDomPurify(new JSDOM().window);
+const slugify = require('slugify');
 
-async function verifyPassword(plain, hashed) {
-  return await bcrypt.compare(plain, hashed);
-}
+const createHashedToken = (token) => {
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+  return hashedToken;
+};
+
+const createToken = (payload) => {
+  const token = jwt.sign(payload, config.jwt.secret, {
+    expiresIn: config.jwt.expiry,
+    algorithm: 'HS256',
+  });
+  return token;
+};
+
+const generateSlug = (title) => {
+  return slugify(title, { lower: true, strict: true });
+};
+
+const sanitiseHTML = (content) => {
+  return domPurify.sanitize(content);
+};
 
 async function validateCredentials(email, password) {
   const user = await Account.findOne({ email })
@@ -18,23 +40,15 @@ async function validateCredentials(email, password) {
   return user;
 }
 
-const createToken = (payload) => {
-  const token = jwt.sign(payload, config.jwt.secret, {
-    expiresIn: config.jwt.expiry,
-    algorithm: 'HS256',
-  });
-  return token;
-};
-
-const createHashedToken = (token) => {
-  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
-
-  return hashedToken;
-};
+async function verifyPassword(plain, hashed) {
+  return await bcrypt.compare(plain, hashed);
+}
 
 module.exports = {
-  verifyPassword,
-  validateCredentials,
-  createToken,
   createHashedToken,
+  createToken,
+  generateSlug,
+  sanitiseHTML,
+  validateCredentials,
+  verifyPassword,
 };

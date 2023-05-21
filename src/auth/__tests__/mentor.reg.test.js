@@ -14,8 +14,8 @@ describe('Auth: Mentor registration', () => {
   });
 
   const user = {
-    firstname: 'John',
-    lastname: 'Doe',
+    firstName: 'John',
+    lastName: 'Doe',
     email: 'johndoe@test.com',
     password: 'Securepassword1@',
     track: 'SRE',
@@ -37,8 +37,8 @@ describe('Auth: Mentor registration', () => {
     expect(response.body.data).toHaveProperty('user');
     expect(response.body.data.user).toEqual(
       expect.objectContaining({
-        firstname: user.firstname,
-        lastname: user.lastname,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         track: user.track,
         accountType: 'Mentor',
@@ -59,8 +59,8 @@ describe('Auth: Mentor registration', () => {
     expect(decoded).toEqual(
       expect.objectContaining({
         id: response.body.data.user._id,
-        firstname: user.firstname,
-        lastname: user.lastname,
+        firstName: user.firstName,
+        lastName: user.lastName,
       })
     );
   });
@@ -98,23 +98,23 @@ describe('Auth: Mentor registration', () => {
       expect(response.body).toHaveProperty('message', 'Email is required');
     });
 
-    it('should not register a new mentor if firstname is not provided', async () => {
+    it('should not register a new mentor if firstName is not provided', async () => {
       const response = await request(app)
         .post('/auth/mentor')
         .send({
           ...user,
-          firstname: '',
+          firstName: '',
         });
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Firstname is required');
     });
 
-    it('should not register a new mentor if lastname is not provided', async () => {
+    it('should not register a new mentor if lastName is not provided', async () => {
       const response = await request(app)
         .post('/auth/mentor')
         .send({
           ...user,
-          lastname: '',
+          lastName: '',
         });
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message', 'Lastname is required');
