@@ -1,29 +1,31 @@
 const { RESPONSE_MESSAGE } = require('../../constant');
-const { NotFoundError } = require('../../utils/customError');
 const responseHandler = require('../../utils/responseHandler');
 const accountsService = require('./accountsService');
-const { imageValidator } = require('./accountsValidator');
+const { validateImageInput, deleteFile } = require('./helper');
 
-async function uploadProfilePicture(req, res) {
+async function uploadProfilePicture(req, res, next) {
   try {
-  const { error } = imageValidator.validate(req.file);
+    const error = validateImageInput(req.body, req.file);
 
-  if (error) {
-    throw new Error(error);
-  }
+    if (error) {
+      deleteFile(req.file.path);
+      return next(error);
+    }
 
-  const account = await accountsService.uploadProfilePicture({
-    id: req.user.id,
-    filepath: req.file.path,
-  });
+    const account = await accountsService.uploadProfilePicture({
+      id: req.user.id,
+      filepath: req.file.path,
+    });
 
-  if (!account) {
-    throw new NotFoundError('Account not found!');
-  }
+    if (account instanceof Error) {
+      deleteFile(req.file.path);
+      return next(account);
+    }
 
-  new responseHandler(res, account, 200, RESPONSE_MESSAGE.SUCCESS);
+    new responseHandler(res, account, 200, RESPONSE_MESSAGE.SUCCESS);
   } catch (error) {
-    console.log('An error occured: ', error);
+    deleteFile(req.file.path);
+    return next(error);
   }
 }
 

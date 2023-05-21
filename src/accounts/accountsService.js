@@ -1,9 +1,10 @@
-const fs = require('fs');
 const { omit } = require('lodash');
 const cloudinary = require('cloudinary').v2;
 const { cloudinary: cloudinaryConfig } = require('../../config');
 const { ACCOUNT_TYPES } = require('../../constant');
+const { deleteFile } = require('./helper');
 const Account = require('../../model/account');
+const { NotFoundError } = require('../../utils/customError');
 
 cloudinary.config({
   cloud_name: cloudinaryConfig.name,
@@ -37,26 +38,22 @@ async function uploadProfilePicture({ id, filepath }) {
   try {
     const account = await Account.findById(id);
     if (!account) {
-      return false;
+      const error = new NotFoundError('Account not found!');
+      return error;
     }
 
     const cloudinaryUpload = await cloudinary.uploader.upload(filepath, {
       public_id: `profile-pictures/${id}`,
     });
 
-    // delete file from local storage
-    fs.unlink(filepath, (err) => {
-      if (err) {
-        throw new Error(err);
-      }
-    });
-
     account.profilePicture = cloudinaryUpload.secure_url;
     await account.save();
 
+    deleteFile(filepath);
+
     return account;
   } catch (error) {
-    throw new Error(error);
+    return error;
   }
 }
 
