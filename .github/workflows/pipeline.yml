@@ -6,6 +6,11 @@ on:
   pull_request: 
     branches: [main, dev]
 
+env:
+  TEST_CLOUDINARY_CLOUD_NAME: ${{ secrets.TEST_CLOUDINARY_CLOUD_NAME }}
+  TEST_CLOUDINARY_API_KEY: ${{ secrets.TEST_CLOUDINARY_API_KEY }}
+  TEST_CLOUDINARY_API_SECRET: ${{ secrets.TEST_CLOUDINARY_API_SECRET }}
+
 jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-20.04
