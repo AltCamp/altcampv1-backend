@@ -12,6 +12,7 @@ const studentSchema = new mongoose.Schema({
   },
   altSchoolId: {
     type: String,
+    unique: true,
   },
 });
 

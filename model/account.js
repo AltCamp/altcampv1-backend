@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { ACCOUNT_TYPES, GENDER } = require('../constant');
+const { ACCOUNT_TYPES, GENDER, REGEX_PATTERNS } = require('../constant');
 const bcrypt = require('bcrypt');
 const { UnprocessableEntity } = require('../utils/customError');
 
@@ -93,7 +93,6 @@ async function hashPassword(user) {
 }
 
 function validatePassword(password) {
-  const pattern =
-    /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/;
+  const pattern = REGEX_PATTERNS.PASSWORD;
   return pattern.test(password);
 }
