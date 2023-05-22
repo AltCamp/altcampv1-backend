@@ -5,6 +5,7 @@ const {
   registerStudent,
   userLogin,
   logout,
+  updatePassword,
 } = require('./auth');
 const {
   createMentorValidator,
@@ -12,6 +13,8 @@ const {
   loginValidator,
 } = require('./authValidator');
 const validatorMiddleware = require('../../middleware/validator');
+
+const { verifyUser } = require('../../middleware/authenticate');
 
 router.post(
   '/mentor',
@@ -25,5 +28,7 @@ router.post(
 );
 router.post('/login', validatorMiddleware(loginValidator), userLogin);
 router.post('/logout', logout);
+
+router.post('/update-password', verifyUser, updatePassword);
 
 module.exports = router;

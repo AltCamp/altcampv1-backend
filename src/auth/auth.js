@@ -4,12 +4,16 @@ const Account = require('../../model/account');
 const Mentor = require('../../model/mentor');
 const Student = require('../../model/student');
 const { ConflictError, UnAuthorizedError } = require('../../utils/customError');
-const { createToken, validateCredentials } = require('../../utils/helper');
+const {
+  createToken,
+  validateCredentials,
+  verifyPassword,
+} = require('../../utils/helper');
 
 const registerMentor = async (req, res) => {
   const {
-    firstName,
-    lastName,
+    firstname,
+    lastname,
     email,
     password,
     track,
@@ -22,8 +26,8 @@ const registerMentor = async (req, res) => {
   }
   const mentor = await Mentor.create({ specialization, yearsOfExperience });
   let account = await Account.create({
-    firstName,
-    lastName,
+    firstname,
+    lastname,
     email,
     password,
     track,
@@ -33,8 +37,8 @@ const registerMentor = async (req, res) => {
   await account.populate('owner');
   const token = createToken({
     id: account.id,
-    firstName,
-    lastName,
+    firstname,
+    lastname,
   });
   res
     .status(201)
@@ -50,7 +54,7 @@ const registerMentor = async (req, res) => {
 };
 
 const registerStudent = async (req, res) => {
-  const { firstName, lastName, email, password, track, matric, stack, gender } =
+  const { firstname, lastname, email, password, track, matric, stack, gender } =
     req.body;
   const studentExist = await Account.findOne({ email });
   if (studentExist) {
@@ -58,8 +62,8 @@ const registerStudent = async (req, res) => {
   }
   const student = await Student.create({ matric, stack, gender });
   let account = await Account.create({
-    firstName,
-    lastName,
+    firstname,
+    lastname,
     email,
     password,
     track,
@@ -68,8 +72,8 @@ const registerStudent = async (req, res) => {
   await account.populate('owner');
   const token = createToken({
     id: account.id,
-    firstName,
-    lastName,
+    firstname,
+    lastname,
   });
   res
     .status(201)
@@ -107,6 +111,7 @@ const userLogin = async (req, res) => {
         user,
       },
     });
+  console.log(req.user);
 };
 
 const logout = async (req, res) => {
@@ -120,9 +125,32 @@ const logout = async (req, res) => {
   });
 };
 
+const updatePassword = async (req, res) => {
+  const user = await Account.findOne(req.user._id).select('+password');
+  if (!(await verifyPassword(req.body.currentPassword, user.password))) {
+    throw new UnAuthorizedError('Invalid credentials!');
+  }
+  user.password = req.body.newPassword;
+  await user.save({ validateBeforeSave: false });
+  const accessToken = createToken({
+    id: user._id,
+  });
+  res
+    .status(200)
+    .cookie('jwt_token', accessToken)
+    .json({
+      statusCode: 200,
+      message: RESPONSE_MESSAGE.SUCCESS,
+      data: {
+        token: accessToken,
+      },
+    });
+};
+
 module.exports = {
   registerMentor,
   registerStudent,
   userLogin,
   logout,
+  updatePassword,
 };
