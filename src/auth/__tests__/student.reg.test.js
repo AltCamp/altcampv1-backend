@@ -35,10 +35,8 @@ describe('Auth: Student registration', () => {
         lastName: user.lastName,
         email: user.email,
         track: user.track,
+        accountType: 'Student',
         owner: expect.objectContaining({
-          matric: user.matric,
-          stack: user.stack,
-          gender: user.gender,
           _id: expect.any(String),
         }),
         _id: expect.any(String),

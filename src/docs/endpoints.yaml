@@ -12,33 +12,49 @@ servers:
           - http
           - https
       host:
-        default: the-altcamp.onrender.com # Production server
+        default: the-altcamp.onrender.com
         enum:
-          - localhost:8000 # Development server
-          - the-altcamp.onrender.com # Production server
+          - localhost:8000 # Local development server
+          - the-altcamp.onrender.com # Development server
+
+# --------------- AUTHENTICATION ---------------------------------------
 
 # --------------- AUTHENTICATION ---------------------------------------
 
 paths:
-  /auth/mentor:
+  /auth/register:
     post:
       tags:
         - Auth
-      summary: This route creates a mentor details in the database
+      summary: This route creates account details in the database
       requestBody:
-        description: Mentors' details passed in the body as a request
+        description: Account details passed in the body as a request
         content:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/signUpMentorRequest'
+                - $ref: '#/components/schemas/signUpAccountRequest'
+            examples:
+              Student signup:
+                $ref: '#/components/consolidated/examples/studentSignupRequest'
+              Student signup (as AltScholer):
+                $ref: '#/components/consolidated/examples/altStudentSignupRequest'
+              Mentor signup:
+                $ref: '#/components/consolidated/examples/mentorSignupRequest'
       responses:
         '201':
-          description: 'Mentor is Created'
+          description: 'Account is created successfully'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MentorCreated'
+                $ref: '#/components/schemas/StudentCreated'
+              examples:
+                Student signup:
+                  $ref: '#/components/consolidated/examples/studentSignUpResponse'
+                Student signup (as AltScholer):
+                  $ref: '#/components/consolidated/examples/altStudentSignUpResponse'
+                Mentor signup:
+                  $ref: '#/components/consolidated/examples/mentorSignUpResponse'
         '422':
           description: One or more user input not validated.
           content:
@@ -46,7 +62,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationError'
         '409':
-          description: There is a conflict error as User already exists
+          description: There is a conflict error as account already exists
           content:
             application/json:
               schema:
@@ -59,14 +75,19 @@ paths:
     post:
       tags:
         - Auth
-      summary: logs in user and return a message
+      summary: Logs in to user account
       requestBody:
-        description: Accepts Mentors' email and password into the body as a request
+        description: Accepts user's email and password into the body as a request
         content:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/loginMentorRequest'
+                - $ref: '#/components/schemas/loginAccountRequest'
+            examples:
+              Student login:
+                $ref: '#/components/consolidated/examples/studentLoginRequest'
+              Mentor login:
+                $ref: '#/components/consolidated/examples/mentorLoginRequest'
         required: true
       responses:
         '200':
@@ -74,12 +95,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserToken'
-          headers: {}
+                $ref: '#/components/schemas/StudentCreated'
+              examples:
+                Student login:
+                  $ref: '#/components/consolidated/examples/studentLoginResponse'
+                Mentor login:
+                  $ref: '#/components/consolidated/examples/mentorLoginResponse'
         '401':
           description: 'Token is  invalid. User not authorized'
           content:
-            application/json::
+            application/json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedError'
 
@@ -190,40 +215,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
 
-  /auth/student:
-    post:
-      tags:
-        - Auth
-      summary: This route creates a student details in the database
-      requestBody:
-        description: Students' details passed in the body as a request
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/signUpStudentRequest'
-      responses:
-        '201':
-          description: 'Student is Created'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StudentCreated'
-        '422':
-          description: One or more user input not validated.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-        '409':
-          description: There is a conflict error as User already exists
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConflictError'
-
-      deprecated: false
-      security: []
+  # ------------------ STUDENT -----------------------------
 
   # ------------------ STUDENT -----------------------------
 
@@ -759,6 +751,42 @@ paths:
 
 components:
   schemas:
+    signUpAccountRequest:
+      title: Sign up request
+      required:
+        - firstname
+        - lastname
+        - email
+        - track
+        - category
+        - password
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'
+          description: Password must contain uppercase, lowercase, number and special character
+        track:
+          type: string
+        category:
+          type: string
+        altSchoolId:
+          type: string
+      example:
+        firstname: Johan
+        lastname: Dolapo
+        email: johnny.dope@mail.com
+        password: Pkgj748_h!@
+        track: Product Design
+        category: Student
+        altSchoolId: ALT/SOD/023/0010
+
     signUpMentorRequest:
       title: sign up mentor request
       required:
@@ -924,8 +952,15 @@ components:
               type: string
             accountType:
               type: string
+              default: Mentor
             owner:
-              type: string
+              type: object
+              properties:
+                _id:
+                  type: string
+                __v:
+                  type: number
+                  defaul: 0
             createdAt:
               type: string
               default: '2023-01-01T00:10:52.567Z'
@@ -966,6 +1001,23 @@ components:
               type: string
               default: '2023-01-01T00:10:52.567Z'
 
+    loginAccountRequest:
+      title: Login account request
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+          pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'
+          description: password must contain uppercase, lowercase, number and special character
+      example:
+        email: johnny.dope@mail.com
+        password: Pkgj748_h!@
+
     loginMentorRequest:
       title: login mentor request
       required:
@@ -980,8 +1032,8 @@ components:
           pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'
           description: password must contain uppercase, lowercase, number and special character
       example:
-        email: test@gmail.com
-        password: Test12345%
+        email: johnny.dope@mail.com
+        password: Pkgj748_h!@
 
     updateMentorRequest:
       title: update mentor details
@@ -1130,58 +1182,63 @@ components:
     MentorCreated:
       type: object
       properties:
+        statusCode:
+          type: integer
+          default: 201
         message:
           type: string
-        user:
-          type: object
-          properties:
-            account:
-              type: object
-              properties:
-                firstname:
-                  type: string
-                lastname:
-                  type: string
-                email:
-                  type: string
-                track:
-                  type: string
-                accountType:
-                  type: string
-                owner:
-                  type: string
-                _id:
-                  type: string
-                createdAt:
-                  type: string
-                  default: '2023-01-01T00:10:52.567Z'
-                updatedAt:
-                  type: string
-                  default: '2023-01-01T00:10:52.567Z'
-        mentor:
-          type: object
-          properties:
-            specialization:
-              type: string
-            yearsOfExperience:
-              type: integer
-            _id:
-              type: string
         data:
           type: object
           properties:
             token:
               type: string
+            user:
+              type: object
+              properties:
+                account:
+                  type: object
+                  properties:
+                    firstname:
+                      type: string
+                    lastname:
+                      type: string
+                    email:
+                      type: string
+                    track:
+                      type: string
+                    accountType:
+                      type: string
+                    owner:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        __v:
+                          type: number
+                          defaul: 0
+                    _id:
+                      type: string
+                    createdAt:
+                      type: string
+                      default: '2023-01-01T00:10:52.567Z'
+                    updatedAt:
+                      type: string
+                      default: '2023-01-01T00:10:52.567Z'
 
     StudentCreated:
       type: object
       properties:
+        statusCode:
+          type: integer
+          default: 201
         message:
           type: string
-        user:
+        data:
           type: object
           properties:
-            account:
+            token:
+              type: string
+            user:
               type: object
               properties:
                 firstname:
@@ -1194,8 +1251,17 @@ components:
                   type: string
                 accountType:
                   type: string
+                  default: Student
                 owner:
-                  type: integer
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    altSchoolId:
+                      type: string
+                    __v:
+                      type: number
+                      defaul: 0
                 _id:
                   type: string
                 gender:
@@ -1206,22 +1272,6 @@ components:
                 updatedAt:
                   type: string
                   default: '2023-01-01T00:10:52.567Z'
-        student:
-          type: object
-          properties:
-            matric:
-              type: string
-            stack:
-              type: string
-            gender:
-              type: string
-            _id:
-              type: string
-        data:
-          type: object
-          properties:
-            token:
-              type: string
 
     UserToken:
       type: object
@@ -1579,6 +1629,165 @@ components:
                 type: number
               updatedAt:
                 type: number
+
+  # ----------------------------------------------------
+  consolidated:
+    examples:
+      mentorLoginRequest:
+        value:
+          email: lilylearn@mail.com
+          password: 8&jsfjhJD(@
+
+      studentLoginRequest:
+        value:
+          email: johnny.dope@mail.com
+          password: Pkgj748_h!@
+
+      mentorLoginResponse:
+        value:
+          statusCode: 200
+          message: Request Successful!
+          data:
+            token: Bearer token
+            user:
+              firstName: Lily
+              lastName: Olaniyan
+              email: lilylearn@mail.com
+              track: Frontend Engineering
+              accountType: Mentor
+              owner:
+                _id: some ID
+                __v: 0
+              _id: some ID
+              createdAt: '2023-01-01T00:10:52.567Z'
+              updatedAt: '2023-01-01T00:10:52.567Z'
+
+      studentLoginResponse:
+        value:
+          statusCode: 200
+          message: Request Successful!
+          data:
+            token: Bearer token
+            user:
+              firstName: Johan
+              lastName: Dolapo
+              email: johnny.dope@mail.com
+              track: Frontend Engineering
+              accountType: Student
+              owner:
+                _id: some ID
+                __v: 0
+              _id: some ID
+              createdAt: '2023-01-01T00:10:52.567Z'
+              updatedAt: '2023-01-01T00:10:52.567Z'
+
+      altStudentLoginResponse:
+        value:
+          statusCode: 200
+          message: Request Successful!
+          data:
+            token: Bearer token
+            user:
+              firstName: Johan
+              lastName: Dolapo
+              email: johnny.dope@mail.com
+              track: Frontend Engineering
+              accountType: Student
+              owner:
+                _id: some ID
+                altSchoolId: 'ALT/SOD/023/0010'
+                __v: 0
+              _id: some ID
+              createdAt: '2023-01-01T00:10:52.567Z'
+              updatedAt: '2023-01-01T00:10:52.567Z'
+
+      mentorSignUpResponse:
+        value:
+          statusCode: 201
+          message: Request Successful!
+          data:
+            token: Bearer token
+            user:
+              firstName: Lily
+              lastName: Olaniyan
+              email: lilylearn@mail.com
+              track: Frontend Engineering
+              accountType: Mentor
+              owner:
+                _id: some ID
+                __v: 0
+              _id: some ID
+              createdAt: '2023-01-01T00:10:52.567Z'
+              updatedAt: '2023-01-01T00:10:52.567Z'
+
+      studentSignUpResponse:
+        value:
+          statusCode: 201
+          message: Request Successful!
+          data:
+            token: Bearer token
+            user:
+              firstName: Johan
+              lastName: Dolapo
+              email: johnny.dope@mail.com
+              track: Frontend Engineering
+              accountType: Student
+              owner:
+                _id: some ID
+                __v: 0
+              _id: some ID
+              createdAt: '2023-01-01T00:10:52.567Z'
+              updatedAt: '2023-01-01T00:10:52.567Z'
+
+      altStudentSignUpResponse:
+        value:
+          statusCode: 201
+          message: Request Successful!
+          data:
+            token: Bearer token
+            user:
+              firstName: Johan
+              lastName: Dolapo
+              email: johnny.dope@mail.com
+              track: Frontend Engineering
+              accountType: Student
+              owner:
+                _id: some ID
+                altSchoolId: 'ALT/SOD/023/0010'
+                __v: 0
+              _id: some ID
+              createdAt: '2023-01-01T00:10:52.567Z'
+              updatedAt: '2023-01-01T00:10:52.567Z'
+
+      mentorSignupRequest:
+        value:
+          firstName: Lily
+          lastName: Olaniyan
+          email: lilylearn@mail.com
+          password: 8&jsfjhJD(@
+          track: Frontend Engineering
+          category: Mentor
+
+      altStudentSignupRequest:
+        value:
+          firstName: Johan
+          lastName: Dolapo
+          email: johnny.dope@mail.com
+          password: Pkgj748_h!@
+          track: Frontend Engineering
+          category: Student
+          altSchoolId: 'ALT/SOD/023/0010'
+
+      studentSignupRequest:
+        value:
+          firstName: Johan
+          lastName: Dolapo
+          email: johnny.dope@mail.com
+          password: Pkgj748_h!@
+          track: Frontend Engineering
+          category: Student
+
+  # ----------------------------------------------------
 
   securitySchemes:
     bearer:
