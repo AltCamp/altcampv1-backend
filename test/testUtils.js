@@ -61,6 +61,7 @@ function createUserAsMentor() {
   const account = {
     ...createAccount(data, mentor),
     accountType: ACCOUNT_TYPES.MENTOR,
+    category: ACCOUNT_TYPES.MENTOR,
   };
 
   return { account, user: mentor };
@@ -75,6 +76,7 @@ function createUserAsStudent() {
   const account = {
     ...createAccount(data, student),
     accountType: ACCOUNT_TYPES.STUDENT,
+    category: ACCOUNT_TYPES.STUDENT,
   };
 
   return { account, user: student };
@@ -85,8 +87,6 @@ function createUserAsStudent() {
  */
 function createMentor() {
   return {
-    specialization: faker.helpers.arrayElement(track),
-    yearsOfExperience: faker.random.numeric(),
     _id: faker.database.mongodbObjectId(),
   };
 }
@@ -95,12 +95,24 @@ function createMentor() {
  * Create a student entity
  * @param {{string}} {sex} - The sex of the student entity to create ({ sex: 'male' } || { sex: 'female' })
  */
-function createStudent({ sex }) {
+
+function getSchoolId() {
+  const characters = 'EDP'.split('');
+  const numbers = '0123456789'.split('');
+  const altSchoolId = `ALT/SO${faker.helpers.arrayElement(
+    characters
+  )}/022/${faker.helpers.arrayElement(numbers)}${faker.helpers.arrayElement(
+    numbers
+  )}${faker.helpers.arrayElement(numbers)}${faker.helpers.arrayElement(
+    numbers
+  )}`;
+  return altSchoolId;
+}
+
+function createStudent() {
   return {
     _id: faker.database.mongodbObjectId(),
-    matric: faker.datatype.uuid(),
-    stack: faker.random.word(),
-    gender: sex,
+    altSchoolId: getSchoolId(),
   };
 }
 

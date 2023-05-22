@@ -8,6 +8,7 @@ require('express-async-errors');
 const indexRouter = require('./routes/index');
 
 const app = express();
+
 app.use(
   cors({
     origin: [
@@ -29,7 +30,6 @@ app.get('/', (req, res) => {
 
 app.use('/', indexRouter);
 
-// Error handler
 app.use(errorHandler);
 
 module.exports = app;

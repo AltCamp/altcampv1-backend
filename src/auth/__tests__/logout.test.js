@@ -22,8 +22,6 @@ describe('Auth: Logout', () => {
       user: req.user,
     });
   });
-  // git delete branch command
-  //  branch-name
 
   const user = helper.generateFreshMentorData();
 

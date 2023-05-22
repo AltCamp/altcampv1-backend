@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { ACCOUNT_TYPES } = require('../constant');
+const { ACCOUNT_TYPES, GENDER, REGEX_PATTERNS } = require('../constant');
 const bcrypt = require('bcrypt');
 const { UnprocessableEntity } = require('../utils/customError');
 
@@ -31,6 +31,10 @@ const accountSchema = new Schema(
     track: {
       type: String,
       required: true,
+    },
+    gender: {
+      type: String,
+      enum: Object.values(GENDER),
     },
     accountType: {
       type: String,
@@ -93,7 +97,6 @@ async function hashPassword(user) {
 }
 
 function validatePassword(password) {
-  const pattern =
-    /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}/;
+  const pattern = REGEX_PATTERNS.PASSWORD;
   return pattern.test(password);
 }
