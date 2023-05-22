@@ -6,11 +6,6 @@ on:
   pull_request: 
     branches: [main, dev]
 
-env:
-  TEST_CLOUDINARY_CLOUD_NAME: ${{ secrets.TEST_CLOUDINARY_CLOUD_NAME }}
-  TEST_CLOUDINARY_API_KEY: ${{ secrets.TEST_CLOUDINARY_API_KEY }}
-  TEST_CLOUDINARY_API_SECRET: ${{ secrets.TEST_CLOUDINARY_API_SECRET }}
-
 jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-20.04
@@ -25,7 +20,18 @@ jobs:
         run: npm run format:check
       - name: Lint code base
         run: npm run lint
-      - name: Prepare .env
-        run: cp example.env .env
+      - name: Set up environment variables
+        run: |
+          echo 'PORT=8000' >> '$GITHUB_ENV'
+          echo 'NAME=Study Buddy' >> '$GITHUB_ENV'
+          echo 'APP_ENV=development' >> '$GITHUB_ENV'
+          echo 'APP_FRONTEND_DOMAIN=localhost:3000' >> '$GITHUB_ENV'
+          echo 'DATABASE_URL=mongodb://localhost:27017/study-buddy' >> '$GITHUB_ENV'
+          echo 'TEST_DATABASE_URL=mongodb://localhost:27017/study-buddy-test' >> '$GITHUB_ENV'
+          echo 'JWT_SECRET=${{ secrets.JWT_SECRET }}' >> '$GITHUB_ENV'
+          echo 'JWT_EXPIRY=${{ secrets.JWT_EXPIRY }}' >> '$GITHUB_ENV'
+          echo 'TEST_CLOUDINARY_CLOUD_NAME=${{ secrets.TEST_CLOUDINARY_CLOUD_NAME }}' >> '$GITHUB_ENV'
+          echo 'TEST_CLOUDINARY_API_KEY=${{ secrets.TEST_CLOUDINARY_API_KEY }}' >> '$GITHUB_ENV'
+          echo 'TEST_CLOUDINARY_API_SECRET=${{ secrets.TEST_CLOUDINARY_API_SECRET }}' >> '$GITHUB_ENV'
       - name: Run tests
         run: npm run test
