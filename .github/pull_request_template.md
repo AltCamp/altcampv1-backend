@@ -11,7 +11,8 @@ This PR...
 
 - [ ] tested locally
 - [ ] added new dependencies
-- [ ] updated the docs
+- [ ] updated the Swagger API docs
+- [ ] updated the Postman collection
 - [ ] added a test
 - [ ] linter passes
 - [ ] format check passes
