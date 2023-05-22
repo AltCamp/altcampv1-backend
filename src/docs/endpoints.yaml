@@ -19,6 +19,8 @@ servers:
 
 # --------------- AUTHENTICATION ---------------------------------------
 
+# --------------- AUTHENTICATION ---------------------------------------
+
 paths:
   /auth/register:
     post:
@@ -34,11 +36,11 @@ paths:
                 - $ref: '#/components/schemas/signUpAccountRequest'
             examples:
               Student signup:
-                $ref: '#/components/gabos/examples/studentSignupRequest'
+                $ref: '#/components/consolidated/examples/studentSignupRequest'
               Student signup (as AltScholer):
-                $ref: '#/components/gabos/examples/altStudentSignupRequest'
+                $ref: '#/components/consolidated/examples/altStudentSignupRequest'
               Mentor signup:
-                $ref: '#/components/gabos/examples/mentorSignupRequest'
+                $ref: '#/components/consolidated/examples/mentorSignupRequest'
       responses:
         '201':
           description: 'Account is created successfully'
@@ -48,11 +50,11 @@ paths:
                 $ref: '#/components/schemas/StudentCreated'
               examples:
                 Student signup:
-                  $ref: '#/components/gabos/examples/studentSignUpResponse'
+                  $ref: '#/components/consolidated/examples/studentSignUpResponse'
                 Student signup (as AltScholer):
-                  $ref: '#/components/gabos/examples/altStudentSignUpResponse'
+                  $ref: '#/components/consolidated/examples/altStudentSignUpResponse'
                 Mentor signup:
-                  $ref: '#/components/gabos/examples/mentorSignUpResponse'
+                  $ref: '#/components/consolidated/examples/mentorSignUpResponse'
         '422':
           description: One or more user input not validated.
           content:
@@ -83,9 +85,9 @@ paths:
                 - $ref: '#/components/schemas/loginAccountRequest'
             examples:
               Student login:
-                $ref: '#/components/gabos/examples/studentLoginRequest'
+                $ref: '#/components/consolidated/examples/studentLoginRequest'
               Mentor login:
-                $ref: '#/components/gabos/examples/mentorLoginRequest'
+                $ref: '#/components/consolidated/examples/mentorLoginRequest'
         required: true
       responses:
         '200':
@@ -96,9 +98,9 @@ paths:
                 $ref: '#/components/schemas/StudentCreated'
               examples:
                 Student login:
-                  $ref: '#/components/gabos/examples/studentLoginResponse'
+                  $ref: '#/components/consolidated/examples/studentLoginResponse'
                 Mentor login:
-                  $ref: '#/components/gabos/examples/mentorLoginResponse'
+                  $ref: '#/components/consolidated/examples/mentorLoginResponse'
         '401':
           description: 'Token is  invalid. User not authorized'
           content:
@@ -212,6 +214,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+
+  # ------------------ STUDENT -----------------------------
 
   # ------------------ STUDENT -----------------------------
 
@@ -1260,6 +1264,8 @@ components:
                       defaul: 0
                 _id:
                   type: string
+                gender:
+                  type: string
                 createdAt:
                   type: string
                   default: '2023-01-01T00:10:52.567Z'
@@ -1624,8 +1630,8 @@ components:
               updatedAt:
                 type: number
 
-  # ------------------------ GABOS ----------------------------
-  gabos:
+  # ----------------------------------------------------
+  consolidated:
     examples:
       mentorLoginRequest:
         value:
@@ -1781,7 +1787,7 @@ components:
           track: Frontend Engineering
           category: Student
 
-  # ------------------------ GABOS ----------------------------
+  # ----------------------------------------------------
 
   securitySchemes:
     bearer:
