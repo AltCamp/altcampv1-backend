@@ -33,5 +33,9 @@ jobs:
           echo "TEST_CLOUDINARY_CLOUD_NAME=${{ secrets.TEST_CLOUDINARY_CLOUD_NAME }}" >> $GITHUB_ENV
           echo "TEST_CLOUDINARY_API_KEY=${{ secrets.TEST_CLOUDINARY_API_KEY }}" >> $GITHUB_ENV
           echo "TEST_CLOUDINARY_API_SECRET=${{ secrets.TEST_CLOUDINARY_API_SECRET }}" >> $GITHUB_ENV
+      - name: Print environment variables
+        run: |
+          echo "JWT_SECRET: $JWT_SECRET"
+          echo "JWT_KEY: $JWT_KEY"
       - name: Run tests
         run: npm run test
