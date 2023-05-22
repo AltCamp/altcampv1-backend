@@ -1,7 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const limiter = require('./middleware/rateLimit.js');
 const { errorHandler } = require('./utils/errorHandler');
 const cors = require('cors');
 require('express-async-errors');
@@ -24,7 +23,6 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(limiter());
 
 app.get('/', (req, res) => {
   res.json({ hello: 'Welcome to AltCamp' });

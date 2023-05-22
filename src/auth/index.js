@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { registerAccount, userLogin, userLogout } = require('./authController');
+const limiter = require('../../middleware/rateLimit');
 
 const { registerMentor, registerStudent } = require('./auth');
 const {
@@ -20,8 +21,9 @@ router.post(
   validatorMiddleware(createStudentValidator),
   registerStudent
 );
-router.post('/login', validatorMiddleware(loginValidator), userLogin);
 router.post('/logout', userLogout);
+router.use(limiter());
+router.post('/login', validatorMiddleware(loginValidator), userLogin);
 router.post(
   '/register',
   validatorMiddleware(createAccountValidator),

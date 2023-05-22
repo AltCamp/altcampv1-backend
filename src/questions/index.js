@@ -6,17 +6,26 @@ const {
   updateQuestionValidator,
 } = require('./questionsValidator');
 const validatorMiddleware = require('../../middleware/validator');
+const limiter = require('../../middleware/rateLimit');
 
 router.use(verifyUser);
 router
   .route('/')
   .get(questions.getAllQuestions)
-  .post(validatorMiddleware(createQuestionValidator), questions.createQuestion);
+  .post(
+    limiter(),
+    validatorMiddleware(createQuestionValidator),
+    questions.createQuestion
+  );
 
 router
   .route('/:id')
   .get(questions.getQuestion)
-  .patch(validatorMiddleware(updateQuestionValidator), questions.updateQuestion)
+  .patch(
+    limiter(),
+    validatorMiddleware(updateQuestionValidator),
+    questions.updateQuestion
+  )
   .delete(verifyUser, questions.deleteQuestion);
 
 router.route('/:id/upvote').patch(questions.upvoteQuestion);
