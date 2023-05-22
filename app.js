@@ -1,7 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const limiter = require('./src/rateLimit/rateLimit')
+const limiter = require('./middleware/rateLimit.js');
 const { errorHandler } = require('./utils/errorHandler');
 const cors = require('cors');
 require('express-async-errors');
@@ -9,9 +9,6 @@ require('express-async-errors');
 const indexRouter = require('./routes/index');
 
 const app = express();
-
-// applying rate limiting middleware to all requests
-app.use(limiter);
 
 app.use(
   cors({
@@ -27,6 +24,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(limiter());
 
 app.get('/', (req, res) => {
   res.json({ hello: 'Welcome to AltCamp' });
@@ -34,7 +32,6 @@ app.get('/', (req, res) => {
 
 app.use('/', indexRouter);
 
-// Error handler
 app.use(errorHandler);
 
 module.exports = app;
