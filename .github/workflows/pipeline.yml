@@ -10,6 +10,18 @@ jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-20.04
     environment: Pre-deployment
+    env:
+      PORT: 8000
+      NAME: Study Buddy
+      APP_ENV: development
+      APP_FRONTEND_DOMAIN: localhost:3000
+      DATABASE_URL: mongodb://localhost:27017/study-buddy
+      TEST_DATABASE_URL: mongodb://localhost:27017/study-buddy-test
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_EXPIRY: ${{ secrets.JWT_EXPIRY }}
+      TEST_CLOUDINARY_CLOUD_NAME: ${{ secrets.TEST_CLOUDINARY_CLOUD_NAME }}
+      TEST_CLOUDINARY_API_KEY: ${{ secrets.TEST_CLOUDINARY_API_KEY }}
+      TEST_CLOUDINARY_API_SECRET: ${{ secrets.TEST_CLOUDINARY_API_SECRET }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -17,29 +29,11 @@ jobs:
           node-version: "16"
       - name: Install dependencies
         run: npm install
+      - name: Test env
+        run: "echo testing env: $JWT_SECRET"
       - name: Check code style
         run: npm run format:check
       - name: Lint code base
         run: npm run lint
-      - name: Set up env variables
-        run: |
-          echo "JWT_SECRET=$JWT_SECRET" >> $GITHUB_ENV
-          echo "JWT_EXPIRY=$JWT_EXPIRY" >> $GITHUB_ENV
-          echo "TEST_CLOUDINARY_CLOUD_NAME=$TEST_CLOUDINARY_CLOUD_NAME" >> $GITHUB_ENV
-          echo "TEST_CLOUDINARY_API_KEY=$TEST_CLOUDINARY_API_KEY" >> $GITHUB_ENV
-          echo "TEST_CLOUDINARY_API_SECRET=$TEST_CLOUDINARY_API_SECRET" >> $GITHUB_ENV
-        env:
-          PORT: 8000
-          NAME: Study Buddy
-          APP_ENV: development
-          APP_FRONTEND_DOMAIN: localhost:3000
-          DATABASE_URL: mongodb://localhost:27017/study-buddy
-          TEST_DATABASE_URL: mongodb://localhost:27017/study-buddy-test
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          JWT_EXPIRY: ${{ secrets.JWT_EXPIRY }}
-          TEST_CLOUDINARY_CLOUD_NAME: ${{ secrets.TEST_CLOUDINARY_CLOUD_NAME }}
-          TEST_CLOUDINARY_API_KEY: ${{ secrets.TEST_CLOUDINARY_API_KEY }}
-          TEST_CLOUDINARY_API_SECRET: ${{ secrets.TEST_CLOUDINARY_API_SECRET }}
-
       - name: Run tests
         run: npm run test
