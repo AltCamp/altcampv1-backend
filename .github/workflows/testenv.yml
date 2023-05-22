@@ -1,0 +1,23 @@
+name: Test environment variables
+
+on:
+  push:
+    branches: [main, dev]
+
+env:
+  TEST_PORT: ${{ secrets.TEST_PORT }}
+  TEST_HOST: ${{ secrets.TEST_HOST }}
+
+jobs:
+  check_env:
+    runs-on: ubuntu-20.04
+    steps:
+      # - name: Checkout code
+      #   uses: actions/checkout@v3
+      - name: Check environment variables
+        run: |
+          echo "TEST_PORT: $TEST_PORT"
+          echo "TEST_HOST: $TEST_HOST"
+          echo ${{ secrets.TEST_PORT}}
+          echo ${{ secrets.TEST_HOST}}
+        run: npm run check_env
