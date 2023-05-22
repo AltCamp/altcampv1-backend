@@ -10,8 +10,8 @@ jobs:
   deployment_pipeline:
     runs-on: ubuntu-20.04
 
-    environment:
-      name: Pre-deployment
+    # environment:
+    #   name: Pre-deployment
 
     steps:
       - uses: actions/checkout@v3
