@@ -1,4 +1,5 @@
 const rateLimiter = require('express-rate-limit');
+const responseHandler = require('../utils/responseHandler');
 
 /**
  * Sets up rate limiting for requests
@@ -13,6 +14,14 @@ function limiter(windowMs = 600000, max = 50) {
     max,
     standardHeaders: true,
     legacyHeaders: false,
+    message: (req, res) => {
+      return new responseHandler(
+        res,
+        undefined,
+        429,
+        'Too many requests, please try again later'
+      );
+    },
   });
 }
 
