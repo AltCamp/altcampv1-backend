@@ -42,6 +42,7 @@ describe('Auth: Account registration', () => {
         __v: 0,
         altSchoolId: user.altSchoolId,
       }),
+      profilePicture: expect.any(String),
       _id: expect.any(String),
       createdAt: expect.any(String),
       updatedAt: expect.any(String),
