@@ -5,7 +5,6 @@ const { validateImageInput, deleteFile } = require('./helper');
 
 async function uploadProfilePicture(req, res, next) {
   try {
-    console.log('req.file', req.file);
     const error = validateImageInput(req.body, req.file);
 
     if (error) {
