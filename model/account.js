@@ -24,6 +24,10 @@ const accountSchema = new Schema(
       required: true,
       select: false,
     },
+    profilePicture: {
+      type: String,
+      default: '',
+    },
     track: {
       type: String,
       required: true,

@@ -1,3 +1,5 @@
+const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
 const { faker } = require('@faker-js/faker');
 const { ACCOUNT_TYPES } = require('../constant');
 const track = [
@@ -195,9 +197,21 @@ function createUserForReq(type) {
   };
 }
 
+function deleteFolder(path) {
+  fs.rm(path, { recursive: true, force: true }, (err) => {
+    if (err) throw err;
+  });
+}
+
+function clearFolderInCdn(folderName) {
+  cloudinary.api.delete_resources_by_prefix(folderName);
+}
+
 module.exports = {
   createUser,
   createUserForReq,
   generateQuestion,
   generateAnswer,
+  deleteFolder,
+  clearFolderInCdn,
 };
