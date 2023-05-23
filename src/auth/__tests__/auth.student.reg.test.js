@@ -123,7 +123,7 @@ describe('Auth: Account registration', () => {
           ...user,
           track: '',
         });
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(422);
       expect(response.body).toHaveProperty('message');
     });
 
