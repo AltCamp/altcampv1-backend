@@ -14,9 +14,6 @@ describe('Auth: Account registration', () => {
     await dbDisconnect();
   });
 
-  // const mentor = generateFreshMentorData();
-  // console.log('🚀 ~ file: auth.reg.test.js:18 ~ mentor:', mentor);
-
   const user = generateFreshMentorData();
 
   const url = '/auth/register';
@@ -119,7 +116,7 @@ describe('Auth: Account registration', () => {
           ...user,
           track: '',
         });
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(422);
       expect(response.body).toHaveProperty('message');
     });
 
