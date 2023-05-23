@@ -22,7 +22,7 @@ afterAll(async () => {
   await dbCleanUP();
   await dbDisconnect();
   deleteFolder('src/accounts/tmp/uploads');
-  clearFolderInCdn('profile-pictures');
+  clearFolderInCdn('test/images/profile-pictures');
 });
 
 describe('Upload profile picture', () => {

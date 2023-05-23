@@ -59,7 +59,7 @@ async function uploadProfilePicture({ id, filepath }) {
     }
 
     const cloudinaryUpload = await cloudinary.uploader.upload(filepath, {
-      public_id: `profile-pictures/${id}`,
+      public_id: `${cloudinaryConfig.folder}/images/profile-pictures/${id}`,
     });
 
     account.profilePicture = cloudinaryUpload.secure_url;
