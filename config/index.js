@@ -34,5 +34,6 @@ module.exports = {
       process.env.APP_ENV === 'production'
         ? process.env.CLOUDINARY_API_SECRET
         : process.env.TEST_CLOUDINARY_API_SECRET,
+    folder: process.env.APP_ENV === 'production' ? 'prod' : 'test',
   },
 };
