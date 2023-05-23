@@ -25,7 +25,7 @@ async function uploadProfilePicture(req, res, next) {
 
     new responseHandler(res, account, 200, RESPONSE_MESSAGE.SUCCESS);
   } catch (error) {
-    if (req.file){
+    if (req.file) {
       deleteFile(req.file.path);
     }
     return next(error);
