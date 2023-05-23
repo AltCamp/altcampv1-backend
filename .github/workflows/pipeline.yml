@@ -7,20 +7,32 @@ on:
     branches: [main, dev]
 
 jobs:
-  simple_deployment_pipeline:
+  deployment_pipeline:
     runs-on: ubuntu-20.04
+
+    environment:
+      name: Pre-deployment
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
+
       - name: Install dependencies
         run: npm install
+
       - name: Check code style
         run: npm run format:check
+
       - name: Lint code base
         run: npm run lint
-      - name: Prepare .env
-        run: cp example.env .env
+
       - name: Run tests
+        env:
+          TEST_CLOUDINARY_CLOUD_NAME: ${{ secrets.TEST_CLOUDINARY_CLOUD_NAME }}
+          TEST_CLOUDINARY_API_KEY: ${{ secrets.TEST_CLOUDINARY_API_KEY }}
+          TEST_CLOUDINARY_API_SECRET: ${{ secrets.TEST_CLOUDINARY_API_SECRET }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRY: ${{ secrets.JWT_EXPIRY }}
         run: npm run test
