@@ -3,6 +3,7 @@ const app = require('../../../app');
 const supertest = require('supertest');
 const api = supertest(app);
 const helper = require('../../../test/testHelper');
+const { ACCOUNT_TYPES } = require('../../../constant');
 
 let token;
 
@@ -20,9 +21,27 @@ beforeAll(async () => {
   await Promise.all(entities);
 });
 
+describe('GET requests', () => {
+  it('to /accounts returns student accounts', async () => {
+    const response = await api.get('/accounts').expect(200);
+
+    response.body.data.forEach(({ accountType }) => {
+      expect(accountType).toBe('Student');
+    });
+  });
+
+  it('to /accounts?category=Student returns student accounts', async () => {
+    const response = await api.get('/accounts').expect(200);
+
+    response.body.data.forEach(({ accountType }) => {
+      expect(accountType).toBe('Student');
+    });
+  });
+});
+
 describe('Updating a student', () => {
   it('with profile while not logged in should fail', async () => {
-    const response = await api.put('/students/update-profile').send({
+    const response = await api.put('/accounts').send({
       firstName: 'Musa',
       lastName: 'Mesly',
     });
@@ -35,10 +54,24 @@ describe('Updating a student', () => {
     await login(user);
 
     const response = await api
-      .put('/students/update-profile')
+      .put('/accounts')
       .set('Authorization', `Bearer ${token}`)
       .send({
         randomProp: 'Musa',
+      });
+
+    expect(response.status).toBe(422);
+  });
+
+  it('with profile should fail if payload contains invalid properties', async () => {
+    const user = helper.accountsAsJson[0];
+    await login(user);
+
+    const response = await api
+      .put('/accounts')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        track: 'Bango',
       });
 
     expect(response.status).toBe(422);
@@ -50,14 +83,45 @@ describe('Updating a student', () => {
 
     const firstName = 'Updated';
     const lastName = 'Elections';
+    const track = 'Product Marketing';
 
     const response = await api
-      .put('/students/update-profile')
+      .put('/accounts')
       .set('Authorization', `Bearer ${token}`)
-      .send({ firstName, lastName });
+      .send({ firstName, lastName, track });
 
     expect(response.body.data).toHaveProperty('firstName', firstName);
     expect(response.body.data).toHaveProperty('lastName', lastName);
+    expect(response.body.data).toHaveProperty(
+      'accountType',
+      ACCOUNT_TYPES.STUDENT
+    );
+  });
+
+  it('with biography is successful', async () => {
+    const user = helper.accountsAsJson[1];
+    await login(user);
+
+    const bio = 'I have the Midas touch. Midas was named after me.';
+
+    const response = await api
+      .put('/accounts/bio')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ bio });
+
+    expect(response.body.data).toHaveProperty('bio', bio);
+    expect(response.body.data).toHaveProperty(
+      'accountType',
+      ACCOUNT_TYPES.STUDENT
+    );
+  });
+
+  it('with biography while not logged is unsuccessful', async () => {
+    const bio = 'I have the Midas touch. Midas was named after me.';
+
+    const response = await api.put('/accounts/bio').send({ bio });
+
+    expect(response.status).toBe(401);
   });
 
   /**
@@ -68,7 +132,7 @@ describe('Updating a student', () => {
     const password = 'ASecurePassword@1234';
 
     const response = await api
-      .put('/students/change-password')
+      .put('/accounts/password')
       .set('Authorization', `Bearer ${token}`)
       .send({ password });
 
@@ -80,6 +144,24 @@ describe('Updating a student', () => {
 
     expect(loginAttempt.status).toBe(200);
     expect(loginAttempt.body.data).toHaveProperty('token');
+    expect(response.body.data).toHaveProperty(
+      'accountType',
+      ACCOUNT_TYPES.STUDENT
+    );
+  });
+
+  it('with secure password and invalid parameters is not successful', async () => {
+    const user = helper.accountsAsJson[4];
+    await login(user);
+
+    const password = 'ASecurePassword@1234';
+
+    const response = await api
+      .put('/accounts/password')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ password, retypePassword: 'password' });
+
+    expect(response.status).toBe(422);
   });
 
   it('with unsecure password is not successful', async () => {
@@ -89,12 +171,12 @@ describe('Updating a student', () => {
     const password = 'AnunSecurePassword';
 
     await api
-      .put('/students/change-password')
+      .put('/accounts/password')
       .set('Authorization', `Bearer ${token}`)
       .send({ password })
       .expect(422);
   });
-   */
+  **/
 });
 
 afterAll(async () => {
