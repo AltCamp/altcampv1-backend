@@ -31,4 +31,17 @@ async function uploadProfilePicture(req, res, next) {
   }
 }
 
-module.exports = { uploadProfilePicture };
+async function deleteAccount(req, res) {
+  const { password } = req.body;
+  const deletedAccount = await accountsService.deleteAccount({
+    id: req.user.id,
+    password,
+  });
+
+  if (!deletedAccount) {
+    throw new NotFoundError('Wrong Password');
+  }
+
+  new responseHandler(res, deletedAccount, 200, RESPONSE_MESSAGE.SUCCESS);
+}
+module.exports = { uploadProfilePicture, deleteAccount };

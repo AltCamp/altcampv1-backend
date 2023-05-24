@@ -11,14 +11,12 @@ const Model = {
   mentor: Mentor,
   student: Student,
 };
-
+const { validateCredentials } = require('../../utils/helper');
 cloudinary.config({
   cloud_name: cloudinaryConfig.name,
   api_key: cloudinaryConfig.key,
   api_secret: cloudinaryConfig.secret,
 });
-const { omit } = require('lodash');
-const bcrypt = require('bcrypt');
 
 async function accountExists(email) {
   const account = await Account.findOne({ email });
@@ -102,21 +100,16 @@ async function changeAccountPassword({ id, password }) {
   return account;
 }
 
-async function deactivateAccount({ id, password }) {
+async function deleteAccount({ id, password }) {
   let account = await Account.findById(id).populate('owner');
 
-  try {
-    if (await bcrypt.compare(password, account.password)) {
-      account = account.remove();
-    } else {
-      account = 'Wrong Password';
-    }
-  } catch {
-    res.status(500).send();
+  let deletedAccount = await validateCredentials(account.email, password);
+
+  if (!deletedAccount) {
+    throw new UnAuthorizedError('Invalid credentials!');
   }
-  if (!account) {
-    return false;
-  }
+  account.isDeleted = true;
+  account.save();
 
   return account;
 }
@@ -142,5 +135,5 @@ module.exports = {
   getStudents,
   updateAccount,
   uploadProfilePicture,
-  deactivateAccount,
+  deleteAccount,
 };

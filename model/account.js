@@ -22,7 +22,7 @@ const accountSchema = new Schema(
     password: {
       type: String,
       required: true,
-      // select: false,
+      select: false,
     },
     profilePicture: {
       type: String,
@@ -40,6 +40,10 @@ const accountSchema = new Schema(
       type: String,
       enum: Object.values(ACCOUNT_TYPES),
       default: ACCOUNT_TYPES.STUDENT,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
     owner: {
       type: mongoose.Types.ObjectId,
