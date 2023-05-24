@@ -17,6 +17,8 @@ cloudinary.config({
   api_key: cloudinaryConfig.key,
   api_secret: cloudinaryConfig.secret,
 });
+const { omit } = require('lodash');
+const bcrypt = require('bcrypt');
 
 async function accountExists(email) {
   const account = await Account.findOne({ email });
@@ -100,6 +102,25 @@ async function changeAccountPassword({ id, password }) {
   return account;
 }
 
+async function deactivateAccount({ id, password }) {
+  let account = await Account.findById(id).populate('owner');
+
+  try {
+    if (await bcrypt.compare(password, account.password)) {
+      account = account.remove();
+    } else {
+      account = 'Wrong Password';
+    }
+  } catch {
+    res.status(500).send();
+  }
+  if (!account) {
+    return false;
+  }
+
+  return account;
+}
+
 async function createAccount({ category, altSchoolId, ...payload }) {
   const obj = (altSchoolId && { altSchoolId }) || {};
   const { _id: owner } = await Model[category.toLowerCase()].create(obj);
@@ -121,4 +142,5 @@ module.exports = {
   getStudents,
   updateAccount,
   uploadProfilePicture,
+  deactivateAccount,
 };
