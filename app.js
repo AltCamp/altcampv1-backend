@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.get('/', (req, res) => {
-  res.json({ hello: 'Welcome to AltCamp' });
+  res.redirect('https://altcampv1.netlify.app');
 });
 
 app.use('/', indexRouter);
