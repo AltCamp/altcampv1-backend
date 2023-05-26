@@ -24,11 +24,15 @@ afterAll(async () => {
 
 describe('Delete Account', () => {
   it('should return error when password is missing', async () => {
-    const response = await api.delete('/accounts/delete-account');
+    const response = await api
+      .delete('/accounts/delete-account')
+      .set('Authorization', `Bearer ${token}`);
+
     expect(response.status).toBe(422);
+    // expect(response.body.message).toBe("\"password\" is required");
   });
 
-  it('should pass when correct password is provided', async () => {
+  it('should "delete" an account and return isDeleted as true', async () => {
     const response = await api
       .delete('/accounts/delete-account')
       .set('Authorization', `Bearer ${token}`)
@@ -43,6 +47,7 @@ describe('Delete Account', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({ password: '8XLxWgzXSPh9ABS' });
     expect(response.status).toBe(401);
+    expect(response.body.message).toBe('Incorrect Password!');
   });
 });
 

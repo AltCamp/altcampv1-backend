@@ -37,6 +37,7 @@ async function deleteAccount(req, res, next) {
     id: req.user.id,
     password,
   });
+
   if (deletedAccount instanceof Error) {
     next(deletedAccount);
     return;

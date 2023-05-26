@@ -29,7 +29,7 @@ const imageValidator = Joi.object({
 
 const deleteAccountValidator = Joi.object({
   password: Joi.string().required().messages({
-    'string.empty': 'Password is required',
+    'string.empty': 'Password is required'
   }),
 });
 
