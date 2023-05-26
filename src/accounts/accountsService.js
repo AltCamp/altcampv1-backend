@@ -4,7 +4,7 @@ const { cloudinary: cloudinaryConfig } = require('../../config');
 const { ACCOUNT_TYPES } = require('../../constant');
 const { deleteFile } = require('./helper');
 const Account = require('../../model/account');
-const { NotFoundError } = require('../../utils/customError');
+const { NotFoundError, UnAuthorizedError } = require('../../utils/customError');
 const Mentor = require('../../model/mentor');
 const Student = require('../../model/student');
 const Model = {
@@ -101,17 +101,23 @@ async function changeAccountPassword({ id, password }) {
 }
 
 async function deleteAccount({ id, password }) {
-  let account = await Account.findById(id).populate('owner');
+  try {
+    let account = await Account.findById(id).populate('owner');
+    if (!account) {
+      throw new NotFoundError('Account not found!');
+    }
+    let deletedAccount = await validateCredentials(account.email, password);
+    if (!deletedAccount) {
+      throw new UnAuthorizedError('Incorrect Password!');
+    }
 
-  let deletedAccount = await validateCredentials(account.email, password);
+    account.isDeleted = true;
+    account.save();
 
-  if (!deletedAccount) {
-    throw new UnAuthorizedError('Invalid credentials!');
+    return account;
+  } catch (error) {
+    return error;
   }
-  account.isDeleted = true;
-  account.save();
-
-  return account;
 }
 
 async function createAccount({ category, altSchoolId, ...payload }) {
