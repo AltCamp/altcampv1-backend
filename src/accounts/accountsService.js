@@ -44,6 +44,13 @@ async function getMentors() {
   return mentors;
 }
 
+async function getAccounts(filters) {
+  const accountType = ACCOUNT_TYPES[filters.category.toUpperCase()];
+  const accounts = await Account.find({ accountType }).populate('owner');
+
+  return accounts;
+}
+
 async function getSingleAccount(id) {
   const account = await Account.findById(id).populate('owner');
 
@@ -74,13 +81,13 @@ async function uploadProfilePicture({ id, filepath }) {
 }
 
 async function updateAccount({ id, payload }) {
-  const student = await Account.findByIdAndUpdate(id, payload, {
+  const account = await Account.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
     context: 'query',
   }).populate('owner');
 
-  return student;
+  return account;
 }
 
 async function changeAccountPassword({ id, password }) {
@@ -136,6 +143,7 @@ module.exports = {
   accountExists,
   createAccount,
   changeAccountPassword,
+  getAccounts,
   getMentors,
   getSingleAccount,
   getStudents,
