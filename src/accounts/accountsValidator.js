@@ -45,7 +45,14 @@ const imageValidator = Joi.object({
   size: Joi.number().required(),
 }).options({ allowUnknown: true });
 
+const deleteAccountValidator = Joi.object({
+  password: Joi.string().required().messages({
+    'string.empty': 'Password is required',
+  }),
+});
+
 module.exports = {
+  deleteAccountValidator,
   getAccountsValidator,
   imageValidator,
   passwordValidator,
