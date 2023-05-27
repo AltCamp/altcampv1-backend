@@ -80,12 +80,23 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Arndy345",
+      "name": "Nonso Andrew Ugbodu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56146728?v=4",
+      "profile": "https://github.com/Arndy345",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "skipCi": true,
   "repoType": "github",
   "repoHost": "https://github.com",
-  "projectName": "AltCampv1-backend",
-  "projectOwner": "AltCamp"
+  "projectName": "altcampv1-backend",
+  "projectOwner": "AltCamp",
+  "commitType": "docs"
 }
