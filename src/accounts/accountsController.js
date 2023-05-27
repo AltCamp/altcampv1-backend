@@ -2,7 +2,12 @@ const { RESPONSE_MESSAGE } = require('../../constant');
 const responseHandler = require('../../utils/responseHandler');
 const accountsService = require('./accountsService');
 const { validateImageInput, deleteFile } = require('./helper');
-const { NotFoundError } = require('../../utils/customError');
+const {
+  NotFoundError,
+  // UnAuthorizedError,
+  UnprocessableEntity,
+} = require('../../utils/customError');
+// const { verifyPassword } = require('../../utils/helper');
 
 async function uploadProfilePicture(req, res, next) {
   try {
@@ -39,6 +44,25 @@ async function getAccounts(req, res) {
   new responseHandler(res, accounts, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
+// async function checkCredentials(oldPassword, userPassword) {
+//   if (!(await verifyPassword(oldPassword, userPassword))) {
+//     throw new UnAuthorizedError('Invalid Credentials');
+//   }
+// }
+
+async function updatePassword(req, res) {
+  const { token } = await accountsService.updatePassword(
+    req,
+    req.user._id,
+    req.body.password
+  );
+  if (req.body.password !== req.body.retypePassword) {
+    throw new UnprocessableEntity('Password and retype password must match');
+  }
+  res.cookie('jwt_token', token);
+  new responseHandler(res, { token }, 200, RESPONSE_MESSAGE.SUCCESS);
+}
+
 async function getAccount(req, res) {
   const { id } = req.params;
   const account = await accountsService.getSingleAccount(id);
@@ -67,4 +91,5 @@ module.exports = {
   getAccounts,
   updateAccount,
   uploadProfilePicture,
+  updatePassword,
 };

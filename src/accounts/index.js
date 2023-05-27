@@ -5,12 +5,14 @@ const {
   getAccounts,
   updateAccount,
   uploadProfilePicture,
+  updatePassword,
 } = require('./accountsController');
 const multer = require('multer');
 const {
   getAccountsValidator,
   profileBioValidator,
   profileValidator,
+  passwordValidator,
 } = require('./accountsValidator');
 const validator = require('express-joi-validation').createValidator({
   passError: true,
@@ -33,5 +35,9 @@ router
   .put(verifyUser, upload.single('profilePicture'), uploadProfilePicture);
 
 router.route('/:id').get(getAccount);
+
+router
+  .route('/update-password')
+  .put(verifyUser, validatorMiddleware(passwordValidator), updatePassword);
 
 module.exports = router;

@@ -4,9 +4,12 @@ const { cloudinary: cloudinaryConfig } = require('../../config');
 const { ACCOUNT_TYPES } = require('../../constant');
 const { deleteFile } = require('./helper');
 const Account = require('../../model/account');
-const { NotFoundError } = require('../../utils/customError');
+const { NotFoundError, UnAuthorizedError } = require('../../utils/customError');
 const Mentor = require('../../model/mentor');
 const Student = require('../../model/student');
+const { createToken } = require('../../utils/helper');
+const { verifyPassword } = require('../../utils/helper');
+
 const Model = {
   mentor: Mentor,
   student: Student,
@@ -26,6 +29,24 @@ async function accountExists(email) {
   }
 
   return false;
+}
+
+async function checkCredentials(oldPassword, userPassword) {
+  if (!(await verifyPassword(oldPassword, userPassword))) {
+    throw new UnAuthorizedError('Invalid Credentials');
+  }
+}
+
+async function updatePassword(req, userId, newPassword) {
+  const user = await Account.findOne(userId).select('+password');
+  const accessToken = createToken({
+    id: user._id,
+  });
+  await checkCredentials(req.body.oldPassword, user.password);
+
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+  return { token: accessToken, user };
 }
 
 async function getStudents() {
@@ -129,4 +150,5 @@ module.exports = {
   getStudents,
   updateAccount,
   uploadProfilePicture,
+  updatePassword,
 };
