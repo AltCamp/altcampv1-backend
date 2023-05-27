@@ -16,13 +16,13 @@ beforeAll(async () => {
   const user = helper.accountsAsJson[0];
   await login(user);
 });
-
 afterAll(async () => {
   await dbCleanUP();
   await dbDisconnect();
 });
 
 describe('Delete Account', () => {
+  const user = helper.accountsAsJson[0];
   it('should return error when password is missing', async () => {
     const response = await api
       .delete('/accounts/delete-account')
@@ -36,7 +36,7 @@ describe('Delete Account', () => {
     const response = await api
       .delete('/accounts/delete-account')
       .set('Authorization', `Bearer ${token}`)
-      .send({ password: '8XLxWgzXSPh9ABS!' });
+      .send({ password: user.password });
     expect(response.status).toBe(200);
     expect(response.body.data.isDeleted).toBe(true);
   });
