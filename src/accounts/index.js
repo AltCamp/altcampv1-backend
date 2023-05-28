@@ -1,13 +1,12 @@
 const router = require('express').Router();
 const { verifyUser } = require('../../middleware/authenticate');
+const validatorMiddleware = require('../../middleware/validator');
+const { imageValidator } = require('../accounts/accountsValidator');
 const { uploadProfilePicture } = require('./accountsController');
-const multer = require('multer');
-
-const upload = multer({ dest: 'src/accounts/tmp/uploads/' });
 
 router.use(verifyUser);
 router
-  .route('/upload-profile-picture')
-  .put(upload.single('profilePicture'), uploadProfilePicture);
+  .route('/profile-picture')
+  .post(validatorMiddleware(imageValidator), uploadProfilePicture);
 
 module.exports = router;

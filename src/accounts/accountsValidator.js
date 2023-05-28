@@ -20,12 +20,8 @@ const profileValidator = Joi.object({
 });
 
 const imageValidator = Joi.object({
-  fieldname: Joi.string().required(),
-  originalname: Joi.string().required(),
-  encoding: Joi.string().valid('7bit', '8bit', 'binary', 'base64').required(),
-  mimetype: Joi.string().valid('image/jpeg', 'image/png').required(),
-  size: Joi.number().required(),
-}).options({ allowUnknown: true });
+  profilePicture: Joi.string().required(),
+});
 
 module.exports = {
   passwordValidator,
