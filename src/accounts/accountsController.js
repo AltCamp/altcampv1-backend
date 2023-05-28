@@ -9,7 +9,7 @@ async function uploadProfilePicture(req, res, next) {
 
     const account = await accountsService.uploadProfilePicture({
       id: req.user.id,
-      image: payload.profilePicture
+      image: payload.profilePicture,
     });
 
     if (account instanceof Error) {

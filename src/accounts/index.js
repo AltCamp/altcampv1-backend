@@ -13,7 +13,7 @@ const {
   profileBioValidator,
   profileValidator,
   deleteAccountValidator,
-  imageValidator
+  imageValidator,
 } = require('./accountsValidator');
 const validator = require('express-joi-validation').createValidator({
   passError: true,
