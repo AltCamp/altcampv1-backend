@@ -1,10 +1,6 @@
 const router = require('express').Router();
 const { verifyUser } = require('../../middleware/authenticate');
-const multer = require('multer');
-const { deleteAccountValidator } = require('./accountsValidator');
-const upload = multer({ dest: 'src/accounts/tmp/uploads/' });
 const validatorMiddleware = require('../../middleware/validator');
-
 const {
   deleteAccount,
   getAccount,
@@ -16,6 +12,8 @@ const {
   getAccountsValidator,
   profileBioValidator,
   profileValidator,
+  deleteAccountValidator,
+  imageValidator,
 } = require('./accountsValidator');
 const validator = require('express-joi-validation').createValidator({
   passError: true,
@@ -31,8 +29,8 @@ router
   .put(verifyUser, validatorMiddleware(profileBioValidator), updateAccount);
 
 router
-  .route('/upload-profile-picture')
-  .put(verifyUser, upload.single('profilePicture'), uploadProfilePicture);
+  .route('/profile-picture')
+  .post(verifyUser, validatorMiddleware(imageValidator), uploadProfilePicture);
 
 router.route('/:id').get(getAccount);
 
