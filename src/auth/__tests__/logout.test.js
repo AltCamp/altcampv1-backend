@@ -28,7 +28,7 @@ describe('Auth: Logout', () => {
   it('should return 401 Unauthorized when accessing a protected route after logging out', async () => {
     const agent = request.agent(app);
     // register a user
-    const regRes = await agent.post('/auth/mentor').send(user);
+    const regRes = await agent.post('/auth/register').send(user);
     expect(regRes.status).toBe(201);
 
     // login the user

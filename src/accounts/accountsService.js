@@ -3,14 +3,14 @@ const cloudinary = require('cloudinary').v2;
 const { cloudinary: cloudinaryConfig } = require('../../config');
 const { ACCOUNT_TYPES } = require('../../constant');
 const Account = require('../../model/account');
-const { NotFoundError } = require('../../utils/customError');
+const { NotFoundError, UnAuthorizedError } = require('../../utils/customError');
 const Mentor = require('../../model/mentor');
 const Student = require('../../model/student');
 const Model = {
   mentor: Mentor,
   student: Student,
 };
-
+const { validateCredentials } = require('../../utils/helper');
 cloudinary.config({
   cloud_name: cloudinaryConfig.name,
   api_key: cloudinaryConfig.key,
@@ -43,6 +43,13 @@ async function getMentors() {
   return mentors;
 }
 
+async function getAccounts(filters) {
+  const accountType = ACCOUNT_TYPES[filters.category.toUpperCase()];
+  const accounts = await Account.find({ accountType }).populate('owner');
+
+  return accounts;
+}
+
 async function getSingleAccount(id) {
   const account = await Account.findById(id).populate('owner');
 
@@ -50,13 +57,13 @@ async function getSingleAccount(id) {
 }
 
 async function updateAccount({ id, payload }) {
-  const student = await Account.findByIdAndUpdate(id, payload, {
+  const account = await Account.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
     context: 'query',
   }).populate('owner');
 
-  return student;
+  return account;
 }
 
 async function changeAccountPassword({ id, password }) {
@@ -74,6 +81,26 @@ async function changeAccountPassword({ id, password }) {
   account = omit(account.toObject(), ['password']);
 
   return account;
+}
+
+async function deleteAccount({ id, password }) {
+  try {
+    let account = await Account.findById(id).populate('owner');
+    if (!account) {
+      throw new NotFoundError('Account not found!');
+    }
+    let deletedAccount = await validateCredentials(account.email, password);
+    if (!deletedAccount) {
+      throw new UnAuthorizedError('Incorrect Password!');
+    }
+
+    account.isDeleted = true;
+    account.save();
+
+    return account;
+  } catch (error) {
+    return error;
+  }
 }
 
 async function createAccount({ category, altSchoolId, ...payload }) {
@@ -113,9 +140,11 @@ module.exports = {
   accountExists,
   createAccount,
   changeAccountPassword,
+  getAccounts,
   getMentors,
   getSingleAccount,
   getStudents,
   updateAccount,
   uploadProfilePicture,
+  deleteAccount,
 };

@@ -36,6 +36,7 @@ describe('Auth: Account registration', () => {
       lastName: user.lastName,
       email: user.email,
       track: user.track,
+      isDeleted: false,
       accountType: user.category,
       owner: expect.objectContaining({
         _id: expect.any(String),
@@ -43,6 +44,7 @@ describe('Auth: Account registration', () => {
         altSchoolId: user.altSchoolId,
       }),
       profilePicture: expect.any(String),
+      bio: '',
       _id: expect.any(String),
       createdAt: expect.any(String),
       updatedAt: expect.any(String),
