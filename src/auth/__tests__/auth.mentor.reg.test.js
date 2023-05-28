@@ -39,7 +39,7 @@ describe('Auth: Account registration', () => {
       accountType: 'Mentor',
       owner: expect.objectContaining({}),
       _id: expect.any(String),
-      profilePicture: expect.any(String),
+      profilePicture: expect.objectContaining({}),
       bio: '',
       createdAt: expect.any(String),
       updatedAt: expect.any(String),
