@@ -136,6 +136,28 @@ async function uploadProfilePicture({ id, image }) {
   }
 }
 
+async function deleteProfilePicture(id) {
+  try {
+    const account = await Account.findById(id);
+    if (!account) {
+      const error = new NotFoundError('Account not found!');
+      return error;
+    }
+
+    const cloudinaryUpload = await cloudinary.uploader.destroy(
+      `${cloudinaryConfig.folder}/images/profile-pictures/${id}`
+    );
+
+    console.log('cloudinaryUpload: ', cloudinaryUpload);
+
+    // delete profile picture from database
+    account.profilePicture = '';
+    await account.save();
+  } catch (error) {
+    return error;
+  }
+}
+
 module.exports = {
   accountExists,
   createAccount,
@@ -146,5 +168,6 @@ module.exports = {
   getStudents,
   updateAccount,
   uploadProfilePicture,
+  deleteProfilePicture,
   deleteAccount,
 };

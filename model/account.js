@@ -26,6 +26,7 @@ const accountSchema = new Schema(
     },
     profilePicture: {
       type: String,
+      default: '',
     },
     track: {
       type: String,

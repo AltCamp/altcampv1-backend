@@ -7,6 +7,7 @@ const {
   getAccounts,
   updateAccount,
   uploadProfilePicture,
+  deleteProfilePicture,
 } = require('./accountsController');
 const {
   getAccountsValidator,
@@ -30,7 +31,8 @@ router
 
 router
   .route('/profile-picture')
-  .post(verifyUser, validatorMiddleware(imageValidator), uploadProfilePicture);
+  .put(verifyUser, validatorMiddleware(imageValidator), uploadProfilePicture)
+  .delete(verifyUser, deleteProfilePicture);
 
 router.route('/:id').get(getAccount);
 
