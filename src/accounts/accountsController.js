@@ -22,6 +22,20 @@ async function uploadProfilePicture(req, res, next) {
   }
 }
 
+async function deleteProfilePicture(req, res, next) {
+  try {
+    const account = await accountsService.deleteProfilePicture(req.user.id);
+
+    if (account instanceof Error) {
+      return next(account);
+    }
+
+    new responseHandler(res, account, 200, RESPONSE_MESSAGE.SUCCESS);
+  } catch (error) {
+    return next(error);
+  }
+}
+
 async function deleteAccount(req, res, next) {
   const { password } = req.body;
   const deletedAccount = await accountsService.deleteAccount({
@@ -73,4 +87,5 @@ module.exports = {
   getAccounts,
   updateAccount,
   uploadProfilePicture,
+  deleteProfilePicture,
 };
