@@ -111,6 +111,86 @@ paths:
       deprecated: false
       security: []
 
+  # ------------------------------------ ACCOUNT -------------------------------------
+  /accounts/profile-picture:
+    put:
+      tags:
+        - Account
+      security:
+        - bearer: []
+      summary: upload profile picture.
+      description: This accepts a profile picture in base64 format and returns a url.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/uploadProfilePicture'
+      responses:
+        '200':
+          description: Returns updated profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentCreated'
+
+        '404':
+          description: Account Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+        '401':
+          description: 'Token is  invalid. User not authorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+        '422':
+          description: One or more user input not valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+    delete:
+      tags:
+        - Account
+      security:
+        - bearer: []
+      summary: delete profile picture.
+      description: This deletes a profile picture from the database.
+      responses:
+        '200':
+          description: Returns success message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    default: 200
+                  message:
+                    type: string
+                    default: Request Successful!
+
+        '404':
+          description: Account Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+        '401':
+          description: 'Token is  invalid. User not authorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
   # ------------------------------------ MENTOR -------------------------------------
   /mentors/{mentorID}:
     get:
@@ -824,6 +904,14 @@ components:
         specialization: sampling
         yearsOfExperience: 1000
 
+    uploadProfilePicture:
+      title: upload profile picture
+      type: object
+      properties:
+        profilePicture:
+          type: string
+          format: binary
+
     getAllUsers:
       title: get all mentor request
       type: array
@@ -1272,6 +1360,9 @@ components:
                 updatedAt:
                   type: string
                   default: '2023-01-01T00:10:52.567Z'
+                profilePicture:
+                  type: string
+                  default: 'https://res.cloudinary.com/altcamp/image/upload/v1685299822/profile-pictures/some-ID.jpg'
 
     UserToken:
       type: object
@@ -1797,6 +1888,8 @@ security: []
 
 tags:
   - name: Auth
+    description: ''
+  - name: Account
     description: ''
   - name: Mentor
     description: ''
