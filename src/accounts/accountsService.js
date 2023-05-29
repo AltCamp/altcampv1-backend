@@ -144,11 +144,10 @@ async function deleteProfilePicture(id) {
       return error;
     }
 
+    // eslint-disable-next-line no-unused-vars
     const cloudinaryUpload = await cloudinary.uploader.destroy(
       `${cloudinaryConfig.folder}/images/profile-pictures/${id}`
     );
-
-    console.log('cloudinaryUpload: ', cloudinaryUpload);
 
     // delete profile picture from database
     account.profilePicture = '';
