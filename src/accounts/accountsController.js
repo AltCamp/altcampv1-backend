@@ -1,33 +1,37 @@
 const { RESPONSE_MESSAGE } = require('../../constant');
 const responseHandler = require('../../utils/responseHandler');
 const accountsService = require('./accountsService');
-const { validateImageInput, deleteFile } = require('./helper');
 const { NotFoundError } = require('../../utils/customError');
 
 async function uploadProfilePicture(req, res, next) {
   try {
-    const error = validateImageInput(req.body, req.file);
-
-    if (error) {
-      deleteFile(req.file.path);
-      return next(error);
-    }
+    const payload = req.body;
 
     const account = await accountsService.uploadProfilePicture({
       id: req.user.id,
-      filepath: req.file.path,
+      image: payload.profilePicture,
     });
 
     if (account instanceof Error) {
-      deleteFile(req.file.path);
       return next(account);
     }
 
     new responseHandler(res, account, 200, RESPONSE_MESSAGE.SUCCESS);
   } catch (error) {
-    if (req.file) {
-      deleteFile(req.file.path);
+    return next(error);
+  }
+}
+
+async function deleteProfilePicture(req, res, next) {
+  try {
+    const account = await accountsService.deleteProfilePicture(req.user.id);
+
+    if (account instanceof Error) {
+      return next(account);
     }
+
+    new responseHandler(res, account, 200, RESPONSE_MESSAGE.SUCCESS);
+  } catch (error) {
     return next(error);
   }
 }
@@ -83,4 +87,5 @@ module.exports = {
   getAccounts,
   updateAccount,
   uploadProfilePicture,
+  deleteProfilePicture,
 };

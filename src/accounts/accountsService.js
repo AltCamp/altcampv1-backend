@@ -2,7 +2,6 @@ const { omit } = require('lodash');
 const cloudinary = require('cloudinary').v2;
 const { cloudinary: cloudinaryConfig } = require('../../config');
 const { ACCOUNT_TYPES } = require('../../constant');
-const { deleteFile } = require('./helper');
 const Account = require('../../model/account');
 const { NotFoundError, UnAuthorizedError } = require('../../utils/customError');
 const Mentor = require('../../model/mentor');
@@ -55,29 +54,6 @@ async function getSingleAccount(id) {
   const account = await Account.findById(id).populate('owner');
 
   return account;
-}
-
-async function uploadProfilePicture({ id, filepath }) {
-  try {
-    const account = await Account.findById(id);
-    if (!account) {
-      const error = new NotFoundError('Account not found!');
-      return error;
-    }
-
-    const cloudinaryUpload = await cloudinary.uploader.upload(filepath, {
-      public_id: `${cloudinaryConfig.folder}/images/profile-pictures/${id}`,
-    });
-
-    account.profilePicture = cloudinaryUpload.secure_url;
-    await account.save();
-
-    deleteFile(filepath);
-
-    return account;
-  } catch (error) {
-    return error;
-  }
 }
 
 async function updateAccount({ id, payload }) {
@@ -139,6 +115,48 @@ async function createAccount({ category, altSchoolId, ...payload }) {
   return account;
 }
 
+async function uploadProfilePicture({ id, image }) {
+  try {
+    const account = await Account.findById(id);
+    if (!account) {
+      const error = new NotFoundError('Account not found!');
+      return error;
+    }
+
+    const cloudinaryUpload = await cloudinary.uploader.upload(image, {
+      public_id: `${cloudinaryConfig.folder}/images/profile-pictures/${id}`,
+    });
+
+    account.profilePicture = cloudinaryUpload.secure_url;
+    await account.save();
+
+    return account;
+  } catch (error) {
+    return error;
+  }
+}
+
+async function deleteProfilePicture(id) {
+  try {
+    const account = await Account.findById(id);
+    if (!account) {
+      const error = new NotFoundError('Account not found!');
+      return error;
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    const cloudinaryUpload = await cloudinary.uploader.destroy(
+      `${cloudinaryConfig.folder}/images/profile-pictures/${id}`
+    );
+
+    // delete profile picture from database
+    account.profilePicture = '';
+    await account.save();
+  } catch (error) {
+    return error;
+  }
+}
+
 module.exports = {
   accountExists,
   createAccount,
@@ -149,5 +167,6 @@ module.exports = {
   getStudents,
   updateAccount,
   uploadProfilePicture,
+  deleteProfilePicture,
   deleteAccount,
 };
