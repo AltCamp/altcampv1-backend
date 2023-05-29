@@ -30,7 +30,8 @@ router
 
 router
   .route('/profile-picture')
-  .post(verifyUser, validatorMiddleware(imageValidator), uploadProfilePicture);
+  .post(verifyUser, validatorMiddleware(imageValidator), uploadProfilePicture)
+  .put(verifyUser, validatorMiddleware(imageValidator), uploadProfilePicture);
 
 router.route('/:id').get(getAccount);
 
