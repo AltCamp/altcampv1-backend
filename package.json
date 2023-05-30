@@ -16,7 +16,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx,json,md}": "npm run format:write",
+    "*.{js,jsx,json,md,yml,yaml}": "npm run format:write",
     "*.js": "npm run lint"
   },
   "dependencies": {

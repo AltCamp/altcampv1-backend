@@ -18,9 +18,6 @@ servers:
           - the-altcamp.onrender.com # Development server
 
 # --------------- AUTHENTICATION ---------------------------------------
-
-# --------------- AUTHENTICATION ---------------------------------------
-
 paths:
   /auth/register:
     post:
@@ -112,10 +109,219 @@ paths:
       security: []
 
   # ------------------------------------ ACCOUNT -------------------------------------
+  /accounts:
+    get:
+      tags:
+        - Accounts
+      summary: Get all accounts
+      parameters:
+        - in: query
+          name: category
+          schema:
+            type: string
+            default: Student
+          description: The category of Accounts to return
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-0:
+                  summary: Get all accounts (Students)
+                  value:
+                    statusCode: 200
+                    message: Request Successful!
+                    data:
+                      - _id: 64750feb02591ccffadd7717
+                        firstName: Dalia
+                        lastName: Bushenga
+                        email: edward.bushenga@getnada.com
+                        profilePicture: ''
+                        track: Cloud Engineering
+                        bio: I am the one who shuts down the bar. I am the one!
+                        accountType: Student
+                        isDeleted: false
+                        owner:
+                          _id: 64750feb02591ccffadd7715
+                          __v: 0
+                        createdAt: '2023-05-29T20:49:47.537Z'
+                        updatedAt: '2023-05-29T21:32:24.033Z'
+                        __v: 0
+                example-1:
+                  summary: Get all accounts (Mentors)
+                  value:
+                    statusCode: 200
+                    message: Request Successful!
+                    data:
+                      - _id: 64750e9d02591ccffadd7710
+                        firstName: Oiza
+                        lastName: Solomon
+                        email: oiza.solomon@getnada.com
+                        profilePicture: ''
+                        track: Data Science
+                        bio: ''
+                        accountType: Mentor
+                        isDeleted: false
+                        owner:
+                          _id: 64750e9d02591ccffadd770e
+                          __v: 0
+                        createdAt: '2023-05-29T20:44:13.070Z'
+                        updatedAt: '2023-05-29T20:44:13.070Z'
+                        __v: 0
+    put:
+      tags:
+        - Accounts
+      security:
+        - bearer: []
+      summary: Update account details
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                track:
+                  type: string
+              example:
+                firstName: Dalia
+                lastName: Bushenga
+                track: Cloud Engineering
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64750feb02591ccffadd7717
+                  firstName: Dalia
+                  lastName: Bushenga
+                  email: edward.bushenga@getnada.com
+                  profilePicture: ''
+                  track: Cloud Engineering
+                  bio: ''
+                  accountType: Student
+                  isDeleted: false
+                  owner:
+                    _id: 64750feb02591ccffadd7715
+                    __v: 0
+                  createdAt: '2023-05-29T20:49:47.537Z'
+                  updatedAt: '2023-05-29T21:31:10.180Z'
+                  __v: 0
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                statusCode: 422
+                message: >-
+                  "track" must be one of [Backend Engineering, Cloud
+                  Engineering, Data Analysis, Data Engineering, Data Science,
+                  Frontend Engineering, Product Design, Product Management,
+                  Product Marketing]
+                error: Something went wrong!
+
+  /accounts/{accountId}:
+    get:
+      tags:
+        - Accounts
+      summary: Get a single account
+      parameters:
+        - name: accountId
+          in: path
+          schema:
+            type: string
+          required: true
+          description: ID of account
+          example: 64750e9d02591ccffadd7710
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64750e9d02591ccffadd7710
+                  firstName: Oiza
+                  lastName: Solomon
+                  email: oiza.solomon@getnada.com
+                  profilePicture: ''
+                  track: Data Science
+                  bio: ''
+                  accountType: Mentor
+                  isDeleted: false
+                  owner:
+                    _id: 64750e9d02591ccffadd770e
+                    __v: 0
+                  createdAt: '2023-05-29T20:44:13.070Z'
+                  updatedAt: '2023-05-29T20:44:13.070Z'
+                  __v: 0
+
+  /accounts/bio:
+    put:
+      tags:
+        - Accounts
+      security:
+        - bearer: []
+      summary: Update account biography
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bio:
+                  type: string
+              example:
+                bio: I am the one who shuts down the bar. I am the one!
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64750feb02591ccffadd7717
+                  firstName: Dalia
+                  lastName: Bushenga
+                  email: edward.bushenga@getnada.com
+                  profilePicture: ''
+                  track: Cloud Engineering
+                  bio: I am the one who shuts down the bar. I am the one!
+                  accountType: Student
+                  isDeleted: false
+                  owner:
+                    _id: 64750feb02591ccffadd7715
+                    __v: 0
+                  createdAt: '2023-05-29T20:49:47.537Z'
+                  updatedAt: '2023-05-29T21:32:24.033Z'
+                  __v: 0
+
   /accounts/profile-picture:
     put:
       tags:
-        - Account
+        - Accounts
       security:
         - bearer: []
       summary: upload profile picture.
@@ -157,7 +363,7 @@ paths:
 
     delete:
       tags:
-        - Account
+        - Accounts
       security:
         - bearer: []
       summary: delete profile picture.
@@ -191,11 +397,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/UnauthorizedError'
 
-  # ------------------------------------ MENTOR -------------------------------------
+  # ------------------------------------ MENTORS -------------------------------------
   /mentors/{mentorID}:
     get:
       tags:
-        - Mentor
+        - Mentors
       summary: This returns a single mentor
       description: Accepts the ID of a user and search the database if the user exists
       operationId: getMentorById
@@ -221,11 +427,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+      deprecated: true
 
   /mentors:
     get:
       tags:
-        - Mentor
+        - Mentors
       summary: Returns an array of Mentor.
       description: This simply returns all registed mentors found in the database
       responses:
@@ -235,11 +442,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/getAllUsers'
+      deprecated: true
 
   /mentors/update-profile:
     put:
       tags:
-        - Mentor
+        - Mentors
       security:
         - bearer: []
       summary: update mentor details
@@ -264,11 +472,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+      deprecated: true
 
   /mentors/change-password:
     put:
       tags:
-        - Mentor
+        - Mentors
       security:
         - bearer: []
       summary: update mentor password
@@ -294,15 +503,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+      deprecated: true
 
-  # ------------------ STUDENT -----------------------------
-
-  # ------------------ STUDENT -----------------------------
-
+  # ------------------ STUDENTS -----------------------------
   /students/{studentID}:
     get:
       tags:
-        - Student
+        - Students
       summary: This returns a single student
       description: Accepts the ID of a user and search the database if the user exists
       operationId: getSingleStudentById
@@ -328,11 +535,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+      deprecated: true
 
   /students:
     get:
       tags:
-        - Student
+        - Students
       summary: Returns an array of Students
       description: This simply returns all registed students found in the database
       responses:
@@ -342,11 +550,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/getAllStudents'
+      deprecated: true
 
   /students/update-profile:
     put:
       tags:
-        - Student
+        - Students
       security:
         - bearer: []
       summary: update student details
@@ -371,11 +580,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+      deprecated: true
 
   /students/change-password:
     put:
       tags:
-        - Student
+        - Students
       security:
         - bearer: []
       summary: update student password
@@ -401,9 +611,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+      deprecated: true
 
-  # --------------------------------- QUESTION ----------------------
-
+  # --------------------------------- QUESTIONS ----------------------
   /questions:
     post:
       tags:
@@ -431,14 +641,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestError'
-
-    # Might be added later when error is accounted for in the api
-    # '422':
-    #   description: Unprocessable Entity
-    #   content:
-    #     application/json:
-    #       schema:
-    #         $ref: '#/components/schemas/ValidationError'
 
     get:
       tags:
@@ -635,7 +837,6 @@ paths:
                 $ref: '#/components/schemas/BadRequestError'
 
   # --------------- ANSWERS ------------------------
-
   /answers:
     post:
       tags:
@@ -658,14 +859,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/newAnswerDetails'
-
-    # Might be added later when error is accounted for in the api
-    # '422':
-    #   description: Unprocessable Entity
-    #   content:
-    #     application/json:
-    #       schema:
-    #         $ref: '#/components/schemas/ValidationError'
 
     get:
       tags:
@@ -828,7 +1021,6 @@ paths:
                 $ref: '#/components/schemas/BadRequestError'
 
 # ------------------------ COMPONENTS ----------------------------
-
 components:
   schemas:
     signUpAccountRequest:
@@ -1889,9 +2081,5 @@ security: []
 tags:
   - name: Auth
     description: ''
-  - name: Account
-    description: ''
-  - name: Mentor
-    description: ''
-  - name: Student
+  - name: Accounts
     description: ''
