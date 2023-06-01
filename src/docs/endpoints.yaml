@@ -18,9 +18,6 @@ servers:
           - the-altcamp.onrender.com # Development server
 
 # --------------- AUTHENTICATION ---------------------------------------
-
-# --------------- AUTHENTICATION ---------------------------------------
-
 paths:
   /auth/register:
     post:
@@ -111,219 +108,296 @@ paths:
       deprecated: false
       security: []
 
-  # ------------------------------------ MENTOR -------------------------------------
-  /mentors/{mentorID}:
+  # ------------------------------------ ACCOUNT -------------------------------------
+  /accounts:
     get:
       tags:
-        - Mentor
-      summary: This returns a single mentor
-      description: Accepts the ID of a user and search the database if the user exists
-      operationId: getMentorById
+        - Accounts
+      summary: Get all accounts
       parameters:
-        - name: mentorID
-          in: path
-          description: Mentor ID
-          required: true
+        - in: query
+          name: category
           schema:
             type: string
-
+            default: Student
+          description: The category of Accounts to return
       responses:
         '200':
-          description: Returns a single mentor
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getUser'
-
-        '404':
-          description: Mentor Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
-
-  /mentors:
-    get:
-      tags:
-        - Mentor
-      summary: Returns an array of Mentor.
-      description: This simply returns all registed mentors found in the database
-      responses:
-        '200':
-          description: A JSON array of user names
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/getAllUsers'
-
-  /mentors/update-profile:
+                type: object
+              examples:
+                example-0:
+                  summary: Get all accounts (Students)
+                  value:
+                    statusCode: 200
+                    message: Request Successful!
+                    data:
+                      - _id: 64750feb02591ccffadd7717
+                        firstName: Dalia
+                        lastName: Bushenga
+                        email: edward.bushenga@getnada.com
+                        profilePicture: ''
+                        track: Cloud Engineering
+                        bio: I am the one who shuts down the bar. I am the one!
+                        accountType: Student
+                        isDeleted: false
+                        owner:
+                          _id: 64750feb02591ccffadd7715
+                          __v: 0
+                        createdAt: '2023-05-29T20:49:47.537Z'
+                        updatedAt: '2023-05-29T21:32:24.033Z'
+                        __v: 0
+                example-1:
+                  summary: Get all accounts (Mentors)
+                  value:
+                    statusCode: 200
+                    message: Request Successful!
+                    data:
+                      - _id: 64750e9d02591ccffadd7710
+                        firstName: Oiza
+                        lastName: Solomon
+                        email: oiza.solomon@getnada.com
+                        profilePicture: ''
+                        track: Data Science
+                        bio: ''
+                        accountType: Mentor
+                        isDeleted: false
+                        owner:
+                          _id: 64750e9d02591ccffadd770e
+                          __v: 0
+                        createdAt: '2023-05-29T20:44:13.070Z'
+                        updatedAt: '2023-05-29T20:44:13.070Z'
+                        __v: 0
     put:
       tags:
-        - Mentor
+        - Accounts
       security:
         - bearer: []
-      summary: update mentor details
-      description: The accepts the mentor firstname, lastname or both and updates the profile in the database
+      summary: Update account details
       requestBody:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/updateMentorRequest'
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                track:
+                  type: string
+              example:
+                firstName: Dalia
+                lastName: Bushenga
+                track: Cloud Engineering
       responses:
         '200':
-          description: Returns mentor updated profile
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getUser'
-
-        '404':
-          description: Mentor Not Found
+                type: object
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64750feb02591ccffadd7717
+                  firstName: Dalia
+                  lastName: Bushenga
+                  email: edward.bushenga@getnada.com
+                  profilePicture: ''
+                  track: Cloud Engineering
+                  bio: ''
+                  accountType: Student
+                  isDeleted: false
+                  owner:
+                    _id: 64750feb02591ccffadd7715
+                    __v: 0
+                  createdAt: '2023-05-29T20:49:47.537Z'
+                  updatedAt: '2023-05-29T21:31:10.180Z'
+                  __v: 0
+        '422':
+          description: Unprocessable Entity
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                type: object
+              example:
+                statusCode: 422
+                message: >-
+                  "track" must be one of [Backend Engineering, Cloud
+                  Engineering, Data Analysis, Data Engineering, Data Science,
+                  Frontend Engineering, Product Design, Product Management,
+                  Product Marketing]
+                error: Something went wrong!
 
-  /mentors/change-password:
-    put:
-      tags:
-        - Mentor
-      security:
-        - bearer: []
-      summary: update mentor password
-      description: This updates the mentors' password who must be logged in
-      requestBody:
-        description: Accepts Mentors' password in the body as a request
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/updateMentorPasswordRequest'
-      responses:
-        '200':
-          description: Returns the updated Mentor profile
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/updateUserPassword'
-
-        '404':
-          description: Mentor Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
-
-  # ------------------ STUDENT -----------------------------
-
-  # ------------------ STUDENT -----------------------------
-
-  /students/{studentID}:
+  /accounts/{accountId}:
     get:
       tags:
-        - Student
-      summary: This returns a single student
-      description: Accepts the ID of a user and search the database if the user exists
-      operationId: getSingleStudentById
+        - Accounts
+      summary: Get a single account
       parameters:
-        - name: studentID
+        - name: accountId
           in: path
-          description: Student ID
-          required: true
           schema:
             type: string
-
+          required: true
+          description: ID of account
+          example: 64750e9d02591ccffadd7710
       responses:
         '200':
-          description: Returns a single student
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getStudent'
+                type: object
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64750e9d02591ccffadd7710
+                  firstName: Oiza
+                  lastName: Solomon
+                  email: oiza.solomon@getnada.com
+                  profilePicture: ''
+                  track: Data Science
+                  bio: ''
+                  accountType: Mentor
+                  isDeleted: false
+                  owner:
+                    _id: 64750e9d02591ccffadd770e
+                    __v: 0
+                  createdAt: '2023-05-29T20:44:13.070Z'
+                  updatedAt: '2023-05-29T20:44:13.070Z'
+                  __v: 0
 
-        '404':
-          description: Student Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
-
-  /students:
-    get:
-      tags:
-        - Student
-      summary: Returns an array of Students
-      description: This simply returns all registed students found in the database
-      responses:
-        '200':
-          description: A JSON array of user names
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/getAllStudents'
-
-  /students/update-profile:
+  /accounts/bio:
     put:
       tags:
-        - Student
+        - Accounts
       security:
         - bearer: []
-      summary: update student details
-      description: The accepts the student firstname, lastname or both and updates the profile in the database
+      summary: Update account biography
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bio:
+                  type: string
+              example:
+                bio: I am the one who shuts down the bar. I am the one!
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64750feb02591ccffadd7717
+                  firstName: Dalia
+                  lastName: Bushenga
+                  email: edward.bushenga@getnada.com
+                  profilePicture: ''
+                  track: Cloud Engineering
+                  bio: I am the one who shuts down the bar. I am the one!
+                  accountType: Student
+                  isDeleted: false
+                  owner:
+                    _id: 64750feb02591ccffadd7715
+                    __v: 0
+                  createdAt: '2023-05-29T20:49:47.537Z'
+                  updatedAt: '2023-05-29T21:32:24.033Z'
+                  __v: 0
+
+  /accounts/profile-picture:
+    put:
+      tags:
+        - Accounts
+      security:
+        - bearer: []
+      summary: upload profile picture.
+      description: This accepts a profile picture in base64 format and returns a url.
       requestBody:
         content:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/updateStudentRequest'
+                - $ref: '#/components/schemas/uploadProfilePicture'
       responses:
         '200':
-          description: Returns student updated profile
+          description: Returns updated profile
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getUser'
+                $ref: '#/components/schemas/StudentCreated'
 
         '404':
-          description: Student Not Found
+          description: Account Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
 
-  /students/change-password:
-    put:
+        '401':
+          description: 'Token is  invalid. User not authorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+        '422':
+          description: One or more user input not valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+    delete:
       tags:
-        - Student
+        - Accounts
       security:
         - bearer: []
-      summary: update student password
-      description: This updates the students' password who must be logged in
-      requestBody:
-        description: Accepts Students' password in the body as a request
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/updateStudentPasswordRequest'
+      summary: delete profile picture.
+      description: This deletes a profile picture from the database.
       responses:
         '200':
-          description: Returns the updated Student profile
+          description: Returns success message
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getUser'
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    default: 200
+                  message:
+                    type: string
+                    default: Request Successful!
 
         '404':
-          description: Student Not Found
+          description: Account Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
 
-  # --------------------------------- QUESTION ----------------------
+        '401':
+          description: 'Token is  invalid. User not authorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
 
+  # --------------------------------- QUESTIONS ----------------------
   /questions:
     post:
       tags:
@@ -351,14 +425,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestError'
-
-    # Might be added later when error is accounted for in the api
-    # '422':
-    #   description: Unprocessable Entity
-    #   content:
-    #     application/json:
-    #       schema:
-    #         $ref: '#/components/schemas/ValidationError'
 
     get:
       tags:
@@ -555,7 +621,6 @@ paths:
                 $ref: '#/components/schemas/BadRequestError'
 
   # --------------- ANSWERS ------------------------
-
   /answers:
     post:
       tags:
@@ -578,14 +643,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/newAnswerDetails'
-
-    # Might be added later when error is accounted for in the api
-    # '422':
-    #   description: Unprocessable Entity
-    #   content:
-    #     application/json:
-    #       schema:
-    #         $ref: '#/components/schemas/ValidationError'
 
     get:
       tags:
@@ -748,7 +805,6 @@ paths:
                 $ref: '#/components/schemas/BadRequestError'
 
 # ------------------------ COMPONENTS ----------------------------
-
 components:
   schemas:
     signUpAccountRequest:
@@ -823,6 +879,14 @@ components:
         track: testing
         specialization: sampling
         yearsOfExperience: 1000
+
+    uploadProfilePicture:
+      title: upload profile picture
+      type: object
+      properties:
+        profilePicture:
+          type: string
+          format: binary
 
     getAllUsers:
       title: get all mentor request
@@ -960,7 +1024,7 @@ components:
                   type: string
                 __v:
                   type: number
-                  defaul: 0
+                  default: 0
             createdAt:
               type: string
               default: '2023-01-01T00:10:52.567Z'
@@ -1215,7 +1279,7 @@ components:
                           type: string
                         __v:
                           type: number
-                          defaul: 0
+                          default: 0
                     _id:
                       type: string
                     createdAt:
@@ -1261,7 +1325,7 @@ components:
                       type: string
                     __v:
                       type: number
-                      defaul: 0
+                      default: 0
                 _id:
                   type: string
                 gender:
@@ -1272,6 +1336,9 @@ components:
                 updatedAt:
                   type: string
                   default: '2023-01-01T00:10:52.567Z'
+                profilePicture:
+                  type: string
+                  default: 'https://res.cloudinary.com/altcamp/image/upload/v1685299822/profile-pictures/some-ID.jpg'
 
     UserToken:
       type: object
@@ -1630,162 +1697,162 @@ components:
               updatedAt:
                 type: number
 
-  # ----------------------------------------------------
-  consolidated:
-    examples:
-      mentorLoginRequest:
-        value:
-          email: lilylearn@mail.com
-          password: 8&jsfjhJD(@
+    # ----------------------------------------------------
+    consolidated:
+      example:
+        mentorLoginRequest:
+          value:
+            email: lilylearn@mail.com
+            password: 8&jsfjhJD(@
 
-      studentLoginRequest:
-        value:
-          email: johnny.dope@mail.com
-          password: Pkgj748_h!@
+        studentLoginRequest:
+          value:
+            email: johnny.dope@mail.com
+            password: Pkgj748_h!@
 
-      mentorLoginResponse:
-        value:
-          statusCode: 200
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Lily
-              lastName: Olaniyan
-              email: lilylearn@mail.com
-              track: Frontend Engineering
-              accountType: Mentor
-              owner:
+        mentorLoginResponse:
+          value:
+            statusCode: 200
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Lily
+                lastName: Olaniyan
+                email: lilylearn@mail.com
+                track: Frontend Engineering
+                accountType: Mentor
+                owner:
+                  _id: some ID
+                  __v: 0
                 _id: some ID
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      studentLoginResponse:
-        value:
-          statusCode: 200
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Johan
-              lastName: Dolapo
-              email: johnny.dope@mail.com
-              track: Frontend Engineering
-              accountType: Student
-              owner:
+        studentLoginResponse:
+          value:
+            statusCode: 200
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Johan
+                lastName: Dolapo
+                email: johnny.dope@mail.com
+                track: Frontend Engineering
+                accountType: Student
+                owner:
+                  _id: some ID
+                  __v: 0
                 _id: some ID
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      altStudentLoginResponse:
-        value:
-          statusCode: 200
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Johan
-              lastName: Dolapo
-              email: johnny.dope@mail.com
-              track: Frontend Engineering
-              accountType: Student
-              owner:
+        altStudentLoginResponse:
+          value:
+            statusCode: 200
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Johan
+                lastName: Dolapo
+                email: johnny.dope@mail.com
+                track: Frontend Engineering
+                accountType: Student
+                owner:
+                  _id: some ID
+                  altSchoolId: 'ALT/SOD/023/0010'
+                  __v: 0
                 _id: some ID
-                altSchoolId: 'ALT/SOD/023/0010'
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      mentorSignUpResponse:
-        value:
-          statusCode: 201
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Lily
-              lastName: Olaniyan
-              email: lilylearn@mail.com
-              track: Frontend Engineering
-              accountType: Mentor
-              owner:
+        mentorSignUpResponse:
+          value:
+            statusCode: 201
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Lily
+                lastName: Olaniyan
+                email: lilylearn@mail.com
+                track: Frontend Engineering
+                accountType: Mentor
+                owner:
+                  _id: some ID
+                  __v: 0
                 _id: some ID
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      studentSignUpResponse:
-        value:
-          statusCode: 201
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Johan
-              lastName: Dolapo
-              email: johnny.dope@mail.com
-              track: Frontend Engineering
-              accountType: Student
-              owner:
+        studentSignUpResponse:
+          value:
+            statusCode: 201
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Johan
+                lastName: Dolapo
+                email: johnny.dope@mail.com
+                track: Frontend Engineering
+                accountType: Student
+                owner:
+                  _id: some ID
+                  __v: 0
                 _id: some ID
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      altStudentSignUpResponse:
-        value:
-          statusCode: 201
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Johan
-              lastName: Dolapo
-              email: johnny.dope@mail.com
-              track: Frontend Engineering
-              accountType: Student
-              owner:
+        altStudentSignUpResponse:
+          value:
+            statusCode: 201
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Johan
+                lastName: Dolapo
+                email: johnny.dope@mail.com
+                track: Frontend Engineering
+                accountType: Student
+                owner:
+                  _id: some ID
+                  altSchoolId: 'ALT/SOD/023/0010'
+                  __v: 0
                 _id: some ID
-                altSchoolId: 'ALT/SOD/023/0010'
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      mentorSignupRequest:
-        value:
-          firstName: Lily
-          lastName: Olaniyan
-          email: lilylearn@mail.com
-          password: 8&jsfjhJD(@
-          track: Frontend Engineering
-          category: Mentor
+        mentorSignupRequest:
+          value:
+            firstName: Lily
+            lastName: Olaniyan
+            email: lilylearn@mail.com
+            password: 8&jsfjhJD(@
+            track: Frontend Engineering
+            category: Mentor
 
-      altStudentSignupRequest:
-        value:
-          firstName: Johan
-          lastName: Dolapo
-          email: johnny.dope@mail.com
-          password: Pkgj748_h!@
-          track: Frontend Engineering
-          category: Student
-          altSchoolId: 'ALT/SOD/023/0010'
+        altStudentSignupRequest:
+          value:
+            firstName: Johan
+            lastName: Dolapo
+            email: johnny.dope@mail.com
+            password: Pkgj748_h!@
+            track: Frontend Engineering
+            category: Student
+            altSchoolId: 'ALT/SOD/023/0010'
 
-      studentSignupRequest:
-        value:
-          firstName: Johan
-          lastName: Dolapo
-          email: johnny.dope@mail.com
-          password: Pkgj748_h!@
-          track: Frontend Engineering
-          category: Student
+        studentSignupRequest:
+          value:
+            firstName: Johan
+            lastName: Dolapo
+            email: johnny.dope@mail.com
+            password: Pkgj748_h!@
+            track: Frontend Engineering
+            category: Student
 
   # ----------------------------------------------------
 
@@ -1798,7 +1865,5 @@ security: []
 tags:
   - name: Auth
     description: ''
-  - name: Mentor
-    description: ''
-  - name: Student
+  - name: Accounts
     description: ''

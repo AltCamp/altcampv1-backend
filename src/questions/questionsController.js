@@ -7,6 +7,8 @@ const {
 const responseHandler = require('../../utils/responseHandler');
 const { RESPONSE_MESSAGE } = require('../../constant');
 
+// const APIFeatures = require('../../utils/apiFeatures');
+
 const getQuestion = async (req, res) => {
   // grab questionID from request
   const questionId = req.params.id;
@@ -19,7 +21,7 @@ const getQuestion = async (req, res) => {
 };
 
 const getAllQuestions = async (req, res) => {
-  const questions = await questionsService.getQuestions();
+  const questions = await questionsService.getQuestions(req);
   new responseHandler(res, questions, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 

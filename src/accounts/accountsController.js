@@ -4,10 +4,8 @@ const accountsService = require('./accountsService');
 const { validateImageInput, deleteFile } = require('./helper');
 const {
   NotFoundError,
-  // UnAuthorizedError,
   UnprocessableEntity,
 } = require('../../utils/customError');
-// const { verifyPassword } = require('../../utils/helper');
 
 async function uploadProfilePicture(req, res, next) {
   try {
@@ -43,12 +41,6 @@ async function getAccounts(req, res) {
 
   new responseHandler(res, accounts, 200, RESPONSE_MESSAGE.SUCCESS);
 }
-
-// async function checkCredentials(oldPassword, userPassword) {
-//   if (!(await verifyPassword(oldPassword, userPassword))) {
-//     throw new UnAuthorizedError('Invalid Credentials');
-//   }
-// }
 
 async function updatePassword(req, res) {
   const { token } = await accountsService.updatePassword(
