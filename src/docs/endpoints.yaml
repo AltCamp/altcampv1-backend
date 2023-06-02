@@ -119,7 +119,6 @@ paths:
           name: category
           schema:
             type: string
-            default: Student
           description: The category of Accounts to return
       responses:
         '200':
