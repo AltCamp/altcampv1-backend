@@ -3,8 +3,8 @@ const { ACCOUNT_TYPES, REGEX_PATTERNS, TRACKS } = require('../../constant');
 
 const getAccountsValidator = Joi.object({
   category: Joi.string()
-    .valid(...Object.values(ACCOUNT_TYPES))
-    .default(ACCOUNT_TYPES.STUDENT),
+    .optional()
+    .valid(...Object.values(ACCOUNT_TYPES)),
 });
 
 const passwordValidator = Joi.object({
