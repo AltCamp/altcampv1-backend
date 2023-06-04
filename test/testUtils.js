@@ -31,6 +31,18 @@ const questionIds = [
   'c0fc763a9b3aa5e2bdc8b85c',
   'fdc0f999b4bb5950a659d9ca',
 ];
+const postIds = [
+  'a9d505cfbadffbf70a645a4f',
+  '6c83cd0debabcacd36e30117',
+  'dca56db6bb9cc9b6cbbc2b27',
+  'e22a842d0f0adb3fbd7f81db',
+  'eb9ed8d1f84d944fad0061c1',
+  '08b7aee8cba6c1d46cfd2b9b',
+  '9add8b84f14dab17fd99d58b',
+  '565fbd107d62bf7fa2adebde',
+  'b4be9b3dba351ade27ddfdec',
+  'eaedc8bb74aede509cfccacb',
+];
 
 /**
  * Create a user.
@@ -175,6 +187,31 @@ function generateAnswer() {
 }
 
 /**
+ * Generate post
+ * @return {{}} A post object
+ */
+function generatePost() {
+  return {
+    _id: faker.database.mongodbObjectId(),
+    content: faker.lorem.paragraphs(),
+    author: faker.helpers.arrayElement(accountIds),
+  };
+}
+
+/**
+ * Generate comment
+ * @return {{}} A comment object
+ */
+function generateComment() {
+  return {
+    _id: faker.database.mongodbObjectId(),
+    content: faker.lorem.paragraph(),
+    postId: faker.helpers.arrayElement(postIds),
+    author: faker.helpers.arrayElement(accountIds),
+  };
+}
+
+/**
  * Generate user information to send to server via http requests
  * @param {string} userType - The type of user to create.
  * @return {{}} An object with properties of associated user type.
@@ -203,7 +240,9 @@ function clearImageTestFolder(folderName) {
 module.exports = {
   createUser,
   createUserForReq,
-  generateQuestion,
   generateAnswer,
+  generateComment,
+  generatePost,
+  generateQuestion,
   clearImageTestFolder,
 };
