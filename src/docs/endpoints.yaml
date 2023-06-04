@@ -398,38 +398,9 @@ paths:
 
   # --------------------------------- POSTS ----------------------
   /posts:
-    post:
-      tags:
-        - Posts
-      security:
-        - bearer: []
-      summary: Make a post
-      description: This makes a post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/askNewQuestion'
-      responses:
-        '201':
-          description: Returns posted question details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/newQuestionDetails'
-        '400':
-          description: Question Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestError'
-
     get:
       tags:
         - Posts
-      security:
-        - bearer: []
       summary: Get all posts
       responses:
         '200':
@@ -437,151 +408,589 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getPostedQuestions'
+                allOf:
+                  - $ref: '#/components/schemas/postSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  - _id: 647c3080b26fc62cb642e53f
+                    content: >-
+                      Performing asynchronous operations has been giving me a
+                      headache. There are so many ways that the permutation does
+                      not support the standards with which we call the anomalies
+                      in the underlying systems. There are so many factors to
+                      consider that make it hard for the average individual to
+                      commute in their daily fashion. All the king's horses and
+                      all the king's men couldn't put Humpty Dumpty together
+                      again
+                    upvotes: 0
+                    upvotedBy: []
+                    author:
+                      _id: 64750feb02591ccffadd7717
+                      firstName: BadGuy
+                      lastName: Bushenga
+                    comments: []
+                    createdAt: '2023-06-04T06:34:40.724Z'
+                    updatedAt: '2023-06-04T06:34:40.724Z'
+                    __v: 0
+                  - _id: 647c3104b26fc62cb642e545
+                    content: >-
+                      2 Performing asynchronous operations has been giving me a
+                      headache. There are so many ways that the permutation does
+                      not support the standards with which we call the anomalies
+                      in the underlying systems. There are so many factors to
+                      consider that make it hard for the average individual to
+                      commute in their daily fashion. All the king's horses and
+                      all the king's men couldn't put Humpty Dumpty together
+                      again
+                    upvotes: 0
+                    upvotedBy: []
+                    author:
+                      _id: 64750feb02591ccffadd7717
+                      firstName: BadGuy
+                      lastName: Bushenga
+                    comments: []
+                    createdAt: '2023-06-04T06:36:52.058Z'
+                    updatedAt: '2023-06-04T06:36:52.058Z'
+                    __v: 0
+                  - _id: 647c310ab26fc62cb642e549
+                    content: >-
+                      3 Performing asynchronous operations has been giving me a
+                      headache. There are so many ways that the permutation does
+                      not support the standards with which we call the anomalies
+                      in the underlying systems. There are so many factors to
+                      consider that make it hard for the average individual to
+                      commute in their daily fashion. All the king's horses and
+                      all the king's men couldn't put Humpty Dumpty together
+                      again
+                    upvotes: 0
+                    upvotedBy: []
+                    author:
+                      _id: 64750feb02591ccffadd7717
+                      firstName: BadGuy
+                      lastName: Bushenga
+                    comments: []
+                    createdAt: '2023-06-04T06:36:58.457Z'
+                    updatedAt: '2023-06-04T06:36:58.457Z'
+                    __v: 0
+
+    post:
+      tags:
+        - Posts
+      summary: Create a post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/createPostSchema'
+              example:
+                content: >-
+                  To heal is to forgive and be loved. Thank you, JavaScript.
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/postSchema'
+              example:
+                statusCode: 201
+                message: Request Successful!
+                data:
+                  content: >-
+                    Performing asynchronous operations has been giving me a
+                    headache. There are so many ways that the permutation does
+                    not support the standards with which we call the anomalies
+                    in the underlying systems. There are so many factors to
+                    consider that make it hard for the average individual to
+                    commute in their daily fashion. All the king's horses and
+                    all the king's men couldn't put Humpty Dumpty together again
+                  upvotes: 0
+                  upvotedBy: []
+                  author:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  comments: []
+                  _id: 647c3080b26fc62cb642e53f
+                  createdAt: '2023-06-04T06:34:40.724Z'
+                  updatedAt: '2023-06-04T06:34:40.724Z'
+                  __v: 0
 
   /posts/{postId}:
     get:
       tags:
         - Posts
-      security:
-        - bearer: []
-      summary: Get single post
+      summary: Get post by ID
       parameters:
         - name: postId
           in: path
-          description: Post ID
-          required: true
           schema:
             type: string
-
+          required: true
+          description: ID of post. Required.
+          example: 647c3080b26fc62cb642e53f
       responses:
         '200':
-          description: Returns a single post
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getQuestion'
-
+                allOf:
+                  - $ref: '#/components/schemas/postSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 647c310ab26fc62cb642e549
+                  content: >-
+                    3 Performing asynchronous operations has been giving me a
+                    headache. There are so many ways that the permutation does
+                    not support the standards with which we call the anomalies
+                    in the underlying systems. There are so many factors to
+                    consider that make it hard for the average individual to
+                    commute in their daily fashion. All the king's horses and
+                    all the king's men couldn't put Humpty Dumpty together again
+                  upvotes: 0
+                  upvotedBy: []
+                  author:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  comments: []
+                  createdAt: '2023-06-04T06:36:58.457Z'
+                  updatedAt: '2023-06-04T06:36:58.457Z'
+                  __v: 0
         '404':
-          description: Post Not Found
+          description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                type: object
+              example:
+                statusCode: 404
+                message: Not Found
+                error: Something went wrong!
 
+  /posts/{id}:
     patch:
       tags:
         - Posts
-      security:
-        - bearer: []
-      summary: Update post
+      summary: Update a post
       requestBody:
-        description: Accepts the post's details in the body as a request
         content:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/updateQuestion'
-      operationId: updateSingleQuestionById
+                - $ref: '#/components/schemas/createPostSchema'
+              example:
+                content: >-
+                  [Update] In my experience, TypeScript was easy to grasp. A big thanks to my history with JavaScript
       parameters:
-        - name: postId
+        - name: id
           in: path
-          description: Post ID
-          required: true
           schema:
             type: string
-
+          required: true
+          example: 647c310ab26fc62cb642e549
       responses:
         '200':
-          description: Returns updated post
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getQuestion'
-
-        '404':
-          description: Post Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
-
-        '401':
-          description: 'Token is  invalid. User not authorized'
-          content:
-            application/json::
-              schema:
-                $ref: '#/components/schemas/UnauthorizedError'
-
+                allOf:
+                  - $ref: '#/components/schemas/postSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 647c310ab26fc62cb642e549
+                  content: >-
+                    [Update] How do we provide callbacks as event driven
+                    mechanisms?
+                  upvotes: 0
+                  upvotedBy: []
+                  author:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  comments: []
+                  createdAt: '2023-06-04T06:36:58.457Z'
+                  updatedAt: '2023-06-04T06:43:13.674Z'
+                  __v: 0
     delete:
       tags:
         - Posts
-      security:
-        - bearer: []
-      summary: Delete post
-      description: This route deletes a post
-      operationId: deleteSingleQuestionById
+      summary: Delete a post
       parameters:
-        - name: postId
+        - name: id
           in: path
-          description: Post ID
-          required: true
           schema:
             type: string
-
+          required: true
+          example: 647c3349a50e94192d2ce929
       responses:
         '200':
-          description: Returns deleted post
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/deleteQuestion'
+                allOf:
+                  - $ref: '#/components/schemas/postSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 647c3349a50e94192d2ce929
+                  content: >-
+                    3 Performing asynchronous operations has been giving me a
+                    headache. There are so many ways that the permutation does
+                    not support the standards with which we call the anomalies
+                    in the underlying systems. There are so many factors to
+                    consider that make it hard for the average individual to
+                    commute in their daily fashion. All the king's horses and
+                    all the king's men couldn't put Humpty Dumpty together again
+                  upvotes: 0
+                  upvotedBy: []
+                  author:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  comments: []
+                  createdAt: '2023-06-04T06:46:33.730Z'
+                  updatedAt: '2023-06-04T06:46:33.730Z'
+                  __v: 0
 
-        '404':
-          description: Post Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
-
-        '401':
-          description: 'Token is  invalid. User not authorized'
-          content:
-            application/json::
-              schema:
-                $ref: '#/components/schemas/UnauthorizedError'
-
-  /{postId}/upvote:
+  /posts/{id}/upvote:
     patch:
       tags:
         - Posts
-      security:
-        - bearer: []
-      summary: Upvote post
-      description: Accepts the ID of a post and updates the upvote field
-      operationId: updateUpvoteInQuestionById
+      summary: Upvote a post
+      requestBody:
+        content: {}
       parameters:
-        - name: postId
+        - name: id
           in: path
-          description: Post ID
-          required: true
           schema:
             type: string
-
+          required: true
+          description: Post ID. Required
+          example: 647c3080b26fc62cb642e53f
       responses:
         '200':
-          description: Returns upvoted post
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getQuestion'
+                allOf:
+                  - $ref: '#/components/schemas/postSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 647c3080b26fc62cb642e53f
+                  content: >-
+                    Performing asynchronous operations has been giving me a
+                    headache. There are so many ways that the permutation does
+                    not support the standards with which we call the anomalies
+                    in the underlying systems. There are so many factors to
+                    consider that make it hard for the average individual to
+                    commute in their daily fashion. All the king's horses and
+                    all the king's men couldn't put Humpty Dumpty together again
+                  upvotes: 1
+                  upvotedBy:
+                    - 64750feb02591ccffadd7717
+                  author:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  comments: []
+                  createdAt: '2023-06-04T06:34:40.724Z'
+                  updatedAt: '2023-06-04T06:49:29.324Z'
+                  __v: 1
 
-        '400':
-          description: Post Not Found
+  # --------------------------------- COMMENTS ----------------------
+  /comments:
+    post:
+      tags:
+        - Comments
+      summary: Post a comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - content
+                - postId
+              type: object
+              properties:
+                content:
+                  type: string
+                postId:
+                  type: string
+              example:
+                content: This is working too
+                postId: 647c3080b26fc62cb642e53f
+      responses:
+        '201':
+          description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BadRequestError'
+                allOf:
+                  - $ref: '#/components/schemas/commentSchema'
+              example:
+                statusCode: 201
+                message: Request Successful!
+                data:
+                  content: This is working too
+                  upvotes: 0
+                  upvotedBy: []
+                  downvotes: 0
+                  downvotedBy: []
+                  post: 647c3080b26fc62cb642e53f
+                  author:
+                    _id: 64750e9d02591ccffadd7710
+                    firstName: Oiza
+                    lastName: Solomon
+                  _id: 647c54d58039265f0780bdca
+                  createdAt: '2023-06-04T09:09:41.318Z'
+                  updatedAt: '2023-06-04T09:09:41.318Z'
+                  __v: 0
+    get:
+      tags:
+        - Comments
+      summary: Get comments to a post
+      parameters:
+        - name: postId
+          in: query
+          schema:
+            type: string
+          example: 647c3080b26fc62cb642e53f
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/commentSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  - _id: 647c4ddaf5002d2742aa337e
+                    content: This is working
+                    upvotes: 0
+                    upvotedBy: []
+                    downvotes: 0
+                    downvotedBy: []
+                    post: 647c3080b26fc62cb642e53f
+                    author:
+                      _id: 64750e9d02591ccffadd7710
+                      firstName: Oiza
+                      lastName: Solomon
+                    createdAt: '2023-06-04T08:39:54.723Z'
+                    updatedAt: '2023-06-04T08:39:54.723Z'
+                    __v: 0
+                  - _id: 647c4e3fd13d4f7a4cd44348
+                    content: This is working
+                    upvotes: 0
+                    upvotedBy: []
+                    downvotes: 0
+                    downvotedBy: []
+                    post: 647c3080b26fc62cb642e53f
+                    author:
+                      _id: 64750e9d02591ccffadd7710
+                      firstName: Oiza
+                      lastName: Solomon
+                    createdAt: '2023-06-04T08:41:35.862Z'
+                    updatedAt: '2023-06-04T08:41:35.862Z'
+                    __v: 0
+                  - _id: 647c4e9c21030dd9c6e2cbd9
+                    content: This is working
+                    upvotes: 0
+                    upvotedBy: []
+                    downvotes: 0
+                    downvotedBy: []
+                    post: 647c3080b26fc62cb642e53f
+                    author:
+                      _id: 64750e9d02591ccffadd7710
+                      firstName: Oiza
+                      lastName: Solomon
+                    createdAt: '2023-06-04T08:43:08.148Z'
+                    updatedAt: '2023-06-04T08:43:08.148Z'
+                    __v: 0
+                  - _id: 647c4ef28addc44b53240532
+                    content: This is working
+                    upvotes: 0
+                    upvotedBy: []
+                    downvotes: 0
+                    downvotedBy: []
+                    post: 647c3080b26fc62cb642e53f
+                    author:
+                      _id: 64750e9d02591ccffadd7710
+                      firstName: Oiza
+                      lastName: Solomon
+                    createdAt: '2023-06-04T08:44:34.164Z'
+                    updatedAt: '2023-06-04T08:44:34.164Z'
+                    __v: 0
+                  - _id: 647c54d58039265f0780bdca
+                    content: This is working too
+                    upvotes: 0
+                    upvotedBy: []
+                    downvotes: 0
+                    downvotedBy: []
+                    post: 647c3080b26fc62cb642e53f
+                    author:
+                      _id: 64750e9d02591ccffadd7710
+                      firstName: Oiza
+                      lastName: Solomon
+                    createdAt: '2023-06-04T09:09:41.318Z'
+                    updatedAt: '2023-06-04T09:09:41.318Z'
+                    __v: 0
+
+  /comments/{commentId}:
+    patch:
+      tags:
+        - Comments
+      summary: Update comment to a post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - content
+              type: object
+              properties:
+                content:
+                  type: string
+              example:
+                content: I don't want to be alone but it's not you. It's me.
+      parameters:
+        - name: commentId
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Comment Id. Required
+          example: 647c4ddaf5002d2742aa337e
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/commentSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 647c4ddaf5002d2742aa337e
+                  content: I don't want to be alone but it's not you. It's me.
+                  upvotes: 0
+                  upvotedBy: []
+                  downvotes: 0
+                  downvotedBy: []
+                  post: 647c3080b26fc62cb642e53f
+                  author:
+                    _id: 64750e9d02591ccffadd7710
+                    firstName: Oiza
+                    lastName: Solomon
+                  createdAt: '2023-06-04T08:39:54.723Z'
+                  updatedAt: '2023-06-04T09:15:43.380Z'
+                  __v: 0
+
+  /comments/{commentId}/upvote:
+    patch:
+      tags:
+        - Comments
+      summary: Upvote/like a comment
+      requestBody:
+        content: {}
+      parameters:
+        - name: commentId
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Comment ID. Required!
+          example: 647c4ddaf5002d2742aa337e
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/commentSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 647c4ddaf5002d2742aa337e
+                  content: I don't want to be alone but it's not you. It's me.
+                  upvotes: 1
+                  upvotedBy:
+                    - 64750e9d02591ccffadd7710
+                  downvotes: 0
+                  downvotedBy: []
+                  post: 647c3080b26fc62cb642e53f
+                  author:
+                    _id: 64750e9d02591ccffadd7710
+                    firstName: Oiza
+                    lastName: Solomon
+                  createdAt: '2023-06-04T08:39:54.723Z'
+                  updatedAt: '2023-06-04T09:38:41.222Z'
+                  __v: 8
+
+  /comments/{commentId}/downvote:
+    patch:
+      tags:
+        - Comments
+      summary: Downvote/dislike a comment
+      requestBody:
+        content: {}
+      parameters:
+        - name: commentId
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Comment ID. Required!
+          example: 647c4ddaf5002d2742aa337e
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/commentSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 647c4ddaf5002d2742aa337e
+                  content: I don't want to be alone but it's not you. It's me.
+                  upvotes: 0
+                  upvotedBy: []
+                  downvotes: 1
+                  downvotedBy:
+                    - 64750e9d02591ccffadd7710
+                  post: 647c3080b26fc62cb642e53f
+                  author:
+                    _id: 64750e9d02591ccffadd7710
+                    firstName: Oiza
+                    lastName: Solomon
+                  createdAt: '2023-06-04T08:39:54.723Z'
+                  updatedAt: '2023-06-04T09:37:17.914Z'
+                  __v: 5
 
   # --------------------------------- QUESTIONS ----------------------
   /questions:
@@ -1028,6 +1437,94 @@ components:
         track: Product Design
         category: Student
         altSchoolId: ALT/SOD/023/0010
+
+    createPostSchema:
+      required:
+        - content
+      type: object
+      properties:
+        content:
+          type: string
+
+    postSchema:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            _id:
+              type: string
+            content:
+              type: string
+            upvotes:
+              type: number
+            upvotedBy:
+              type: array
+            downvotes:
+              type: number
+            downvotedBy:
+              type: array
+            comments:
+              type: array
+            author:
+              type: object
+              properties:
+                _id:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+            createdAt:
+              type: string
+            updatedAt:
+              type: string
+            __v:
+              type: number
+
+    commentSchema:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            _id:
+              type: string
+            content:
+              type: string
+            upvotes:
+              type: number
+            upvotedBy:
+              type: array
+            downvotes:
+              type: number
+            downvotedBy:
+              type: array
+            post:
+              type: string
+            author:
+              type: object
+              properties:
+                _id:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+            createdAt:
+              type: string
+            updatedAt:
+              type: string
+            __v:
+              type: number
 
     signUpMentorRequest:
       title: sign up mentor request
