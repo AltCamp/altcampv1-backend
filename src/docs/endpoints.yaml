@@ -396,6 +396,193 @@ paths:
               schema:
                 $ref: '#/components/schemas/UnauthorizedError'
 
+  # --------------------------------- POSTS ----------------------
+  /posts:
+    post:
+      tags:
+        - Posts
+      security:
+        - bearer: []
+      summary: Make a post
+      description: This makes a post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/askNewQuestion'
+      responses:
+        '201':
+          description: Returns posted question details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/newQuestionDetails'
+        '400':
+          description: Question Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+
+    get:
+      tags:
+        - Posts
+      security:
+        - bearer: []
+      summary: Get all posts
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getPostedQuestions'
+
+  /posts/{postId}:
+    get:
+      tags:
+        - Posts
+      security:
+        - bearer: []
+      summary: Get single post
+      parameters:
+        - name: postId
+          in: path
+          description: Post ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns a single post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getQuestion'
+
+        '404':
+          description: Post Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+    patch:
+      tags:
+        - Posts
+      security:
+        - bearer: []
+      summary: Update post
+      requestBody:
+        description: Accepts the post's details in the body as a request
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/updateQuestion'
+      operationId: updateSingleQuestionById
+      parameters:
+        - name: postId
+          in: path
+          description: Post ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns updated post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getQuestion'
+
+        '404':
+          description: Post Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+        '401':
+          description: 'Token is  invalid. User not authorized'
+          content:
+            application/json::
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+    delete:
+      tags:
+        - Posts
+      security:
+        - bearer: []
+      summary: Delete post
+      description: This route deletes a post
+      operationId: deleteSingleQuestionById
+      parameters:
+        - name: postId
+          in: path
+          description: Post ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns deleted post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deleteQuestion'
+
+        '404':
+          description: Post Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+        '401':
+          description: 'Token is  invalid. User not authorized'
+          content:
+            application/json::
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+  /{postId}/upvote:
+    patch:
+      tags:
+        - Posts
+      security:
+        - bearer: []
+      summary: Upvote post
+      description: Accepts the ID of a post and updates the upvote field
+      operationId: updateUpvoteInQuestionById
+      parameters:
+        - name: postId
+          in: path
+          description: Post ID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Returns upvoted post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getQuestion'
+
+        '400':
+          description: Post Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+
   # --------------------------------- QUESTIONS ----------------------
   /questions:
     post:
