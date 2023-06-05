@@ -44,8 +44,10 @@ async function getMentors() {
 }
 
 async function getAccounts(filters) {
-  const accountType = ACCOUNT_TYPES[filters.category.toUpperCase()];
-  const accounts = await Account.find({ accountType }).populate('owner');
+  const accountType = filters.category
+    ? { accountType: ACCOUNT_TYPES[filters.category.toUpperCase()] }
+    : {};
+  const accounts = await Account.find(accountType).populate('owner');
 
   return accounts;
 }

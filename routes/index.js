@@ -5,11 +5,15 @@ const accountRouter = require('../src/accounts');
 const apiDocs = require('../src/docs');
 const questionsRouter = require('../src/questions');
 const answersRouter = require('../src/answers');
+const postsRouter = require('../src/posts');
+const commentsRouter = require('../src/comments');
 
 router.use('/auth', authRouter);
 router.use('/accounts', accountRouter);
 router.use('/questions', questionsRouter);
+router.use('/posts', postsRouter);
 router.use('/answers', answersRouter);
+router.use('/comments', commentsRouter);
 router.use('/api-docs', apiDocs);
 
 module.exports = router;
