@@ -28,7 +28,6 @@ async function accountExists(email) {
   return false;
 }
 
-
 async function getStudents() {
   const students = await Account.find({
     accountType: ACCOUNT_TYPES.STUDENT,
