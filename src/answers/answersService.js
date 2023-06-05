@@ -2,7 +2,11 @@ const Answer = require('../../model/answer');
 const Question = require('../../model/question');
 
 const getAnswer = async (id) => {
-  const answers = await Answer.find({ id }).populate('author');
+  const answers = await Answer.find({ id }).populate('author', {
+    firstName: 1,
+    lastName: 1,
+    profilePicture: 1,
+  });
 
   return answers;
 };
@@ -10,7 +14,11 @@ const getAnswer = async (id) => {
 const getAnswers = async (questionId) => {
   const answers = await Answer.find({
     question: questionId,
-  }).populate('author');
+  }).populate('author', {
+    firstName: 1,
+    lastName: 1,
+    profilePicture: 1,
+  });
 
   return answers;
 };
@@ -24,7 +32,11 @@ const createAnswer = async (answer) => {
 
   await question.save();
   await newAnswer.save();
-  await newAnswer.populate('author');
+  await newAnswer.populate('author', {
+    firstName: 1,
+    lastName: 1,
+    profilePicture: 1,
+  });
 
   return newAnswer;
 };
@@ -38,13 +50,21 @@ const updateAnswer = async (id, { content }) => {
       runValidators: true,
       context: 'query',
     }
-  ).populate('author');
+  ).populate('author', {
+    firstName: 1,
+    lastName: 1,
+    profilePicture: 1,
+  });
 
   return updatedAnswer;
 };
 
 const upvoteAnswer = async ({ id, userId }) => {
-  const answer = await Answer.findById(id).populate('author');
+  const answer = await Answer.findById(id).populate('author', {
+    firstName: 1,
+    lastName: 1,
+    profilePicture: 1,
+  });
   if (!answer) {
     return false;
   }
@@ -79,7 +99,11 @@ const upvoteAnswer = async ({ id, userId }) => {
 };
 
 const downvoteAnswer = async ({ id, userId }) => {
-  const answer = await Answer.findById(id).populate('author');
+  const answer = await Answer.findById(id).populate('author', {
+    firstName: 1,
+    lastName: 1,
+    profilePicture: 1,
+  });
   if (!answer) {
     return false;
   }

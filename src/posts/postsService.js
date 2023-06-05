@@ -4,6 +4,7 @@ const getPosts = async ({ query } = {}) => {
   const posts = await Post.find(query).populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
 
   return posts;
@@ -13,6 +14,7 @@ const getPost = async (postId) => {
   const post = await Post.findById(postId).populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
 
   return post;
@@ -23,6 +25,7 @@ const createPost = async (post) => {
   await newPost.populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
   return newPost;
 };
@@ -36,6 +39,7 @@ const updatePost = async ({ postId, post }) => {
   await updatedPost.populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
 
   return updatedPost;
@@ -46,6 +50,7 @@ const deletePost = async (postId) => {
   await post.populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
 
   return post;
@@ -60,6 +65,7 @@ const upvotePost = async ({ userId, postId }) => {
   const post = await Post.findById(postId).populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
   if (!post) {
     return false;
