@@ -1,4 +1,6 @@
 const express = require('express');
+const Sentry = require('@sentry/node');
+const initializeSentry = require('./middleware/sentry');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const { errorHandler } = require('./utils/errorHandler');
@@ -8,6 +10,10 @@ require('express-async-errors');
 const indexRouter = require('./routes/index');
 
 const app = express();
+
+initializeSentry();
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
 
 app.use(
   cors({
@@ -29,6 +35,18 @@ app.get('/', (req, res) => {
 });
 
 app.use('/', indexRouter);
+
+app.use(
+  Sentry.Handlers.errorHandler({
+    shouldHandleError(error) {
+      // Capture all 404 and 500 errors
+      if (error.statusCode === 404 || error.statusCode === 500) {
+        return true;
+      }
+      return false;
+    },
+  })
+);
 
 app.use(errorHandler);
 
