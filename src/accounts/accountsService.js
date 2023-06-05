@@ -6,8 +6,6 @@ const Account = require('../../model/account');
 const { NotFoundError, UnAuthorizedError } = require('../../utils/customError');
 const Mentor = require('../../model/mentor');
 const Student = require('../../model/student');
-const { createToken } = require('../../utils/helper');
-const { verifyPassword } = require('../../utils/helper');
 
 const Model = {
   mentor: Mentor,
@@ -30,23 +28,6 @@ async function accountExists(email) {
   return false;
 }
 
-async function checkCredentials(oldPassword, userPassword) {
-  if (!(await verifyPassword(oldPassword, userPassword))) {
-    throw new UnAuthorizedError('Invalid Credentials');
-  }
-}
-
-async function updatePassword(req, userId, newPassword) {
-  const user = await Account.findOne(userId).select('+password');
-  const accessToken = createToken({
-    id: user._id,
-  });
-  await checkCredentials(req.body.oldPassword, user.password);
-
-  user.password = newPassword;
-  await user.save({ validateBeforeSave: false });
-  return { token: accessToken, user };
-}
 
 async function getStudents() {
   const students = await Account.find({
@@ -190,10 +171,6 @@ module.exports = {
   getStudents,
   updateAccount,
   uploadProfilePicture,
-<<<<<<< HEAD
-  updatePassword,
-=======
   deleteProfilePicture,
   deleteAccount,
->>>>>>> d13ea9aa0c2d763ea23d2ad7ec510251dd6dd900
 };
