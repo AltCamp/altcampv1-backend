@@ -45,6 +45,10 @@ const accountSchema = new Schema(
       enum: Object.values(ACCOUNT_TYPES),
       default: ACCOUNT_TYPES.STUDENT,
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
     owner: {
       type: mongoose.Types.ObjectId,
       ref: function () {

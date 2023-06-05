@@ -2,7 +2,6 @@ const { omit } = require('lodash');
 const cloudinary = require('cloudinary').v2;
 const { cloudinary: cloudinaryConfig } = require('../../config');
 const { ACCOUNT_TYPES } = require('../../constant');
-const { deleteFile } = require('./helper');
 const Account = require('../../model/account');
 const { NotFoundError, UnAuthorizedError } = require('../../utils/customError');
 const Mentor = require('../../model/mentor');
@@ -14,7 +13,7 @@ const Model = {
   mentor: Mentor,
   student: Student,
 };
-
+const { validateCredentials } = require('../../utils/helper');
 cloudinary.config({
   cloud_name: cloudinaryConfig.name,
   api_key: cloudinaryConfig.key,
@@ -66,8 +65,10 @@ async function getMentors() {
 }
 
 async function getAccounts(filters) {
-  const accountType = ACCOUNT_TYPES[filters.category.toUpperCase()];
-  const accounts = await Account.find({ accountType }).populate('owner');
+  const accountType = filters.category
+    ? { accountType: ACCOUNT_TYPES[filters.category.toUpperCase()] }
+    : {};
+  const accounts = await Account.find(accountType).populate('owner');
 
   return accounts;
 }
@@ -76,29 +77,6 @@ async function getSingleAccount(id) {
   const account = await Account.findById(id).populate('owner');
 
   return account;
-}
-
-async function uploadProfilePicture({ id, filepath }) {
-  try {
-    const account = await Account.findById(id);
-    if (!account) {
-      const error = new NotFoundError('Account not found!');
-      return error;
-    }
-
-    const cloudinaryUpload = await cloudinary.uploader.upload(filepath, {
-      public_id: `${cloudinaryConfig.folder}/images/profile-pictures/${id}`,
-    });
-
-    account.profilePicture = cloudinaryUpload.secure_url;
-    await account.save();
-
-    deleteFile(filepath);
-
-    return account;
-  } catch (error) {
-    return error;
-  }
 }
 
 async function updateAccount({ id, payload }) {
@@ -128,6 +106,26 @@ async function changeAccountPassword({ id, password }) {
   return account;
 }
 
+async function deleteAccount({ id, password }) {
+  try {
+    let account = await Account.findById(id).populate('owner');
+    if (!account) {
+      throw new NotFoundError('Account not found!');
+    }
+    let deletedAccount = await validateCredentials(account.email, password);
+    if (!deletedAccount) {
+      throw new UnAuthorizedError('Incorrect Password!');
+    }
+
+    account.isDeleted = true;
+    account.save();
+
+    return account;
+  } catch (error) {
+    return error;
+  }
+}
+
 async function createAccount({ category, altSchoolId, ...payload }) {
   const obj = (altSchoolId && { altSchoolId }) || {};
   const { _id: owner } = await Model[category.toLowerCase()].create(obj);
@@ -140,6 +138,48 @@ async function createAccount({ category, altSchoolId, ...payload }) {
   return account;
 }
 
+async function uploadProfilePicture({ id, image }) {
+  try {
+    const account = await Account.findById(id);
+    if (!account) {
+      const error = new NotFoundError('Account not found!');
+      return error;
+    }
+
+    const cloudinaryUpload = await cloudinary.uploader.upload(image, {
+      public_id: `${cloudinaryConfig.folder}/images/profile-pictures/${id}`,
+    });
+
+    account.profilePicture = cloudinaryUpload.secure_url;
+    await account.save();
+
+    return account;
+  } catch (error) {
+    return error;
+  }
+}
+
+async function deleteProfilePicture(id) {
+  try {
+    const account = await Account.findById(id);
+    if (!account) {
+      const error = new NotFoundError('Account not found!');
+      return error;
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    const cloudinaryUpload = await cloudinary.uploader.destroy(
+      `${cloudinaryConfig.folder}/images/profile-pictures/${id}`
+    );
+
+    // delete profile picture from database
+    account.profilePicture = '';
+    await account.save();
+  } catch (error) {
+    return error;
+  }
+}
+
 module.exports = {
   accountExists,
   createAccount,
@@ -150,5 +190,10 @@ module.exports = {
   getStudents,
   updateAccount,
   uploadProfilePicture,
+<<<<<<< HEAD
   updatePassword,
+=======
+  deleteProfilePicture,
+  deleteAccount,
+>>>>>>> d13ea9aa0c2d763ea23d2ad7ec510251dd6dd900
 };

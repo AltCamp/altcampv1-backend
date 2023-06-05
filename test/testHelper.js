@@ -3,10 +3,14 @@ const Student = require('../model/student');
 const Mentor = require('../model/mentor');
 const Question = require('../model/question');
 const Answer = require('../model/answer');
+const Post = require('../model/post');
+const Comment = require('../model/comment');
 const {
   createUserForReq,
   generateQuestion,
   generateAnswer,
+  generateComment,
+  generatePost,
 } = require('./testUtils');
 
 const studentsInDb = async () => {
@@ -34,6 +38,16 @@ const answersInDb = async () => {
   return answers.map((answer) => answer.toJSON());
 };
 
+const postsInDb = async () => {
+  const posts = await Post.find({});
+  return posts.map((post) => post.toJSON());
+};
+
+const commentsInDb = async () => {
+  const comments = await Comment.find({});
+  return comments.map((comment) => comment.toJSON());
+};
+
 const generateFreshStudentData = () => {
   return createUserForReq('student');
 };
@@ -47,6 +61,8 @@ const students = require('./fixtures/students.json');
 const mentors = require('./fixtures/mentors.json');
 const questions = require('./fixtures/questions.json');
 const answers = require('./fixtures/answers.json');
+const posts = require('./fixtures/posts.json');
+const comments = require('./fixtures/comments.json');
 
 module.exports = {
   studentsInDb,
@@ -54,18 +70,26 @@ module.exports = {
   accountsInDb,
   questionsInDb,
   answersInDb,
+  postsInDb,
+  commentsInDb,
   generateFreshStudentData,
   generateFreshMentorData,
   generateQuestion,
   generateAnswer,
+  generateComment,
+  generatePost,
   accounts: accounts.map((account) => Account.create(account)),
   students: students.map((student) => Student.create(student)),
   mentors: mentors.map((mentor) => Mentor.create(mentor)),
   questions: questions.map((question) => Question.create(question)),
   answers: answers.map((answer) => Answer.create(answer)),
+  posts: posts.map((post) => Post.create(post)),
+  comments: comments.map((comment) => Comment.create(comment)),
   accountsAsJson: accounts,
   studentsAsJson: students,
   mentorsAsJson: mentors,
   questionsAsJson: questions,
   answersAsJson: answers,
+  postsAsJson: posts,
+  commentsAsJson: comments,
 };

@@ -1,6 +1,7 @@
 const { RESPONSE_MESSAGE } = require('../../constant');
 const responseHandler = require('../../utils/responseHandler');
 const accountsService = require('./accountsService');
+<<<<<<< HEAD
 const { validateImageInput, deleteFile } = require('./helper');
 const {
   NotFoundError,
@@ -8,33 +9,56 @@ const {
   UnprocessableEntity,
 } = require('../../utils/customError');
 // const { verifyPassword } = require('../../utils/helper');
+=======
+const { NotFoundError } = require('../../utils/customError');
+>>>>>>> d13ea9aa0c2d763ea23d2ad7ec510251dd6dd900
 
 async function uploadProfilePicture(req, res, next) {
   try {
-    const error = validateImageInput(req.body, req.file);
-
-    if (error) {
-      deleteFile(req.file.path);
-      return next(error);
-    }
+    const payload = req.body;
 
     const account = await accountsService.uploadProfilePicture({
       id: req.user.id,
-      filepath: req.file.path,
+      image: payload.profilePicture,
     });
 
     if (account instanceof Error) {
-      deleteFile(req.file.path);
       return next(account);
     }
 
     new responseHandler(res, account, 200, RESPONSE_MESSAGE.SUCCESS);
   } catch (error) {
-    if (req.file) {
-      deleteFile(req.file.path);
-    }
     return next(error);
   }
+}
+
+async function deleteProfilePicture(req, res, next) {
+  try {
+    const account = await accountsService.deleteProfilePicture(req.user.id);
+
+    if (account instanceof Error) {
+      return next(account);
+    }
+
+    new responseHandler(res, account, 200, RESPONSE_MESSAGE.SUCCESS);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function deleteAccount(req, res, next) {
+  const { password } = req.body;
+  const deletedAccount = await accountsService.deleteAccount({
+    id: req.user.id,
+    password,
+  });
+
+  if (deletedAccount instanceof Error) {
+    next(deletedAccount);
+    return;
+  }
+
+  new responseHandler(res, deletedAccount, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
 async function getAccounts(req, res) {
@@ -87,9 +111,14 @@ async function updateAccount(req, res) {
 }
 
 module.exports = {
+  deleteAccount,
   getAccount,
   getAccounts,
   updateAccount,
   uploadProfilePicture,
+<<<<<<< HEAD
   updatePassword,
+=======
+  deleteProfilePicture,
+>>>>>>> d13ea9aa0c2d763ea23d2ad7ec510251dd6dd900
 };

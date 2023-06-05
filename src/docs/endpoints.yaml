@@ -18,9 +18,6 @@ servers:
           - the-altcamp.onrender.com # Development server
 
 # --------------- AUTHENTICATION ---------------------------------------
-
-# --------------- AUTHENTICATION ---------------------------------------
-
 paths:
   /auth/register:
     post:
@@ -111,219 +108,891 @@ paths:
       deprecated: false
       security: []
 
-  # ------------------------------------ MENTOR -------------------------------------
-  /mentors/{mentorID}:
+  # ------------------------------------ ACCOUNT -------------------------------------
+  /accounts:
     get:
       tags:
-        - Mentor
-      summary: This returns a single mentor
-      description: Accepts the ID of a user and search the database if the user exists
-      operationId: getMentorById
+        - Accounts
+      summary: Get all accounts
       parameters:
-        - name: mentorID
-          in: path
-          description: Mentor ID
-          required: true
+        - in: query
+          name: category
           schema:
             type: string
-
+          description: The category of Accounts to return
       responses:
         '200':
-          description: Returns a single mentor
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getUser'
-
-        '404':
-          description: Mentor Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
-
-  /mentors:
-    get:
-      tags:
-        - Mentor
-      summary: Returns an array of Mentor.
-      description: This simply returns all registed mentors found in the database
-      responses:
-        '200':
-          description: A JSON array of user names
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/getAllUsers'
-
-  /mentors/update-profile:
+                type: object
+              examples:
+                example-0:
+                  summary: Get all accounts (Students)
+                  value:
+                    statusCode: 200
+                    message: Request Successful!
+                    data:
+                      - _id: 64750feb02591ccffadd7717
+                        firstName: Dalia
+                        lastName: Bushenga
+                        email: edward.bushenga@getnada.com
+                        profilePicture: ''
+                        track: Cloud Engineering
+                        bio: I am the one who shuts down the bar. I am the one!
+                        accountType: Student
+                        isDeleted: false
+                        owner:
+                          _id: 64750feb02591ccffadd7715
+                          __v: 0
+                        createdAt: '2023-05-29T20:49:47.537Z'
+                        updatedAt: '2023-05-29T21:32:24.033Z'
+                        __v: 0
+                example-1:
+                  summary: Get all accounts (Mentors)
+                  value:
+                    statusCode: 200
+                    message: Request Successful!
+                    data:
+                      - _id: 64750e9d02591ccffadd7710
+                        firstName: Oiza
+                        lastName: Solomon
+                        email: oiza.solomon@getnada.com
+                        profilePicture: ''
+                        track: Data Science
+                        bio: ''
+                        accountType: Mentor
+                        isDeleted: false
+                        owner:
+                          _id: 64750e9d02591ccffadd770e
+                          __v: 0
+                        createdAt: '2023-05-29T20:44:13.070Z'
+                        updatedAt: '2023-05-29T20:44:13.070Z'
+                        __v: 0
     put:
       tags:
-        - Mentor
+        - Accounts
       security:
         - bearer: []
-      summary: update mentor details
-      description: The accepts the mentor firstname, lastname or both and updates the profile in the database
+      summary: Update account details
       requestBody:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/updateMentorRequest'
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                track:
+                  type: string
+              example:
+                firstName: Dalia
+                lastName: Bushenga
+                track: Cloud Engineering
       responses:
         '200':
-          description: Returns mentor updated profile
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getUser'
-
-        '404':
-          description: Mentor Not Found
+                type: object
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64750feb02591ccffadd7717
+                  firstName: Dalia
+                  lastName: Bushenga
+                  email: edward.bushenga@getnada.com
+                  profilePicture: ''
+                  track: Cloud Engineering
+                  bio: ''
+                  accountType: Student
+                  isDeleted: false
+                  owner:
+                    _id: 64750feb02591ccffadd7715
+                    __v: 0
+                  createdAt: '2023-05-29T20:49:47.537Z'
+                  updatedAt: '2023-05-29T21:31:10.180Z'
+                  __v: 0
+        '422':
+          description: Unprocessable Entity
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                type: object
+              example:
+                statusCode: 422
+                message: >-
+                  "track" must be one of [Backend Engineering, Cloud
+                  Engineering, Data Analysis, Data Engineering, Data Science,
+                  Frontend Engineering, Product Design, Product Management,
+                  Product Marketing]
+                error: Something went wrong!
 
-  /mentors/change-password:
-    put:
-      tags:
-        - Mentor
-      security:
-        - bearer: []
-      summary: update mentor password
-      description: This updates the mentors' password who must be logged in
-      requestBody:
-        description: Accepts Mentors' password in the body as a request
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/updateMentorPasswordRequest'
-      responses:
-        '200':
-          description: Returns the updated Mentor profile
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/updateUserPassword'
-
-        '404':
-          description: Mentor Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NotFoundError'
-
-  # ------------------ STUDENT -----------------------------
-
-  # ------------------ STUDENT -----------------------------
-
-  /students/{studentID}:
+  /accounts/{accountId}:
     get:
       tags:
-        - Student
-      summary: This returns a single student
-      description: Accepts the ID of a user and search the database if the user exists
-      operationId: getSingleStudentById
+        - Accounts
+      summary: Get a single account
       parameters:
-        - name: studentID
+        - name: accountId
           in: path
-          description: Student ID
-          required: true
           schema:
             type: string
-
+          required: true
+          description: ID of account
+          example: 64750e9d02591ccffadd7710
       responses:
         '200':
-          description: Returns a single student
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getStudent'
+                type: object
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64750e9d02591ccffadd7710
+                  firstName: Oiza
+                  lastName: Solomon
+                  email: oiza.solomon@getnada.com
+                  profilePicture: ''
+                  track: Data Science
+                  bio: ''
+                  accountType: Mentor
+                  isDeleted: false
+                  owner:
+                    _id: 64750e9d02591ccffadd770e
+                    __v: 0
+                  createdAt: '2023-05-29T20:44:13.070Z'
+                  updatedAt: '2023-05-29T20:44:13.070Z'
+                  __v: 0
+
+  /accounts/bio:
+    put:
+      tags:
+        - Accounts
+      security:
+        - bearer: []
+      summary: Update account biography
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bio:
+                  type: string
+              example:
+                bio: I am the one who shuts down the bar. I am the one!
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64750feb02591ccffadd7717
+                  firstName: Dalia
+                  lastName: Bushenga
+                  email: edward.bushenga@getnada.com
+                  profilePicture: ''
+                  track: Cloud Engineering
+                  bio: I am the one who shuts down the bar. I am the one!
+                  accountType: Student
+                  isDeleted: false
+                  owner:
+                    _id: 64750feb02591ccffadd7715
+                    __v: 0
+                  createdAt: '2023-05-29T20:49:47.537Z'
+                  updatedAt: '2023-05-29T21:32:24.033Z'
+                  __v: 0
+
+  /accounts/profile-picture:
+    put:
+      tags:
+        - Accounts
+      security:
+        - bearer: []
+      summary: upload profile picture.
+      description: This accepts a profile picture in base64 format and returns a url.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/uploadProfilePicture'
+      responses:
+        '200':
+          description: Returns updated profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentCreated'
 
         '404':
-          description: Student Not Found
+          description: Account Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
 
-  /students:
+        '401':
+          description: 'Token is  invalid. User not authorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+        '422':
+          description: One or more user input not valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+    delete:
+      tags:
+        - Accounts
+      security:
+        - bearer: []
+      summary: delete profile picture.
+      description: This deletes a profile picture from the database.
+      responses:
+        '200':
+          description: Returns success message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    default: 200
+                  message:
+                    type: string
+                    default: Request Successful!
+
+        '404':
+          description: Account Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+
+        '401':
+          description: 'Token is  invalid. User not authorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+  # --------------------------------- POSTS ----------------------
+  /posts:
     get:
       tags:
-        - Student
-      summary: Returns an array of Students
-      description: This simply returns all registed students found in the database
+        - Posts
+      summary: Get all posts
       responses:
         '200':
-          description: A JSON array of user names
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getAllStudents'
+                allOf:
+                  - $ref: '#/components/schemas/postSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  - _id: 647c3080b26fc62cb642e53f
+                    content: >-
+                      Performing asynchronous operations has been giving me a
+                      headache. There are so many ways that the permutation does
+                      not support the standards with which we call the anomalies
+                      in the underlying systems. There are so many factors to
+                      consider that make it hard for the average individual to
+                      commute in their daily fashion. All the king's horses and
+                      all the king's men couldn't put Humpty Dumpty together
+                      again
+                    upvotes: 0
+                    upvotedBy: []
+                    author:
+                      _id: 64750feb02591ccffadd7717
+                      firstName: BadGuy
+                      lastName: Bushenga
+                    comments: []
+                    createdAt: '2023-06-04T06:34:40.724Z'
+                    updatedAt: '2023-06-04T06:34:40.724Z'
+                    __v: 0
+                  - _id: 647c3104b26fc62cb642e545
+                    content: >-
+                      2 Performing asynchronous operations has been giving me a
+                      headache. There are so many ways that the permutation does
+                      not support the standards with which we call the anomalies
+                      in the underlying systems. There are so many factors to
+                      consider that make it hard for the average individual to
+                      commute in their daily fashion. All the king's horses and
+                      all the king's men couldn't put Humpty Dumpty together
+                      again
+                    upvotes: 0
+                    upvotedBy: []
+                    author:
+                      _id: 64750feb02591ccffadd7717
+                      firstName: BadGuy
+                      lastName: Bushenga
+                    comments: []
+                    createdAt: '2023-06-04T06:36:52.058Z'
+                    updatedAt: '2023-06-04T06:36:52.058Z'
+                    __v: 0
+                  - _id: 647c310ab26fc62cb642e549
+                    content: >-
+                      3 Performing asynchronous operations has been giving me a
+                      headache. There are so many ways that the permutation does
+                      not support the standards with which we call the anomalies
+                      in the underlying systems. There are so many factors to
+                      consider that make it hard for the average individual to
+                      commute in their daily fashion. All the king's horses and
+                      all the king's men couldn't put Humpty Dumpty together
+                      again
+                    upvotes: 0
+                    upvotedBy: []
+                    author:
+                      _id: 64750feb02591ccffadd7717
+                      firstName: BadGuy
+                      lastName: Bushenga
+                    comments: []
+                    createdAt: '2023-06-04T06:36:58.457Z'
+                    updatedAt: '2023-06-04T06:36:58.457Z'
+                    __v: 0
 
-  /students/update-profile:
-    put:
+    post:
       tags:
-        - Student
-      security:
-        - bearer: []
-      summary: update student details
-      description: The accepts the student firstname, lastname or both and updates the profile in the database
+        - Posts
+      summary: Create a post
       requestBody:
         content:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/updateStudentRequest'
+                - $ref: '#/components/schemas/createPostSchema'
+              example:
+                content: >-
+                  To heal is to forgive and be loved. Thank you, JavaScript.
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/postSchema'
+              example:
+                statusCode: 201
+                message: Request Successful!
+                data:
+                  content: >-
+                    Performing asynchronous operations has been giving me a
+                    headache. There are so many ways that the permutation does
+                    not support the standards with which we call the anomalies
+                    in the underlying systems. There are so many factors to
+                    consider that make it hard for the average individual to
+                    commute in their daily fashion. All the king's horses and
+                    all the king's men couldn't put Humpty Dumpty together again
+                  upvotes: 0
+                  upvotedBy: []
+                  author:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  comments: []
+                  _id: 647c3080b26fc62cb642e53f
+                  createdAt: '2023-06-04T06:34:40.724Z'
+                  updatedAt: '2023-06-04T06:34:40.724Z'
+                  __v: 0
+
+  /posts/{postId}:
+    get:
+      tags:
+        - Posts
+      summary: Get post by ID
+      parameters:
+        - name: postId
+          in: path
+          schema:
+            type: string
+          required: true
+          description: ID of post. Required.
+          example: 647c3080b26fc62cb642e53f
       responses:
         '200':
-          description: Returns student updated profile
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getUser'
-
+                allOf:
+                  - $ref: '#/components/schemas/postSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 647c310ab26fc62cb642e549
+                  content: >-
+                    3 Performing asynchronous operations has been giving me a
+                    headache. There are so many ways that the permutation does
+                    not support the standards with which we call the anomalies
+                    in the underlying systems. There are so many factors to
+                    consider that make it hard for the average individual to
+                    commute in their daily fashion. All the king's horses and
+                    all the king's men couldn't put Humpty Dumpty together again
+                  upvotes: 0
+                  upvotedBy: []
+                  author:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  comments: []
+                  createdAt: '2023-06-04T06:36:58.457Z'
+                  updatedAt: '2023-06-04T06:36:58.457Z'
+                  __v: 0
         '404':
-          description: Student Not Found
+          description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                type: object
+              example:
+                statusCode: 404
+                message: Not Found
+                error: Something went wrong!
 
-  /students/change-password:
-    put:
+  /posts/{id}:
+    patch:
       tags:
-        - Student
-      security:
-        - bearer: []
-      summary: update student password
-      description: This updates the students' password who must be logged in
+        - Posts
+      summary: Update a post
       requestBody:
-        description: Accepts Students' password in the body as a request
         content:
           application/json:
             schema:
               allOf:
-                - $ref: '#/components/schemas/updateStudentPasswordRequest'
+                - $ref: '#/components/schemas/createPostSchema'
+              example:
+                content: >-
+                  [Update] In my experience, TypeScript was easy to grasp. A big thanks to my history with JavaScript
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+          example: 647c310ab26fc62cb642e549
       responses:
         '200':
-          description: Returns the updated Student profile
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getUser'
-
-        '404':
-          description: Student Not Found
+                allOf:
+                  - $ref: '#/components/schemas/postSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 647c310ab26fc62cb642e549
+                  content: >-
+                    [Update] How do we provide callbacks as event driven
+                    mechanisms?
+                  upvotes: 0
+                  upvotedBy: []
+                  author:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  comments: []
+                  createdAt: '2023-06-04T06:36:58.457Z'
+                  updatedAt: '2023-06-04T06:43:13.674Z'
+                  __v: 0
+    delete:
+      tags:
+        - Posts
+      summary: Delete a post
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+          example: 647c3349a50e94192d2ce929
+      responses:
+        '200':
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NotFoundError'
+                allOf:
+                  - $ref: '#/components/schemas/postSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 647c3349a50e94192d2ce929
+                  content: >-
+                    3 Performing asynchronous operations has been giving me a
+                    headache. There are so many ways that the permutation does
+                    not support the standards with which we call the anomalies
+                    in the underlying systems. There are so many factors to
+                    consider that make it hard for the average individual to
+                    commute in their daily fashion. All the king's horses and
+                    all the king's men couldn't put Humpty Dumpty together again
+                  upvotes: 0
+                  upvotedBy: []
+                  author:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  comments: []
+                  createdAt: '2023-06-04T06:46:33.730Z'
+                  updatedAt: '2023-06-04T06:46:33.730Z'
+                  __v: 0
 
-  # --------------------------------- QUESTION ----------------------
+  /posts/{id}/upvote:
+    patch:
+      tags:
+        - Posts
+      summary: Upvote a post
+      requestBody:
+        content: {}
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Post ID. Required
+          example: 647c3080b26fc62cb642e53f
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/postSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 647c3080b26fc62cb642e53f
+                  content: >-
+                    Performing asynchronous operations has been giving me a
+                    headache. There are so many ways that the permutation does
+                    not support the standards with which we call the anomalies
+                    in the underlying systems. There are so many factors to
+                    consider that make it hard for the average individual to
+                    commute in their daily fashion. All the king's horses and
+                    all the king's men couldn't put Humpty Dumpty together again
+                  upvotes: 1
+                  upvotedBy:
+                    - 64750feb02591ccffadd7717
+                  author:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  comments: []
+                  createdAt: '2023-06-04T06:34:40.724Z'
+                  updatedAt: '2023-06-04T06:49:29.324Z'
+                  __v: 1
 
+  # --------------------------------- COMMENTS ----------------------
+  /comments:
+    post:
+      tags:
+        - Comments
+      summary: Post a comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - content
+                - postId
+              type: object
+              properties:
+                content:
+                  type: string
+                postId:
+                  type: string
+              example:
+                content: This is working too
+                postId: 647c3080b26fc62cb642e53f
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/commentSchema'
+              example:
+                statusCode: 201
+                message: Request Successful!
+                data:
+                  content: This is working too
+                  upvotes: 0
+                  upvotedBy: []
+                  downvotes: 0
+                  downvotedBy: []
+                  post: 647c3080b26fc62cb642e53f
+                  author:
+                    _id: 64750e9d02591ccffadd7710
+                    firstName: Oiza
+                    lastName: Solomon
+                  _id: 647c54d58039265f0780bdca
+                  createdAt: '2023-06-04T09:09:41.318Z'
+                  updatedAt: '2023-06-04T09:09:41.318Z'
+                  __v: 0
+    get:
+      tags:
+        - Comments
+      summary: Get comments to a post
+      parameters:
+        - name: postId
+          in: query
+          schema:
+            type: string
+          example: 647c3080b26fc62cb642e53f
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/commentSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  - _id: 647c4ddaf5002d2742aa337e
+                    content: This is working
+                    upvotes: 0
+                    upvotedBy: []
+                    downvotes: 0
+                    downvotedBy: []
+                    post: 647c3080b26fc62cb642e53f
+                    author:
+                      _id: 64750e9d02591ccffadd7710
+                      firstName: Oiza
+                      lastName: Solomon
+                    createdAt: '2023-06-04T08:39:54.723Z'
+                    updatedAt: '2023-06-04T08:39:54.723Z'
+                    __v: 0
+                  - _id: 647c4e3fd13d4f7a4cd44348
+                    content: This is working
+                    upvotes: 0
+                    upvotedBy: []
+                    downvotes: 0
+                    downvotedBy: []
+                    post: 647c3080b26fc62cb642e53f
+                    author:
+                      _id: 64750e9d02591ccffadd7710
+                      firstName: Oiza
+                      lastName: Solomon
+                    createdAt: '2023-06-04T08:41:35.862Z'
+                    updatedAt: '2023-06-04T08:41:35.862Z'
+                    __v: 0
+                  - _id: 647c4e9c21030dd9c6e2cbd9
+                    content: This is working
+                    upvotes: 0
+                    upvotedBy: []
+                    downvotes: 0
+                    downvotedBy: []
+                    post: 647c3080b26fc62cb642e53f
+                    author:
+                      _id: 64750e9d02591ccffadd7710
+                      firstName: Oiza
+                      lastName: Solomon
+                    createdAt: '2023-06-04T08:43:08.148Z'
+                    updatedAt: '2023-06-04T08:43:08.148Z'
+                    __v: 0
+                  - _id: 647c4ef28addc44b53240532
+                    content: This is working
+                    upvotes: 0
+                    upvotedBy: []
+                    downvotes: 0
+                    downvotedBy: []
+                    post: 647c3080b26fc62cb642e53f
+                    author:
+                      _id: 64750e9d02591ccffadd7710
+                      firstName: Oiza
+                      lastName: Solomon
+                    createdAt: '2023-06-04T08:44:34.164Z'
+                    updatedAt: '2023-06-04T08:44:34.164Z'
+                    __v: 0
+                  - _id: 647c54d58039265f0780bdca
+                    content: This is working too
+                    upvotes: 0
+                    upvotedBy: []
+                    downvotes: 0
+                    downvotedBy: []
+                    post: 647c3080b26fc62cb642e53f
+                    author:
+                      _id: 64750e9d02591ccffadd7710
+                      firstName: Oiza
+                      lastName: Solomon
+                    createdAt: '2023-06-04T09:09:41.318Z'
+                    updatedAt: '2023-06-04T09:09:41.318Z'
+                    __v: 0
+
+  /comments/{commentId}:
+    patch:
+      tags:
+        - Comments
+      summary: Update comment to a post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+                - content
+              type: object
+              properties:
+                content:
+                  type: string
+              example:
+                content: I don't want to be alone but it's not you. It's me.
+      parameters:
+        - name: commentId
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Comment Id. Required
+          example: 647c4ddaf5002d2742aa337e
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/commentSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 647c4ddaf5002d2742aa337e
+                  content: I don't want to be alone but it's not you. It's me.
+                  upvotes: 0
+                  upvotedBy: []
+                  downvotes: 0
+                  downvotedBy: []
+                  post: 647c3080b26fc62cb642e53f
+                  author:
+                    _id: 64750e9d02591ccffadd7710
+                    firstName: Oiza
+                    lastName: Solomon
+                  createdAt: '2023-06-04T08:39:54.723Z'
+                  updatedAt: '2023-06-04T09:15:43.380Z'
+                  __v: 0
+
+  /comments/{commentId}/upvote:
+    patch:
+      tags:
+        - Comments
+      summary: Upvote/like a comment
+      requestBody:
+        content: {}
+      parameters:
+        - name: commentId
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Comment ID. Required!
+          example: 647c4ddaf5002d2742aa337e
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/commentSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 647c4ddaf5002d2742aa337e
+                  content: I don't want to be alone but it's not you. It's me.
+                  upvotes: 1
+                  upvotedBy:
+                    - 64750e9d02591ccffadd7710
+                  downvotes: 0
+                  downvotedBy: []
+                  post: 647c3080b26fc62cb642e53f
+                  author:
+                    _id: 64750e9d02591ccffadd7710
+                    firstName: Oiza
+                    lastName: Solomon
+                  createdAt: '2023-06-04T08:39:54.723Z'
+                  updatedAt: '2023-06-04T09:38:41.222Z'
+                  __v: 8
+
+  /comments/{commentId}/downvote:
+    patch:
+      tags:
+        - Comments
+      summary: Downvote/dislike a comment
+      requestBody:
+        content: {}
+      parameters:
+        - name: commentId
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Comment ID. Required!
+          example: 647c4ddaf5002d2742aa337e
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/commentSchema'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 647c4ddaf5002d2742aa337e
+                  content: I don't want to be alone but it's not you. It's me.
+                  upvotes: 0
+                  upvotedBy: []
+                  downvotes: 1
+                  downvotedBy:
+                    - 64750e9d02591ccffadd7710
+                  post: 647c3080b26fc62cb642e53f
+                  author:
+                    _id: 64750e9d02591ccffadd7710
+                    firstName: Oiza
+                    lastName: Solomon
+                  createdAt: '2023-06-04T08:39:54.723Z'
+                  updatedAt: '2023-06-04T09:37:17.914Z'
+                  __v: 5
+
+  # --------------------------------- QUESTIONS ----------------------
   /questions:
     post:
       tags:
@@ -351,14 +1020,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestError'
-
-    # Might be added later when error is accounted for in the api
-    # '422':
-    #   description: Unprocessable Entity
-    #   content:
-    #     application/json:
-    #       schema:
-    #         $ref: '#/components/schemas/ValidationError'
 
     get:
       tags:
@@ -555,7 +1216,6 @@ paths:
                 $ref: '#/components/schemas/BadRequestError'
 
   # --------------- ANSWERS ------------------------
-
   /answers:
     post:
       tags:
@@ -578,14 +1238,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/newAnswerDetails'
-
-    # Might be added later when error is accounted for in the api
-    # '422':
-    #   description: Unprocessable Entity
-    #   content:
-    #     application/json:
-    #       schema:
-    #         $ref: '#/components/schemas/ValidationError'
 
     get:
       tags:
@@ -748,7 +1400,6 @@ paths:
                 $ref: '#/components/schemas/BadRequestError'
 
 # ------------------------ COMPONENTS ----------------------------
-
 components:
   schemas:
     signUpAccountRequest:
@@ -787,6 +1438,94 @@ components:
         category: Student
         altSchoolId: ALT/SOD/023/0010
 
+    createPostSchema:
+      required:
+        - content
+      type: object
+      properties:
+        content:
+          type: string
+
+    postSchema:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            _id:
+              type: string
+            content:
+              type: string
+            upvotes:
+              type: number
+            upvotedBy:
+              type: array
+            downvotes:
+              type: number
+            downvotedBy:
+              type: array
+            comments:
+              type: array
+            author:
+              type: object
+              properties:
+                _id:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+            createdAt:
+              type: string
+            updatedAt:
+              type: string
+            __v:
+              type: number
+
+    commentSchema:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            _id:
+              type: string
+            content:
+              type: string
+            upvotes:
+              type: number
+            upvotedBy:
+              type: array
+            downvotes:
+              type: number
+            downvotedBy:
+              type: array
+            post:
+              type: string
+            author:
+              type: object
+              properties:
+                _id:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+            createdAt:
+              type: string
+            updatedAt:
+              type: string
+            __v:
+              type: number
+
     signUpMentorRequest:
       title: sign up mentor request
       required:
@@ -823,6 +1562,14 @@ components:
         track: testing
         specialization: sampling
         yearsOfExperience: 1000
+
+    uploadProfilePicture:
+      title: upload profile picture
+      type: object
+      properties:
+        profilePicture:
+          type: string
+          format: binary
 
     getAllUsers:
       title: get all mentor request
@@ -1272,6 +2019,9 @@ components:
                 updatedAt:
                   type: string
                   default: '2023-01-01T00:10:52.567Z'
+                profilePicture:
+                  type: string
+                  default: 'https://res.cloudinary.com/altcamp/image/upload/v1685299822/profile-pictures/some-ID.jpg'
 
     UserToken:
       type: object
@@ -1798,7 +2548,5 @@ security: []
 tags:
   - name: Auth
     description: ''
-  - name: Mentor
-    description: ''
-  - name: Student
+  - name: Accounts
     description: ''
