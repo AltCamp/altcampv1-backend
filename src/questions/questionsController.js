@@ -19,7 +19,7 @@ const getQuestion = async (req, res) => {
 };
 
 const getAllQuestions = async (req, res) => {
-  const questions = await questionsService.getQuestions();
+  const questions = await questionsService.getQuestions(req);
   new responseHandler(res, questions, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 

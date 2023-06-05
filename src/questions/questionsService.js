@@ -1,12 +1,10 @@
 const Question = require('../../model/question');
+const APIFeatures = require('../../utils/apiFeatures');
 
-const getQuestions = async () => {
-  const questions = await Question.find({}).populate('author', {
-    firstName: 1,
-    lastName: 1,
-  });
+const getQuestions = async (req) => {
+  const questions = new APIFeatures(Question.find({}), req.query).paginate();
 
-  return questions;
+  return await questions.query;
 };
 
 const getQuestion = async (questionId) => {
