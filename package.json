@@ -20,6 +20,7 @@
     "*.js": "npm run lint"
   },
   "dependencies": {
+    "@sentry/node": "^7.54.0",
     "bcrypt": "^5.1.0",
     "cloudinary": "^1.37.0",
     "cookie-parser": "~1.4.4",
