@@ -116,26 +116,29 @@ describe('Updating a mentor', () => {
     expect(response.status).toBe(401);
   });
 
-  /**
   it('with secure password is successful', async () => {
     const user = helper.accountsAsJson[5];
     await login(user);
 
-    const password = 'ASecurePassword@1234';
+    const { password: oldPassword } = user;
+    const newPassword = 'ASecurePassword@1234';
 
     const response = await api
-      .put('/accounts/password')
+      .put('/accounts/update-password')
       .set('Authorization', `Bearer ${token}`)
-      .send({ password, retypePassword: password, });
+      .send({
+        oldPassword,
+        password: newPassword,
+        retypePassword: newPassword,
+      });
 
     expect(response.status).toBe(200);
 
     const loginAttempt = await api
       .post('/auth/login')
-      .send({ email: user.email, password });
+      .send({ email: user.email, password: newPassword });
 
     expect(loginAttempt.status).toBe(200);
-    expect(loginAttempt.body.data).toHaveProperty('token');
     expect(response.body.data).toHaveProperty(
       'accountType',
       ACCOUNT_TYPES.MENTOR
@@ -146,12 +149,12 @@ describe('Updating a mentor', () => {
     const user = helper.accountsAsJson[4];
     await login(user);
 
-    const password = 'ASecurePassword@1234';
+    const newPassword = 'ASecurePassword@1234';
 
     const response = await api
-      .put('/accounts/password')
+      .put('/accounts/update-password')
       .set('Authorization', `Bearer ${token}`)
-      .send({ password, retypePassword: 'password', });
+      .send({ password: newPassword, retypePassword: 'password' });
 
     expect(response.status).toBe(422);
   });
@@ -160,15 +163,19 @@ describe('Updating a mentor', () => {
     const user = helper.accountsAsJson[6];
     await login(user);
 
-    const password = 'AnunSecurePassword';
+    const { password } = user;
+    const newPassword = 'AnunSecurePassword';
 
     await api
-      .put('/accounts/password')
+      .put('/accounts/update-password')
       .set('Authorization', `Bearer ${token}`)
-      .send({ password })
+      .send({
+        oldPassword: password,
+        password: newPassword,
+        retypePassword: newPassword,
+      })
       .expect(422);
   });
-  **/
 });
 
 afterAll(async () => {
