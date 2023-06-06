@@ -8,6 +8,7 @@ const {
   updateAccount,
   uploadProfilePicture,
   deleteProfilePicture,
+  updatePassword,
 } = require('./accountsController');
 const {
   getAccountsValidator,
@@ -15,6 +16,7 @@ const {
   profileValidator,
   deleteAccountValidator,
   imageValidator,
+  passwordValidator,
 } = require('./accountsValidator');
 const validator = require('express-joi-validation').createValidator({
   passError: true,
@@ -43,5 +45,9 @@ router
     validatorMiddleware(deleteAccountValidator),
     deleteAccount
   );
+
+router
+  .route('/update-password')
+  .put(verifyUser, validatorMiddleware(passwordValidator), updatePassword);
 
 module.exports = router;

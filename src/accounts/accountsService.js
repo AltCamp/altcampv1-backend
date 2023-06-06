@@ -6,6 +6,8 @@ const Account = require('../../model/account');
 const { NotFoundError, UnAuthorizedError } = require('../../utils/customError');
 const Mentor = require('../../model/mentor');
 const Student = require('../../model/student');
+const { verifyPassword } = require('../../utils/helper');
+
 const Model = {
   mentor: Mentor,
   student: Student,
@@ -25,6 +27,21 @@ async function accountExists(email) {
   }
 
   return false;
+}
+
+async function updatePassword(userId, oldPassword, newPassword) {
+  let user = await Account.findOne(userId).select('+password');
+
+  const check = await verifyPassword(oldPassword, user.password);
+  if (!check) {
+    throw new UnAuthorizedError();
+  }
+
+  user.password = newPassword;
+  // await user.save({ validateBeforeSave: false });
+  await user.save();
+  user = omit(user.toObject(), ['password']);
+  return user;
 }
 
 async function getStudents() {
@@ -64,23 +81,6 @@ async function updateAccount({ id, payload }) {
     runValidators: true,
     context: 'query',
   }).populate('owner');
-
-  return account;
-}
-
-async function changeAccountPassword({ id, password }) {
-  let account = await Account.findById(id).populate('owner');
-  if (!account) {
-    return false;
-  }
-
-  // save password from request
-  account.password = password;
-  await account.save();
-
-  // prepare response data
-  omit(account.toObject(), ['password']);
-  account = omit(account.toObject(), ['password']);
 
   return account;
 }
@@ -162,7 +162,6 @@ async function deleteProfilePicture(id) {
 module.exports = {
   accountExists,
   createAccount,
-  changeAccountPassword,
   getAccounts,
   getMentors,
   getSingleAccount,
@@ -171,4 +170,5 @@ module.exports = {
   uploadProfilePicture,
   deleteProfilePicture,
   deleteAccount,
+  updatePassword,
 };
