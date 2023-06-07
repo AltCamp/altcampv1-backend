@@ -47,6 +47,7 @@ describe('Creating a post', () => {
         _id: author.toString(),
         firstName: expect.any(String),
         lastName: expect.any(String),
+        profilePicture: expect.any(String),
       }),
       upvotes: 0,
       upvotedBy: [],
@@ -96,6 +97,12 @@ describe('Modifying a post', () => {
       .expect('Content-Type', /application\/json/);
 
     expect(response.body.data).toHaveProperty('content', content);
+    expect(response.body.data.author).toEqual({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePicture: expect.any(String),
+    });
   });
 });
 
@@ -121,6 +128,14 @@ describe('Upvoting/liking a post', () => {
 
     expect(response.body.data.upvotes).toBe(post.upvotes + 1);
     expect(response.body.data.upvotedBy).toContain(user._id);
+    expect(response.body.data.author).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        profilePicture: expect.any(String),
+      })
+    );
 
     user = users[1];
     await login(user);
@@ -133,6 +148,14 @@ describe('Upvoting/liking a post', () => {
 
     expect(res.body.data.upvotes).toBe(post.upvotes + 2);
     expect(res.body.data.upvotedBy).toContain(user._id);
+    expect(res.body.data.author).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        profilePicture: expect.any(String),
+      })
+    );
   });
 
   test('if a user has previously upvoted/liked removes the upvote/like', async () => {
@@ -152,6 +175,14 @@ describe('Upvoting/liking a post', () => {
 
     expect(response.body.data.upvotes).toBe(post.upvotes - 1);
     expect(response.body.data.upvotedBy).not.toContain(user._id);
+    expect(response.body.data.author).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        profilePicture: expect.any(String),
+      })
+    );
   });
 });
 

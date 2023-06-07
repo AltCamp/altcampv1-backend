@@ -4,6 +4,7 @@ const getQuestions = async () => {
   const questions = await Question.find({}).populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
 
   return questions;
@@ -13,6 +14,7 @@ const getQuestion = async (questionId) => {
   const question = await Question.findById(questionId).populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
 
   return question;
@@ -20,6 +22,11 @@ const getQuestion = async (questionId) => {
 
 const createQuestion = async (question) => {
   const newQuestion = await Question.create(question);
+  await newQuestion.populate('author', {
+    firstName: 1,
+    lastName: 1,
+    profilePicture: 1,
+  });
   return newQuestion;
 };
 
@@ -32,13 +39,24 @@ const updateQuestion = async ({ questionId, question }) => {
       runValidators: true,
       context: 'query',
     }
-  );
+  ).populate('author', {
+    firstName: 1,
+    lastName: 1,
+    profilePicture: 1,
+  });
 
   return updatedQuestion;
 };
 
 const deleteQuestion = async (questionId) => {
-  const question = await Question.findByIdAndDelete(questionId);
+  const question = await Question.findByIdAndDelete(questionId).populate(
+    'author',
+    {
+      firstName: 1,
+      lastName: 1,
+      profilePicture: 1,
+    }
+  );
 
   return question;
 };
@@ -52,6 +70,7 @@ const upvoteQuestion = async ({ userId, questionId }) => {
   const question = await Question.findById(questionId).populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
   if (!question) {
     return false;
@@ -90,6 +109,7 @@ const downvoteQuestion = async ({ userId, questionId }) => {
   const question = await Question.findById(questionId).populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
   if (!question) {
     return false;
