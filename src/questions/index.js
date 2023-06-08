@@ -8,12 +8,12 @@ const {
 const validatorMiddleware = require('../../middleware/validator');
 const limiter = require('../../middleware/rateLimit');
 
-router.use(verifyUser);
 router
   .route('/')
   .get(questions.getAllQuestions)
   .post(
     limiter(),
+    verifyUser,
     validatorMiddleware(createQuestionValidator),
     questions.createQuestion
   );
@@ -23,13 +23,14 @@ router
   .get(questions.getQuestion)
   .patch(
     limiter(),
+    verifyUser,
     validatorMiddleware(updateQuestionValidator),
     questions.updateQuestion
   )
   .delete(verifyUser, questions.deleteQuestion);
 
-router.route('/:id/upvote').patch(questions.upvoteQuestion);
+router.route('/:id/upvote').patch(verifyUser, questions.upvoteQuestion);
 
-router.route('/:id/downvote').patch(questions.downvoteQuestion);
+router.route('/:id/downvote').patch(verifyUser, questions.downvoteQuestion);
 
 module.exports = router;
