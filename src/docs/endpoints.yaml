@@ -17,8 +17,8 @@ servers:
           - localhost:8000 # Local development server
           - the-altcamp.onrender.com # Development server
 
-# --------------- AUTHENTICATION ---------------------------------------
 paths:
+  # --------------- AUTHENTICATION ---------------
   /auth/register:
     post:
       tags:
@@ -108,7 +108,7 @@ paths:
       deprecated: false
       security: []
 
-  # ------------------------------------ ACCOUNT -------------------------------------
+  # --------------- ACCOUNTS ---------------
   /accounts:
     get:
       tags:
@@ -396,7 +396,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UnauthorizedError'
 
-  # --------------------------------- POSTS ----------------------
+  # --------------- POSTS ---------------
   /posts:
     get:
       tags:
@@ -478,6 +478,8 @@ paths:
     post:
       tags:
         - Posts
+      security:
+        - bearer: []
       summary: Create a post
       requestBody:
         content:
@@ -579,6 +581,8 @@ paths:
     patch:
       tags:
         - Posts
+      security:
+        - bearer: []
       summary: Update a post
       requestBody:
         content:
@@ -625,6 +629,8 @@ paths:
     delete:
       tags:
         - Posts
+      security:
+        - bearer: []
       summary: Delete a post
       parameters:
         - name: id
@@ -669,6 +675,8 @@ paths:
     patch:
       tags:
         - Posts
+      security:
+        - bearer: []
       summary: Upvote a post
       requestBody:
         content: {}
@@ -713,11 +721,13 @@ paths:
                   updatedAt: '2023-06-04T06:49:29.324Z'
                   __v: 1
 
-  # --------------------------------- COMMENTS ----------------------
+  # --------------- COMMENTS ---------------
   /comments:
     post:
       tags:
         - Comments
+      security:
+        - bearer: []
       summary: Post a comment
       requestBody:
         content:
@@ -858,6 +868,8 @@ paths:
     patch:
       tags:
         - Comments
+      security:
+        - bearer: []
       summary: Update comment to a post
       requestBody:
         content:
@@ -910,6 +922,8 @@ paths:
     patch:
       tags:
         - Comments
+      security:
+        - bearer: []
       summary: Upvote/like a comment
       requestBody:
         content: {}
@@ -953,6 +967,8 @@ paths:
     patch:
       tags:
         - Comments
+      security:
+        - bearer: []
       summary: Downvote/dislike a comment
       requestBody:
         content: {}
@@ -992,7 +1008,7 @@ paths:
                   updatedAt: '2023-06-04T09:37:17.914Z'
                   __v: 5
 
-  # --------------------------------- QUESTIONS ----------------------
+  # --------------- QUESTIONS ---------------
   /questions:
     post:
       tags:
@@ -1024,8 +1040,6 @@ paths:
     get:
       tags:
         - Questions
-      security:
-        - bearer: []
       summary: Returns posted questions
       description: This returns all posted questions along side other related information
       responses:
@@ -1040,8 +1054,6 @@ paths:
     get:
       tags:
         - Questions
-      security:
-        - bearer: []
       summary: This returns a single question
       description: Accepts the ID of a question and search the database if the question exists
       operationId: getSingleQuestionById
@@ -1215,7 +1227,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BadRequestError'
 
-  # --------------- ANSWERS ------------------------
+  # --------------- ANSWERS ---------------
   /answers:
     post:
       tags:
@@ -1242,8 +1254,6 @@ paths:
     get:
       tags:
         - Answers
-      security:
-        - bearer: []
       summary: Returns posted Answers
       description: This returns all posted Answers for a question
       parameters:
@@ -1265,8 +1275,6 @@ paths:
     get:
       tags:
         - Answers
-      security:
-        - bearer: []
       summary: This returns a single answer
       description: Accepts the ID of a answer and search the database if the answers exists and returns it
       operationId: getSingleAnswerById
@@ -1399,7 +1407,268 @@ paths:
               schema:
                 $ref: '#/components/schemas/BadRequestError'
 
-# ------------------------ COMPONENTS ----------------------------
+  # --------------- BOOKMARKS ---------------
+  /bookmarks:
+    post:
+      tags:
+        - Bookmarks
+      security:
+        - bearer: []
+      summary: Create a bookmark
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/createBookmark'
+              example:
+                title: How to get home
+                postId: 647c3080b26fc62cb642e53f
+                postType: Post
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bookmarkResponse'
+              example:
+                statusCode: 201
+                message: Request Successful!
+                data:
+                  title: Tips for resolving git conflicts
+                  postType: Post
+                  post:
+                    _id: 647c3104b26fc62cb642e545
+                    content: >-
+                      2 Performing asynchronous operations has been giving me a
+                      headache. There are so many ways that the permutation does
+                      not support the standards with which we call the anomalies
+                      in the underlying systems. There are so many factors to
+                      consider that make it hard for the average individual to
+                      commute in their daily fashion. All the king's horses and
+                      all the king's men couldn't put Humpty Dumpty together
+                      again
+                  isRead: false
+                  owner:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  _id: 64817327bf82b63b2a692b9d
+                  createdAt: '2023-06-08T06:20:23.065Z'
+                  updatedAt: '2023-06-08T06:20:23.065Z'
+                  __v: 0
+    get:
+      tags:
+        - Bookmarks
+      security:
+        - bearer: []
+      summary: Get all bookmarks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bookmarkResponse'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  - _id: 64817327bf82b63b2a692b9d
+                    title: Tips for resolving git conflicts
+                    postType: Post
+                    post:
+                      _id: 647c3104b26fc62cb642e545
+                      content: >-
+                        2 Performing asynchronous operations has been giving me
+                        a headache. There are so many ways that the permutation
+                        does not support the standards with which we call the
+                        anomalies in the underlying systems. There are so many
+                        factors to consider that make it hard for the average
+                        individual to commute in their daily fashion. All the
+                        king's horses and all the king's men couldn't put Humpty
+                        Dumpty together again
+                    isRead: false
+                    owner:
+                      _id: 64750feb02591ccffadd7717
+                      firstName: BadGuy
+                      lastName: Bushenga
+                    createdAt: '2023-06-08T06:20:23.065Z'
+                    updatedAt: '2023-06-08T06:20:23.065Z'
+                    __v: 0
+                  - _id: 648173d5bf82b63b2a692ba7
+                    title: How to get home
+                    postType: Post
+                    post:
+                      _id: 647c3080b26fc62cb642e53f
+                      content: >-
+                        Performing asynchronous operations has been giving me a
+                        headache. There are so many ways that the permutation
+                        does not support the standards with which we call the
+                        anomalies in the underlying systems. There are so many
+                        factors to consider that make it hard for the average
+                        individual to commute in their daily fashion. All the
+                        king's horses and all the king's men couldn't put Humpty
+                        Dumpty together again
+                    isRead: false
+                    owner:
+                      _id: 64750feb02591ccffadd7717
+                      firstName: BadGuy
+                      lastName: Bushenga
+                    createdAt: '2023-06-08T06:23:17.942Z'
+                    updatedAt: '2023-06-08T06:23:17.942Z'
+                    __v: 0
+
+  /bookmarks/{bookmarkId}:
+    get:
+      tags:
+        - Bookmarks
+      security:
+        - bearer: []
+      summary: Get a bookmark
+      parameters:
+        - name: bookmarkId
+          in: path
+          schema:
+            type: string
+          required: true
+          example: 64817327bf82b63b2a692b9d
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bookmarkResponse'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64817327bf82b63b2a692b9d
+                  title: Tips for resolving git conflicts
+                  postType: Post
+                  post:
+                    _id: 647c3104b26fc62cb642e545
+                    content: >-
+                      2 Performing asynchronous operations has been giving me a
+                      headache. There are so many ways that the permutation does
+                      not support the standards with which we call the anomalies
+                      in the underlying systems. There are so many factors to
+                      consider that make it hard for the average individual to
+                      commute in their daily fashion. All the king's horses and
+                      all the king's men couldn't put Humpty Dumpty together
+                      again
+                  isRead: false
+                  owner:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  createdAt: '2023-06-08T06:20:23.065Z'
+                  updatedAt: '2023-06-08T06:20:23.065Z'
+                  __v: 0
+    patch:
+      tags:
+        - Bookmarks
+      security:
+        - bearer: []
+      summary: Update bookmark(s)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                title: Into the webzies
+                isRead: 'true'
+      parameters:
+        - name: bookmarkId
+          in: path
+          schema:
+            type: string
+          required: true
+          example: 64817327bf82b63b2a692b9d
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bookmarkResponse'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64817327bf82b63b2a692b9d
+                  title: Into the webzies
+                  postType: Post
+                  post:
+                    _id: 647c3104b26fc62cb642e545
+                    content: >-
+                      2 Performing asynchronous operations has been giving me a
+                      headache. There are so many ways that the permutation does
+                      not support the standards with which we call the anomalies
+                      in the underlying systems. There are so many factors to
+                      consider that make it hard for the average individual to
+                      commute in their daily fashion. All the king's horses and
+                      all the king's men couldn't put Humpty Dumpty together
+                      again
+                  isRead: true
+                  owner:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  createdAt: '2023-06-08T06:20:23.065Z'
+                  updatedAt: '2023-06-08T06:30:35.566Z'
+                  __v: 0
+    delete:
+      tags:
+        - Bookmarks
+      security:
+        - bearer: []
+      summary: Delete a bookmark
+      parameters:
+        - name: bookmarkId
+          in: path
+          schema:
+            type: string
+          required: true
+          example: 64817327bf82b63b2a692b9d
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bookmarkResponse'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64817327bf82b63b2a692b9d
+                  title: Into the webzies
+                  postType: Post
+                  post:
+                    _id: 647c3104b26fc62cb642e545
+                    content: >-
+                      2 Performing asynchronous operations has been giving me a
+                      headache. There are so many ways that the permutation does
+                      not support the standards with which we call the anomalies
+                      in the underlying systems. There are so many factors to
+                      consider that make it hard for the average individual to
+                      commute in their daily fashion. All the king's horses and
+                      all the king's men couldn't put Humpty Dumpty together
+                      again
+                  isRead: true
+                  owner:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  createdAt: '2023-06-08T06:20:23.065Z'
+                  updatedAt: '2023-06-08T06:30:35.566Z'
+                  __v: 0
+
+# --------------- COMPONENTS ---------------
 components:
   schemas:
     signUpAccountRequest:
@@ -2277,6 +2546,78 @@ components:
           type: string
         questionId:
           type: string
+
+    createBookmark:
+      type: object
+      required:
+        - title
+        - postId
+        - postType
+      properties:
+        title:
+          type: string
+        postId:
+          type: string
+        postType:
+          type: string
+          enum:
+            - Post
+            - Question
+            - Answer
+            - Comment
+
+    updateBookmark:
+      type: object
+      properties:
+        title:
+          type: string
+        isRead:
+          type: boolean
+
+    bookmarkResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            title:
+              type: string
+            postType:
+              type: string
+            post:
+              type: object
+              properties:
+                _id:
+                  type: string
+                content:
+                  type: string
+            isRead:
+              type: boolean
+              default: false
+            owner:
+              type: object
+              properties:
+                _id:
+                  type: string
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                profilePicture:
+                  type: string
+            _id:
+              type: string
+            createdAt:
+              type: number
+            updatedAt:
+              type: number
+            __v:
+              type: integer
+              default: 0
 
     newAnswerDetails:
       type: object
