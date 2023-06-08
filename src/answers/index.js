@@ -13,25 +13,26 @@ const {
 const answers = require('./answersController');
 const limiter = require('../../middleware/rateLimit');
 
-router.use(verifyUser);
 router
   .route('/')
   .get(validator.query(getAnswersValidator), answers.getAnswers)
   .post(
     limiter(),
+    verifyUser,
     validatorMiddleware(createAnswerValidator),
     answers.createAnswer
   );
 
-router.route('/upvote/:id').patch(answers.upvoteAnswer);
+router.route('/upvote/:id').patch(verifyUser, answers.upvoteAnswer);
 
-router.route('/downvote/:id').patch(answers.downvoteAnswer);
+router.route('/downvote/:id').patch(verifyUser, answers.downvoteAnswer);
 
 router
   .route('/:id')
   .get(validator.params(getAnswerValidator), answers.getAnswer)
   .patch(
     limiter(),
+    verifyUser,
     validatorMiddleware(updateAnswerValidator),
     answers.updateAnswer
   );

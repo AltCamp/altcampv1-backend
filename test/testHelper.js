@@ -5,8 +5,10 @@ const Question = require('../model/question');
 const Answer = require('../model/answer');
 const Post = require('../model/post');
 const Comment = require('../model/comment');
+const Bookmark = require('../model/bookmark');
 const {
   createUserForReq,
+  createBookmark,
   generateQuestion,
   generateAnswer,
   generateComment,
@@ -48,6 +50,11 @@ const commentsInDb = async () => {
   return comments.map((comment) => comment.toJSON());
 };
 
+const bookmarksInDb = async () => {
+  const bookmarks = await Bookmark.find({});
+  return bookmarks.map((bookmark) => bookmark.toJSON());
+};
+
 const generateFreshStudentData = () => {
   return createUserForReq('student');
 };
@@ -63,6 +70,7 @@ const questions = require('./fixtures/questions.json');
 const answers = require('./fixtures/answers.json');
 const posts = require('./fixtures/posts.json');
 const comments = require('./fixtures/comments.json');
+const bookmarks = require('./fixtures/bookmarks.json');
 
 module.exports = {
   studentsInDb,
@@ -72,12 +80,14 @@ module.exports = {
   answersInDb,
   postsInDb,
   commentsInDb,
+  bookmarksInDb,
   generateFreshStudentData,
   generateFreshMentorData,
   generateQuestion,
   generateAnswer,
   generateComment,
   generatePost,
+  createBookmark,
   accounts: accounts.map((account) => Account.create(account)),
   students: students.map((student) => Student.create(student)),
   mentors: mentors.map((mentor) => Mentor.create(mentor)),
@@ -85,6 +95,7 @@ module.exports = {
   answers: answers.map((answer) => Answer.create(answer)),
   posts: posts.map((post) => Post.create(post)),
   comments: comments.map((comment) => Comment.create(comment)),
+  bookmarks: bookmarks.map((bookmark) => Bookmark.create(bookmark)),
   accountsAsJson: accounts,
   studentsAsJson: students,
   mentorsAsJson: mentors,
@@ -92,4 +103,5 @@ module.exports = {
   answersAsJson: answers,
   postsAsJson: posts,
   commentsAsJson: comments,
+  bookmarksAsJson: bookmarks,
 };

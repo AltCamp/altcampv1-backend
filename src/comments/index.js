@@ -13,25 +13,26 @@ const {
 const comments = require('./commentsController');
 const limiter = require('../../middleware/rateLimit');
 
-router.use(verifyUser);
 router
   .route('/')
   .get(validator.query(getCommentsValidator), comments.getComments)
   .post(
     limiter(),
+    verifyUser,
     validatorMiddleware(createCommentValidator),
     comments.createComment
   );
 
-router.route('/:id/upvote').patch(comments.upvoteComment);
+router.route('/:id/upvote').patch(verifyUser, comments.upvoteComment);
 
-router.route('/:id/downvote').patch(comments.downvoteComment);
+router.route('/:id/downvote').patch(verifyUser, comments.downvoteComment);
 
 router
   .route('/:id')
   .get(validator.params(getCommentValidator), comments.getComment)
   .patch(
     limiter(),
+    verifyUser,
     validatorMiddleware(updateCommentValidator),
     comments.updateComment
   );

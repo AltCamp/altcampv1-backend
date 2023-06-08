@@ -13,6 +13,13 @@ module.exports = {
     MALE: 'male',
   },
 
+  POST_TYPES: {
+    ANSWER: 'Answer',
+    COMMENT: 'Comment',
+    POST: 'Post',
+    QUESTION: 'Question',
+  },
+
   REGEX_PATTERNS: {
     ALT_SCHOOL_ID: new RegExp('^ALT/SO[EPD]/02[2-9]/[0-9]{0,4}$', 'i'),
     PASSWORD: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'),
