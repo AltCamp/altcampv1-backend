@@ -68,6 +68,7 @@ describe('Creating a bookmark', () => {
         _id: expect.any(String),
         firstName: user.firstName,
         lastName: user.lastName,
+        profilePicture: expect.any(String),
       })
     );
     expect(response.body.data).toHaveProperty('postType', postType);
@@ -177,6 +178,7 @@ describe('Updating a bookmark', () => {
         _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
+        profilePicture: expect.any(String),
       })
     );
     expect(response.body.data).toHaveProperty('postType', postType);

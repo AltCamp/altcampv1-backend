@@ -5,6 +5,7 @@ const getBookmarks = async (owner) => {
     .populate('owner', {
       firstName: 1,
       lastName: 1,
+      profilePicture: 1,
     })
     .populate('post', {
       content: 1,
@@ -19,6 +20,7 @@ const getBookmark = async (bookmarkId) => {
     .populate('owner', {
       firstName: 1,
       lastName: 1,
+      profilePicture: 1,
     })
     .populate('post', {
       content: 1,
@@ -39,6 +41,7 @@ const createBookmark = async ({ author, postId, postType, title }) => {
   await newBookmark.populate('owner', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
 
   await newBookmark.populate('post', {
@@ -62,6 +65,7 @@ const updateBookmark = async ({ bookmarkId, bookmark }) => {
     .populate('owner', {
       firstName: 1,
       lastName: 1,
+      profilePicture: 1,
     })
     .populate('post', {
       content: 1,
@@ -76,6 +80,7 @@ const deleteBookmark = async (bookmarkId) => {
     .populate('owner', {
       firstName: 1,
       lastName: 1,
+      profilePicture: 1,
     })
     .populate('post', {
       content: 1,
