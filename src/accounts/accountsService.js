@@ -38,7 +38,6 @@ async function updatePassword(userId, oldPassword, newPassword) {
   }
 
   user.password = newPassword;
-  // await user.save({ validateBeforeSave: false });
   await user.save();
   user = omit(user.toObject(), ['password']);
   return user;

@@ -359,7 +359,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-                
+
   /accounts/update-password:
     put:
       tags:
@@ -707,7 +707,7 @@ paths:
                   createdAt: '2023-06-04T06:46:33.730Z'
                   updatedAt: '2023-06-04T06:46:33.730Z'
                   __v: 0
-                  
+
   /posts/{id}/upvote:
     patch:
       tags:
