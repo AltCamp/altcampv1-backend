@@ -322,6 +322,31 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
 
+  # --------------------- ACCOUNTS ----------------------
+
+  /accounts/update-password:
+    put:
+      tags:
+        - Account
+      security:
+        - bearer: []
+      summary: Post a new question
+      description: This posts a new question
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/updateAccountPassword'
+
+      responses:
+        '201':
+          description: Returns posted question details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/newQuestionDetails'
+
   # --------------------------------- QUESTION ----------------------
 
   /questions:
@@ -960,7 +985,7 @@ components:
                   type: string
                 __v:
                   type: number
-                  defaul: 0
+                  default: 0
             createdAt:
               type: string
               default: '2023-01-01T00:10:52.567Z'
@@ -1129,14 +1154,18 @@ components:
         firstname: newTest
         lastname: newSampling
 
-    updateStudentPasswordRequest:
-      title: update student api
+    updateAccountPassword:
+      title: update account password
       type: object
       properties:
+        oldPassword:
+          type: string
         password:
           type: string
       example:
-        password: newTestPassword1@
+        oldPassword: oldTestPassword1@
+        password: newTestPassword1$
+        retypePassword: newTestPassword1$
 
     ValidationError:
       type: object
@@ -1215,7 +1244,7 @@ components:
                           type: string
                         __v:
                           type: number
-                          defaul: 0
+                          default: 0
                     _id:
                       type: string
                     createdAt:
@@ -1261,7 +1290,7 @@ components:
                       type: string
                     __v:
                       type: number
-                      defaul: 0
+                      default: 0
                 _id:
                   type: string
                 gender:
@@ -1630,162 +1659,162 @@ components:
               updatedAt:
                 type: number
 
-  # ----------------------------------------------------
-  consolidated:
-    examples:
-      mentorLoginRequest:
-        value:
-          email: lilylearn@mail.com
-          password: 8&jsfjhJD(@
+    # ----------------------------------------------------
+    consolidated:
+      example:
+        mentorLoginRequest:
+          value:
+            email: lilylearn@mail.com
+            password: 8&jsfjhJD(@
 
-      studentLoginRequest:
-        value:
-          email: johnny.dope@mail.com
-          password: Pkgj748_h!@
+        studentLoginRequest:
+          value:
+            email: johnny.dope@mail.com
+            password: Pkgj748_h!@
 
-      mentorLoginResponse:
-        value:
-          statusCode: 200
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Lily
-              lastName: Olaniyan
-              email: lilylearn@mail.com
-              track: Frontend Engineering
-              accountType: Mentor
-              owner:
+        mentorLoginResponse:
+          value:
+            statusCode: 200
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Lily
+                lastName: Olaniyan
+                email: lilylearn@mail.com
+                track: Frontend Engineering
+                accountType: Mentor
+                owner:
+                  _id: some ID
+                  __v: 0
                 _id: some ID
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      studentLoginResponse:
-        value:
-          statusCode: 200
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Johan
-              lastName: Dolapo
-              email: johnny.dope@mail.com
-              track: Frontend Engineering
-              accountType: Student
-              owner:
+        studentLoginResponse:
+          value:
+            statusCode: 200
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Johan
+                lastName: Dolapo
+                email: johnny.dope@mail.com
+                track: Frontend Engineering
+                accountType: Student
+                owner:
+                  _id: some ID
+                  __v: 0
                 _id: some ID
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      altStudentLoginResponse:
-        value:
-          statusCode: 200
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Johan
-              lastName: Dolapo
-              email: johnny.dope@mail.com
-              track: Frontend Engineering
-              accountType: Student
-              owner:
+        altStudentLoginResponse:
+          value:
+            statusCode: 200
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Johan
+                lastName: Dolapo
+                email: johnny.dope@mail.com
+                track: Frontend Engineering
+                accountType: Student
+                owner:
+                  _id: some ID
+                  altSchoolId: 'ALT/SOD/023/0010'
+                  __v: 0
                 _id: some ID
-                altSchoolId: 'ALT/SOD/023/0010'
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      mentorSignUpResponse:
-        value:
-          statusCode: 201
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Lily
-              lastName: Olaniyan
-              email: lilylearn@mail.com
-              track: Frontend Engineering
-              accountType: Mentor
-              owner:
+        mentorSignUpResponse:
+          value:
+            statusCode: 201
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Lily
+                lastName: Olaniyan
+                email: lilylearn@mail.com
+                track: Frontend Engineering
+                accountType: Mentor
+                owner:
+                  _id: some ID
+                  __v: 0
                 _id: some ID
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      studentSignUpResponse:
-        value:
-          statusCode: 201
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Johan
-              lastName: Dolapo
-              email: johnny.dope@mail.com
-              track: Frontend Engineering
-              accountType: Student
-              owner:
+        studentSignUpResponse:
+          value:
+            statusCode: 201
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Johan
+                lastName: Dolapo
+                email: johnny.dope@mail.com
+                track: Frontend Engineering
+                accountType: Student
+                owner:
+                  _id: some ID
+                  __v: 0
                 _id: some ID
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      altStudentSignUpResponse:
-        value:
-          statusCode: 201
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Johan
-              lastName: Dolapo
-              email: johnny.dope@mail.com
-              track: Frontend Engineering
-              accountType: Student
-              owner:
+        altStudentSignUpResponse:
+          value:
+            statusCode: 201
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Johan
+                lastName: Dolapo
+                email: johnny.dope@mail.com
+                track: Frontend Engineering
+                accountType: Student
+                owner:
+                  _id: some ID
+                  altSchoolId: 'ALT/SOD/023/0010'
+                  __v: 0
                 _id: some ID
-                altSchoolId: 'ALT/SOD/023/0010'
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      mentorSignupRequest:
-        value:
-          firstName: Lily
-          lastName: Olaniyan
-          email: lilylearn@mail.com
-          password: 8&jsfjhJD(@
-          track: Frontend Engineering
-          category: Mentor
+        mentorSignupRequest:
+          value:
+            firstName: Lily
+            lastName: Olaniyan
+            email: lilylearn@mail.com
+            password: 8&jsfjhJD(@
+            track: Frontend Engineering
+            category: Mentor
 
-      altStudentSignupRequest:
-        value:
-          firstName: Johan
-          lastName: Dolapo
-          email: johnny.dope@mail.com
-          password: Pkgj748_h!@
-          track: Frontend Engineering
-          category: Student
-          altSchoolId: 'ALT/SOD/023/0010'
+        altStudentSignupRequest:
+          value:
+            firstName: Johan
+            lastName: Dolapo
+            email: johnny.dope@mail.com
+            password: Pkgj748_h!@
+            track: Frontend Engineering
+            category: Student
+            altSchoolId: 'ALT/SOD/023/0010'
 
-      studentSignupRequest:
-        value:
-          firstName: Johan
-          lastName: Dolapo
-          email: johnny.dope@mail.com
-          password: Pkgj748_h!@
-          track: Frontend Engineering
-          category: Student
+        studentSignupRequest:
+          value:
+            firstName: Johan
+            lastName: Dolapo
+            email: johnny.dope@mail.com
+            password: Pkgj748_h!@
+            track: Frontend Engineering
+            category: Student
 
   # ----------------------------------------------------
 
