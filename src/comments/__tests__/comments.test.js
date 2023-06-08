@@ -67,7 +67,12 @@ describe('Creating comment', () => {
     expect(response.body.data).toHaveProperty('upvotedBy');
     expect(response.body.data).toHaveProperty('downvotes');
     expect(response.body.data).toHaveProperty('downvotedBy');
-    expect(response.body.data).toHaveProperty('author');
+    expect(response.body.data.author).toEqual({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePicture: expect.any(String),
+    });
     expect(response.body.data.author).toHaveProperty('_id', user._id);
     expect(response.body.data).toHaveProperty('post', post._id);
   });
@@ -127,6 +132,12 @@ describe('Modifying a comment', () => {
       .expect('Content-Type', /application\/json/);
 
     expect(response.body.data).toHaveProperty('content', content);
+    expect(response.body.data.author).toEqual({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePicture: expect.any(String),
+    });
   });
 });
 
@@ -155,6 +166,12 @@ describe('Upvoting a comment', () => {
 
     expect(response.body.data.upvotes).toBe(comment.upvotes + 1);
     expect(response.body.data.upvotedBy).toContain(user._id);
+    expect(response.body.data.author).toEqual({
+      _id: expect.any(String),
+      firstName: expect.any(String),
+      lastName: expect.any(String),
+      profilePicture: expect.any(String),
+    });
 
     user = users[1];
     await login(user);
@@ -167,6 +184,12 @@ describe('Upvoting a comment', () => {
 
     expect(res.body.data.upvotes).toBe(comment.upvotes + 2);
     expect(res.body.data.upvotedBy).toContain(user._id);
+    expect(res.body.data.author).toEqual({
+      _id: expect.any(String),
+      firstName: expect.any(String),
+      lastName: expect.any(String),
+      profilePicture: expect.any(String),
+    });
   });
 
   it('if a user has previously upvoted removes the vote', async () => {
@@ -185,6 +208,12 @@ describe('Upvoting a comment', () => {
 
     expect(response.body.data.upvotes).toBe(comment.upvotes - 1);
     expect(response.body.data.upvotedBy).not.toContain(user._id);
+    expect(response.body.data.author).toEqual({
+      _id: expect.any(String),
+      firstName: expect.any(String),
+      lastName: expect.any(String),
+      profilePicture: expect.any(String),
+    });
   });
 });
 
@@ -210,6 +239,12 @@ describe('Downvoting a comment', () => {
 
     expect(response.body.data.downvotes).toBe(comment.downvotes + 1);
     expect(response.body.data.downvotedBy).toContain(user._id);
+    expect(response.body.data.author).toEqual({
+      _id: expect.any(String),
+      firstName: expect.any(String),
+      lastName: expect.any(String),
+      profilePicture: expect.any(String),
+    });
 
     user = users[1];
     await login(user);
@@ -222,6 +257,12 @@ describe('Downvoting a comment', () => {
 
     expect(res.body.data.downvotes).toBe(comment.downvotes + 2);
     expect(res.body.data.downvotedBy).toContain(user._id);
+    expect(res.body.data.author).toEqual({
+      _id: expect.any(String),
+      firstName: expect.any(String),
+      lastName: expect.any(String),
+      profilePicture: expect.any(String),
+    });
   });
 
   it('if a user has previously downvoted removes the vote', async () => {
@@ -240,6 +281,12 @@ describe('Downvoting a comment', () => {
 
     expect(response.body.data.downvotes).toBe(comment.downvotes - 1);
     expect(response.body.data.downvotedBy).not.toContain(user._id);
+    expect(response.body.data.author).toEqual({
+      _id: expect.any(String),
+      firstName: expect.any(String),
+      lastName: expect.any(String),
+      profilePicture: expect.any(String),
+    });
   });
 });
 

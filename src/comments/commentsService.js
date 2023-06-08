@@ -5,6 +5,7 @@ const getComment = async (id) => {
   const comment = await Comment.findById(id).populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
 
   return comment;
@@ -16,6 +17,7 @@ const getComments = async (postId) => {
   }).populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
 
   return comments;
@@ -33,6 +35,7 @@ const createComment = async (comment) => {
   await newComment.populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
 
   return newComment;
@@ -50,6 +53,7 @@ const updateComment = async (id, { content }) => {
   ).populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
 
   return updatedComment;
@@ -59,6 +63,7 @@ const upvoteComment = async ({ id, userId }) => {
   const comment = await Comment.findById(id).populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
   if (!comment) {
     return false;
@@ -91,6 +96,7 @@ const downvoteComment = async ({ id, userId }) => {
   const comment = await Comment.findById(id).populate('author', {
     firstName: 1,
     lastName: 1,
+    profilePicture: 1,
   });
   if (!comment) {
     return false;

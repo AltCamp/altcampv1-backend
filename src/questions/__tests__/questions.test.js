@@ -62,7 +62,12 @@ describe('Creating a question', () => {
     expect(response.body.data).toHaveProperty('body', body);
     expect(response.body.data).toHaveProperty('upvotes', 0);
     expect(response.body.data).toHaveProperty('downvotes', 0);
-    expect(response.body.data).toHaveProperty('author', user._id);
+    expect(response.body.data.author).toEqual({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePicture: expect.any(String),
+    });
     expect(response.body.data).toHaveProperty('slug', slug);
   });
 });
@@ -126,6 +131,12 @@ describe('Modifying a question', () => {
     // check response for specific properties
     expect(response.body.data).toHaveProperty('body', body);
     expect(response.body.data).toHaveProperty('slug', slug);
+    expect(response.body.data.author).toEqual({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePicture: expect.any(String),
+    });
   });
 });
 
@@ -159,6 +170,14 @@ describe('Upvoting a question', () => {
     // check response for specific properties
     expect(response.body.data.upvotes).toBe(questions[0].upvotes + 1);
     expect(response.body.data.upvotedBy).toContain(user._id);
+    expect(response.body.data.author).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        profilePicture: expect.any(String),
+      })
+    );
 
     // get questions from DB
     questions = await helper.questionsInDb();
@@ -177,6 +196,14 @@ describe('Upvoting a question', () => {
     // check response2 for specific properties
     expect(response2.body.data.upvotes).toBe(questions[0].upvotes + 1);
     expect(response2.body.data.upvotedBy).toContain(user._id);
+    expect(response2.body.data.author).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        profilePicture: expect.any(String),
+      })
+    );
   });
 
   test('if a user has previously upvoted removes the vote', async () => {
@@ -198,6 +225,14 @@ describe('Upvoting a question', () => {
     // check response for specific properties
     expect(response.body.data.upvotes).toBe(questions[0].upvotes - 1);
     expect(response.body.data.upvotedBy).not.toContain(user._id);
+    expect(response.body.data.author).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        profilePicture: expect.any(String),
+      })
+    );
   });
 
   test('if a user has previously downvoted removes the downvote', async () => {
@@ -217,6 +252,14 @@ describe('Upvoting a question', () => {
       .expect('Content-Type', /application\/json/);
     expect(res.body.data.downvotes).toBe(questions[0].downvotes + 1);
     expect(res.body.data.downvotedBy).toContain(user._id);
+    expect(res.body.data.author).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        profilePicture: expect.any(String),
+      })
+    );
 
     // send a patch request to downvote question
     const response = await api
@@ -230,6 +273,14 @@ describe('Upvoting a question', () => {
     expect(response.body.data.upvotedBy).toContain(user._id);
     expect(response.body.data.downvotes).toBe(questions[0].downvotes);
     expect(response.body.data.downvotedBy).not.toContain(user._id);
+    expect(response.body.data.author).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        profilePicture: expect.any(String),
+      })
+    );
   });
 });
 
@@ -263,6 +314,14 @@ describe('Downvoting a question', () => {
     // check response for specific properties
     expect(response.body.data.downvotes).toBe(questions[0].downvotes + 1);
     expect(response.body.data.downvotedBy).toContain(user._id);
+    expect(response.body.data.author).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        profilePicture: expect.any(String),
+      })
+    );
 
     // get questions from DB
     questions = await helper.questionsInDb();
@@ -281,6 +340,14 @@ describe('Downvoting a question', () => {
     // check response2 for specific properties
     expect(response2.body.data.downvotes).toBe(questions[0].downvotes + 1);
     expect(response2.body.data.downvotedBy).toContain(user._id);
+    expect(response2.body.data.author).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        profilePicture: expect.any(String),
+      })
+    );
   });
 
   test('if a user has previously downvoted removes the vote', async () => {
@@ -302,6 +369,14 @@ describe('Downvoting a question', () => {
     // check response for specific properties
     expect(response.body.data.downvotes).toBe(questions[0].downvotes - 1);
     expect(response.body.data.downvotedBy).not.toContain(user._id);
+    expect(response.body.data.author).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        profilePicture: expect.any(String),
+      })
+    );
   });
 
   test('if a user has previously upvoted removes the upvote', async () => {
@@ -321,6 +396,14 @@ describe('Downvoting a question', () => {
       .expect('Content-Type', /application\/json/);
     expect(res.body.data.upvotes).toBe(questions[0].upvotes + 1);
     expect(res.body.data.upvotedBy).toContain(user._id);
+    expect(res.body.data.author).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        profilePicture: expect.any(String),
+      })
+    );
 
     // send a patch request to downvote question
     const response = await api
@@ -334,6 +417,14 @@ describe('Downvoting a question', () => {
     expect(response.body.data.downvotedBy).toContain(user._id);
     expect(response.body.data.upvotes).toBe(questions[0].upvotes);
     expect(response.body.data.upvotedBy).not.toContain(user._id);
+    expect(response.body.data.author).toEqual(
+      expect.objectContaining({
+        _id: expect.any(String),
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+        profilePicture: expect.any(String),
+      })
+    );
   });
 });
 

@@ -77,7 +77,12 @@ describe('Creating answer to a question', () => {
     expect(response.body.data).toHaveProperty('upvotedBy');
     expect(response.body.data).toHaveProperty('downvotes');
     expect(response.body.data).toHaveProperty('downvotedBy');
-    expect(response.body.data).toHaveProperty('author');
+    expect(response.body.data.author).toEqual({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePicture: expect.any(String),
+    });
     expect(response.body.data.author).toHaveProperty('_id', user._id);
     expect(response.body.data).toHaveProperty('question', question._id);
   });
