@@ -29,19 +29,21 @@ describe('Auth: Account registration', () => {
     expect(response.body).toHaveProperty('data');
     expect(response.body.data).toHaveProperty('token');
     expect(response.body.data).toHaveProperty('user');
-    expect(response.body.data.user).toEqual(
-      expect.objectContaining({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        track: user.track,
-        accountType: 'Mentor',
-        owner: expect.objectContaining({}),
-        _id: expect.any(String),
-        createdAt: expect.any(String),
-        updatedAt: expect.any(String),
-      })
-    );
+    expect(response.body.data.user).toEqual({
+      __v: 0,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      track: user.track,
+      isDeleted: false,
+      accountType: 'Mentor',
+      owner: expect.objectContaining({}),
+      _id: expect.any(String),
+      profilePicture: expect.any(String),
+      bio: '',
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
+    });
     expect(response.body.data.token).toEqual(expect.any(String));
 
     // Verify token

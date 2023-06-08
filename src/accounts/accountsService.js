@@ -2,19 +2,17 @@ const { omit } = require('lodash');
 const cloudinary = require('cloudinary').v2;
 const { cloudinary: cloudinaryConfig } = require('../../config');
 const { ACCOUNT_TYPES } = require('../../constant');
-const { deleteFile } = require('./helper');
 const Account = require('../../model/account');
 const { NotFoundError, UnAuthorizedError } = require('../../utils/customError');
 const Mentor = require('../../model/mentor');
 const Student = require('../../model/student');
-const { createToken } = require('../../utils/helper');
 const { verifyPassword } = require('../../utils/helper');
 
 const Model = {
   mentor: Mentor,
   student: Student,
 };
-
+const { validateCredentials } = require('../../utils/helper');
 cloudinary.config({
   cloud_name: cloudinaryConfig.name,
   api_key: cloudinaryConfig.key,
@@ -31,22 +29,19 @@ async function accountExists(email) {
   return false;
 }
 
-async function checkCredentials(oldPassword, userPassword) {
-  if (!(await verifyPassword(oldPassword, userPassword))) {
-    throw new UnAuthorizedError('Invalid Credentials');
-  }
-}
+async function updatePassword(userId, oldPassword, newPassword) {
+  let user = await Account.findOne(userId).select('+password');
 
-async function updatePassword(req, userId, newPassword) {
-  const user = await Account.findOne(userId).select('+password');
-  const accessToken = createToken({
-    id: user._id,
-  });
-  await checkCredentials(req.body.oldPassword, user.password);
+  const check = await verifyPassword(oldPassword, user.password);
+  if (!check) {
+    throw new UnAuthorizedError();
+  }
 
   user.password = newPassword;
-  await user.save({ validateBeforeSave: false });
-  return { token: accessToken, user };
+  // await user.save({ validateBeforeSave: false });
+  await user.save();
+  user = omit(user.toObject(), ['password']);
+  return user;
 }
 
 async function getStudents() {
@@ -66,8 +61,10 @@ async function getMentors() {
 }
 
 async function getAccounts(filters) {
-  const accountType = ACCOUNT_TYPES[filters.category.toUpperCase()];
-  const accounts = await Account.find({ accountType }).populate('owner');
+  const accountType = filters.category
+    ? { accountType: ACCOUNT_TYPES[filters.category.toUpperCase()] }
+    : {};
+  const accounts = await Account.find(accountType).populate('owner');
 
   return accounts;
 }
@@ -76,29 +73,6 @@ async function getSingleAccount(id) {
   const account = await Account.findById(id).populate('owner');
 
   return account;
-}
-
-async function uploadProfilePicture({ id, filepath }) {
-  try {
-    const account = await Account.findById(id);
-    if (!account) {
-      const error = new NotFoundError('Account not found!');
-      return error;
-    }
-
-    const cloudinaryUpload = await cloudinary.uploader.upload(filepath, {
-      public_id: `${cloudinaryConfig.folder}/images/profile-pictures/${id}`,
-    });
-
-    account.profilePicture = cloudinaryUpload.secure_url;
-    await account.save();
-
-    deleteFile(filepath);
-
-    return account;
-  } catch (error) {
-    return error;
-  }
 }
 
 async function updateAccount({ id, payload }) {
@@ -111,21 +85,24 @@ async function updateAccount({ id, payload }) {
   return account;
 }
 
-async function changeAccountPassword({ id, password }) {
-  let account = await Account.findById(id).populate('owner');
-  if (!account) {
-    return false;
+async function deleteAccount({ id, password }) {
+  try {
+    let account = await Account.findById(id).populate('owner');
+    if (!account) {
+      throw new NotFoundError('Account not found!');
+    }
+    let deletedAccount = await validateCredentials(account.email, password);
+    if (!deletedAccount) {
+      throw new UnAuthorizedError('Incorrect Password!');
+    }
+
+    account.isDeleted = true;
+    account.save();
+
+    return account;
+  } catch (error) {
+    return error;
   }
-
-  // save password from request
-  account.password = password;
-  await account.save();
-
-  // prepare response data
-  omit(account.toObject(), ['password']);
-  account = omit(account.toObject(), ['password']);
-
-  return account;
 }
 
 async function createAccount({ category, altSchoolId, ...payload }) {
@@ -140,15 +117,58 @@ async function createAccount({ category, altSchoolId, ...payload }) {
   return account;
 }
 
+async function uploadProfilePicture({ id, image }) {
+  try {
+    const account = await Account.findById(id);
+    if (!account) {
+      const error = new NotFoundError('Account not found!');
+      return error;
+    }
+
+    const cloudinaryUpload = await cloudinary.uploader.upload(image, {
+      public_id: `${cloudinaryConfig.folder}/images/profile-pictures/${id}`,
+    });
+
+    account.profilePicture = cloudinaryUpload.secure_url;
+    await account.save();
+
+    return account;
+  } catch (error) {
+    return error;
+  }
+}
+
+async function deleteProfilePicture(id) {
+  try {
+    const account = await Account.findById(id);
+    if (!account) {
+      const error = new NotFoundError('Account not found!');
+      return error;
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    const cloudinaryUpload = await cloudinary.uploader.destroy(
+      `${cloudinaryConfig.folder}/images/profile-pictures/${id}`
+    );
+
+    // delete profile picture from database
+    account.profilePicture = '';
+    await account.save();
+  } catch (error) {
+    return error;
+  }
+}
+
 module.exports = {
   accountExists,
   createAccount,
-  changeAccountPassword,
   getAccounts,
   getMentors,
   getSingleAccount,
   getStudents,
   updateAccount,
   uploadProfilePicture,
+  deleteProfilePicture,
+  deleteAccount,
   updatePassword,
 };

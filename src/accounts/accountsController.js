@@ -1,40 +1,54 @@
 const { RESPONSE_MESSAGE } = require('../../constant');
 const responseHandler = require('../../utils/responseHandler');
 const accountsService = require('./accountsService');
-const { validateImageInput, deleteFile } = require('./helper');
-const {
-  NotFoundError,
-  // UnAuthorizedError,
-  UnprocessableEntity,
-} = require('../../utils/customError');
-// const { verifyPassword } = require('../../utils/helper');
+const { NotFoundError } = require('../../utils/customError');
 
 async function uploadProfilePicture(req, res, next) {
   try {
-    const error = validateImageInput(req.body, req.file);
-
-    if (error) {
-      deleteFile(req.file.path);
-      return next(error);
-    }
+    const payload = req.body;
 
     const account = await accountsService.uploadProfilePicture({
       id: req.user.id,
-      filepath: req.file.path,
+      image: payload.profilePicture,
     });
 
     if (account instanceof Error) {
-      deleteFile(req.file.path);
       return next(account);
     }
 
     new responseHandler(res, account, 200, RESPONSE_MESSAGE.SUCCESS);
   } catch (error) {
-    if (req.file) {
-      deleteFile(req.file.path);
-    }
     return next(error);
   }
+}
+
+async function deleteProfilePicture(req, res, next) {
+  try {
+    const account = await accountsService.deleteProfilePicture(req.user.id);
+
+    if (account instanceof Error) {
+      return next(account);
+    }
+
+    new responseHandler(res, account, 200, RESPONSE_MESSAGE.SUCCESS);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function deleteAccount(req, res, next) {
+  const { password } = req.body;
+  const deletedAccount = await accountsService.deleteAccount({
+    id: req.user.id,
+    password,
+  });
+
+  if (deletedAccount instanceof Error) {
+    next(deletedAccount);
+    return;
+  }
+
+  new responseHandler(res, deletedAccount, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
 async function getAccounts(req, res) {
@@ -44,23 +58,14 @@ async function getAccounts(req, res) {
   new responseHandler(res, accounts, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
-// async function checkCredentials(oldPassword, userPassword) {
-//   if (!(await verifyPassword(oldPassword, userPassword))) {
-//     throw new UnAuthorizedError('Invalid Credentials');
-//   }
-// }
-
 async function updatePassword(req, res) {
-  const { token } = await accountsService.updatePassword(
-    req,
+  const token = await accountsService.updatePassword(
     req.user._id,
+    req.body.oldPassword,
     req.body.password
   );
-  if (req.body.password !== req.body.retypePassword) {
-    throw new UnprocessableEntity('Password and retype password must match');
-  }
-  res.cookie('jwt_token', token);
-  new responseHandler(res, { token }, 200, RESPONSE_MESSAGE.SUCCESS);
+
+  new responseHandler(res, token, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
 async function getAccount(req, res) {
@@ -87,9 +92,11 @@ async function updateAccount(req, res) {
 }
 
 module.exports = {
+  deleteAccount,
   getAccount,
   getAccounts,
   updateAccount,
   uploadProfilePicture,
+  deleteProfilePicture,
   updatePassword,
 };

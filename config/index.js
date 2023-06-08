@@ -36,4 +36,8 @@ module.exports = {
         : process.env.TEST_CLOUDINARY_API_SECRET,
     folder: process.env.APP_ENV === 'production' ? 'prod' : 'test',
   },
+  sentry: {
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.APP_ENV,
+  },
 };

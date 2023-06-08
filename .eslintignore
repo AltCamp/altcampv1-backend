@@ -1,3 +1,5 @@
 build
 test.db.js
 README.md
+package-lock.json
+package.json

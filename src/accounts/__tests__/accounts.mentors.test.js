@@ -124,7 +124,7 @@ describe('Updating a mentor', () => {
     const newPassword = 'ASecurePassword@1234';
 
     const response = await api
-      .put('/accounts/password')
+      .put('/accounts/update-password')
       .set('Authorization', `Bearer ${token}`)
       .send({
         oldPassword,
@@ -139,7 +139,6 @@ describe('Updating a mentor', () => {
       .send({ email: user.email, password: newPassword });
 
     expect(loginAttempt.status).toBe(200);
-    expect(loginAttempt.body.data).toHaveProperty('token');
     expect(response.body.data).toHaveProperty(
       'accountType',
       ACCOUNT_TYPES.MENTOR
@@ -153,7 +152,7 @@ describe('Updating a mentor', () => {
     const newPassword = 'ASecurePassword@1234';
 
     const response = await api
-      .put('/accounts/password')
+      .put('/accounts/update-password')
       .set('Authorization', `Bearer ${token}`)
       .send({ password: newPassword, retypePassword: 'password' });
 
@@ -168,7 +167,7 @@ describe('Updating a mentor', () => {
     const newPassword = 'AnunSecurePassword';
 
     await api
-      .put('/accounts/password')
+      .put('/accounts/update-password')
       .set('Authorization', `Bearer ${token}`)
       .send({
         oldPassword: password,

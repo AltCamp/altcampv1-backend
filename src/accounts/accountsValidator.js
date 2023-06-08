@@ -3,8 +3,8 @@ const { ACCOUNT_TYPES, REGEX_PATTERNS, TRACKS } = require('../../constant');
 
 const getAccountsValidator = Joi.object({
   category: Joi.string()
-    .valid(...Object.values(ACCOUNT_TYPES))
-    .default(ACCOUNT_TYPES.STUDENT),
+    .optional()
+    .valid(...Object.values(ACCOUNT_TYPES)),
 });
 
 const passwordValidator = Joi.object({
@@ -38,14 +38,17 @@ const profileValidator = Joi.object({
 });
 
 const imageValidator = Joi.object({
-  fieldname: Joi.string().required(),
-  originalname: Joi.string().required(),
-  encoding: Joi.string().valid('7bit', '8bit', 'binary', 'base64').required(),
-  mimetype: Joi.string().valid('image/jpeg', 'image/png').required(),
-  size: Joi.number().required(),
-}).options({ allowUnknown: true });
+  profilePicture: Joi.string().required(),
+});
+
+const deleteAccountValidator = Joi.object({
+  password: Joi.string().required().messages({
+    'string.empty': 'Password is required',
+  }),
+});
 
 module.exports = {
+  deleteAccountValidator,
   getAccountsValidator,
   imageValidator,
   passwordValidator,

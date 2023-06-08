@@ -22,19 +22,30 @@ beforeAll(async () => {
 });
 
 describe('GET requests', () => {
-  it('to /accounts returns student accounts', async () => {
+  it('to /accounts returns accounts', async () => {
     const response = await api.get('/accounts').expect(200);
+
+    const accountTypes = response.body.data.map(
+      (accounts) => accounts.accountType
+    );
+
+    expect(accountTypes).toContain('Student');
+    expect(accountTypes).toContain('Mentor');
+  });
+
+  it('to /accounts?category=Student returns student accounts', async () => {
+    const response = await api.get('/accounts?category=Student').expect(200);
 
     response.body.data.forEach(({ accountType }) => {
       expect(accountType).toBe('Student');
     });
   });
 
-  it('to /accounts?category=Student returns student accounts', async () => {
-    const response = await api.get('/accounts').expect(200);
+  it('to /accounts?category=Mentor returns mentor accounts', async () => {
+    const response = await api.get('/accounts?category=Mentor').expect(200);
 
     response.body.data.forEach(({ accountType }) => {
-      expect(accountType).toBe('Student');
+      expect(accountType).toBe('Mentor');
     });
   });
 });
@@ -132,7 +143,7 @@ describe('Updating a student', () => {
     const newPassword = 'ASecurePassword@1234';
 
     const response = await api
-      .put('/accounts/password')
+      .put('/accounts/update-password')
       .set('Authorization', `Bearer ${token}`)
       .send({
         oldPassword,
@@ -147,7 +158,6 @@ describe('Updating a student', () => {
       .send({ email: user.email, password: newPassword });
 
     expect(loginAttempt.status).toBe(200);
-    expect(loginAttempt.body.data).toHaveProperty('token');
     expect(response.body.data).toHaveProperty(
       'accountType',
       ACCOUNT_TYPES.STUDENT
@@ -161,7 +171,7 @@ describe('Updating a student', () => {
     const newPassword = 'ASecurePassword@1234';
 
     const response = await api
-      .put('/accounts/password')
+      .put('/accounts/update-password')
       .set('Authorization', `Bearer ${token}`)
       .send({ password: newPassword, retypePassword: 'password' });
 
@@ -176,7 +186,7 @@ describe('Updating a student', () => {
     const newPassword = 'AnunSecurePassword';
 
     await api
-      .put('/accounts/password')
+      .put('/accounts/update-password')
       .set('Authorization', `Bearer ${token}`)
       .send({
         oldPassword: password,

@@ -1,25 +1,26 @@
 const router = require('express').Router();
 const { verifyUser } = require('../../middleware/authenticate');
+const validatorMiddleware = require('../../middleware/validator');
 const {
+  deleteAccount,
   getAccount,
   getAccounts,
   updateAccount,
   uploadProfilePicture,
+  deleteProfilePicture,
   updatePassword,
 } = require('./accountsController');
-const multer = require('multer');
 const {
   getAccountsValidator,
   profileBioValidator,
   profileValidator,
+  deleteAccountValidator,
+  imageValidator,
   passwordValidator,
 } = require('./accountsValidator');
 const validator = require('express-joi-validation').createValidator({
   passError: true,
 });
-const validatorMiddleware = require('../../middleware/validator');
-
-const upload = multer({ dest: 'src/accounts/tmp/uploads/' });
 
 router
   .route('/')
@@ -31,10 +32,19 @@ router
   .put(verifyUser, validatorMiddleware(profileBioValidator), updateAccount);
 
 router
-  .route('/upload-profile-picture')
-  .put(verifyUser, upload.single('profilePicture'), uploadProfilePicture);
+  .route('/profile-picture')
+  .put(verifyUser, validatorMiddleware(imageValidator), uploadProfilePicture)
+  .delete(verifyUser, deleteProfilePicture);
 
 router.route('/:id').get(getAccount);
+
+router
+  .route('/delete-account')
+  .delete(
+    verifyUser,
+    validatorMiddleware(deleteAccountValidator),
+    deleteAccount
+  );
 
 router
   .route('/update-password')
