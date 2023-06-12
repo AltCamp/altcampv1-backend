@@ -8,6 +8,11 @@ module.exports = {
     ADMIN: 'Admin',
   },
 
+  TOKEN_TYPE: {
+    PASSWORD_RESET: 'password_reset',
+    EMAIL_VERIFICATION: 'email_verification',
+  },
+
   GENDER: {
     FEMALE: 'female',
     MALE: 'male',
