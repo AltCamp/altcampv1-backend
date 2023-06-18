@@ -1469,32 +1469,101 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/bookmarkResponse'
+              examples:
+                example-0:
+                  summary: 200 - Bookmark a Post
+                  value:
+                    statusCode: 201
+                    message: Request Successful!
+                    data:
+                      title: How to get home
+                      postType: Post
+                      post:
+                        _id: 648dd3ec9fb3d832dab9dba3
+                        content: A post by emoji 🍷🍷🍷
+                        upvotes: 2
+                        upvotedBy:
+                          - 648dd3c59fb3d832dab9db9d
+                          - 648cc7070bcabbf9100c84b7
+                        author:
+                          _id: 648dd3c59fb3d832dab9db9d
+                          firstName: Emoji
+                          lastName: 😭👀😭👀😭
+                          profilePicture: ''
+                        comments: []
+                        createdAt: '2023-06-17T15:40:28.569Z'
+                        updatedAt: '2023-06-18T10:49:52.297Z'
+                        __v: 2
+                      isRead: false
+                      owner:
+                        _id: 648f2797193d9a4741831587
+                        firstName: John
+                        lastName: Thomas
+                        profilePicture: ''
+                      _id: 648f27f5193d9a474183158f
+                      createdAt: '2023-06-18T15:51:17.556Z'
+                      updatedAt: '2023-06-18T15:51:17.556Z'
+                      __v: 0
+                example-1:
+                  summary: 200 - Boomark a Question
+                  value:
+                    statusCode: 201
+                    message: Request Successful!
+                    data:
+                      title: Munir's Thought-provoking question
+                      postType: Question
+                      post:
+                        _id: 6451015a6dfb4eaa6f2325b7
+                        title: >-
+                          Munir - How do we provide callbacks as event driven
+                          mechanisms?
+                        body: >-
+                          Performing asynchronous operations has been giving me
+                          a headache. There are so many ways that the
+                          permutation does not support the standards with which
+                          we call the anomalies in the underlying systems. There
+                          are so many factors to consider that make it hard for
+                          the average individual to commute in their daily
+                          fashion. All the king's horses and all the king's men
+                          couldn't put Humpty Dumpty together again
+                        upvotes: 1
+                        upvotedBy:
+                          - 6454376c7a688038b4aabe70
+                        downvotes: 0
+                        downvotedBy: []
+                        author:
+                          _id: 644fce3e13055da94a6957cc
+                          lastName: Ogbonna
+                          firstName: Yemi
+                          profilePicture: >-
+                            https://res.cloudinary.com/altcampdev/image/upload/v1686832334/test/images/profile-pictures/644fce3e13055da94a6957cc.png
+                        answer:
+                          - 646941a2e3ca4868110115ef
+                        createdAt: '2023-05-02T12:26:02.492Z'
+                        updatedAt: '2023-05-20T21:54:42.256Z'
+                        __v: 2
+                        slug: >-
+                          munir-how-do-we-provide-callbacks-as-event-driven-mechanisms
+                      isRead: false
+                      owner:
+                        _id: 648f2797193d9a4741831587
+                        firstName: John
+                        lastName: Thomas
+                        profilePicture: ''
+                      _id: 648f28b7193d9a474183159d
+                      createdAt: '2023-06-18T15:54:31.194Z'
+                      updatedAt: '2023-06-18T15:54:31.194Z'
+                      __v: 0
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                type: object
               example:
-                statusCode: 201
-                message: Request Successful!
-                data:
-                  title: Tips for resolving git conflicts
-                  postType: Post
-                  post:
-                    _id: 647c3104b26fc62cb642e545
-                    content: >-
-                      2 Performing asynchronous operations has been giving me a
-                      headache. There are so many ways that the permutation does
-                      not support the standards with which we call the anomalies
-                      in the underlying systems. There are so many factors to
-                      consider that make it hard for the average individual to
-                      commute in their daily fashion. All the king's horses and
-                      all the king's men couldn't put Humpty Dumpty together
-                      again
-                  isRead: false
-                  owner:
-                    _id: 64750feb02591ccffadd7717
-                    firstName: BadGuy
-                    lastName: Bushenga
-                  _id: 64817327bf82b63b2a692b9d
-                  createdAt: '2023-06-08T06:20:23.065Z'
-                  updatedAt: '2023-06-08T06:20:23.065Z'
-                  __v: 0
+                statusCode: 409
+                message: Bookmark already exists!
+                error: Conflict
     get:
       tags:
         - Bookmarks
@@ -1512,34 +1581,43 @@ paths:
                 statusCode: 200
                 message: Request Successful!
                 data:
-                  - _id: 64817327bf82b63b2a692b9d
-                    title: Tips for resolving git conflicts
-                    postType: Post
-                    post:
-                      _id: 647c3104b26fc62cb642e545
-                      content: >-
-                        2 Performing asynchronous operations has been giving me
-                        a headache. There are so many ways that the permutation
-                        does not support the standards with which we call the
-                        anomalies in the underlying systems. There are so many
-                        factors to consider that make it hard for the average
-                        individual to commute in their daily fashion. All the
-                        king's horses and all the king's men couldn't put Humpty
-                        Dumpty together again
-                    isRead: false
-                    owner:
-                      _id: 64750feb02591ccffadd7717
-                      firstName: BadGuy
-                      lastName: Bushenga
-                    createdAt: '2023-06-08T06:20:23.065Z'
-                    updatedAt: '2023-06-08T06:20:23.065Z'
-                    __v: 0
-                  - _id: 648173d5bf82b63b2a692ba7
+                  - _id: 648f27f5193d9a474183158f
                     title: How to get home
                     postType: Post
                     post:
-                      _id: 647c3080b26fc62cb642e53f
-                      content: >-
+                      _id: 648dd3ec9fb3d832dab9dba3
+                      content: A post by emoji 🍷🍷🍷
+                      upvotes: 2
+                      upvotedBy:
+                        - 648dd3c59fb3d832dab9db9d
+                        - 648cc7070bcabbf9100c84b7
+                      author:
+                        _id: 648dd3c59fb3d832dab9db9d
+                        firstName: Emoji
+                        lastName: 😭👀😭👀😭
+                        profilePicture: ''
+                      comments: []
+                      createdAt: '2023-06-17T15:40:28.569Z'
+                      updatedAt: '2023-06-18T10:49:52.297Z'
+                      __v: 2
+                    isRead: false
+                    owner:
+                      _id: 648f2797193d9a4741831587
+                      firstName: John
+                      lastName: Thomas
+                      profilePicture: ''
+                    createdAt: '2023-06-18T15:51:17.556Z'
+                    updatedAt: '2023-06-18T15:51:17.556Z'
+                    __v: 0
+                  - _id: 648f28b7193d9a474183159d
+                    title: Munir's Thought-provoking question
+                    postType: Question
+                    post:
+                      _id: 6451015a6dfb4eaa6f2325b7
+                      title: >-
+                        Munir - How do we provide callbacks as event driven
+                        mechanisms?
+                      body: >-
                         Performing asynchronous operations has been giving me a
                         headache. There are so many ways that the permutation
                         does not support the standards with which we call the
@@ -1548,13 +1626,208 @@ paths:
                         individual to commute in their daily fashion. All the
                         king's horses and all the king's men couldn't put Humpty
                         Dumpty together again
+                      upvotes: 1
+                      upvotedBy:
+                        - 6454376c7a688038b4aabe70
+                      downvotes: 0
+                      downvotedBy: []
+                      author:
+                        _id: 644fce3e13055da94a6957cc
+                        lastName: Ogbonna
+                        firstName: Yemi
+                        profilePicture: >-
+                          https://res.cloudinary.com/altcampdev/image/upload/v1686832334/test/images/profile-pictures/644fce3e13055da94a6957cc.png
+                      answer:
+                        - 646941a2e3ca4868110115ef
+                      createdAt: '2023-05-02T12:26:02.492Z'
+                      updatedAt: '2023-05-20T21:54:42.256Z'
+                      __v: 2
+                      slug: >-
+                        munir-how-do-we-provide-callbacks-as-event-driven-mechanisms
                     isRead: false
                     owner:
-                      _id: 64750feb02591ccffadd7717
-                      firstName: BadGuy
-                      lastName: Bushenga
-                    createdAt: '2023-06-08T06:23:17.942Z'
-                    updatedAt: '2023-06-08T06:23:17.942Z'
+                      _id: 648f2797193d9a4741831587
+                      firstName: John
+                      lastName: Thomas
+                      profilePicture: ''
+                    createdAt: '2023-06-18T15:54:31.194Z'
+                    updatedAt: '2023-06-18T15:54:31.194Z'
+                    __v: 0
+                  - _id: 648f28f6193d9a47418315a3
+                    title: Munir's Thought-provoking question
+                    postType: Question
+                    post:
+                      _id: 6451015a6dfb4eaa6f2325b7
+                      title: >-
+                        Munir - How do we provide callbacks as event driven
+                        mechanisms?
+                      body: >-
+                        Performing asynchronous operations has been giving me a
+                        headache. There are so many ways that the permutation
+                        does not support the standards with which we call the
+                        anomalies in the underlying systems. There are so many
+                        factors to consider that make it hard for the average
+                        individual to commute in their daily fashion. All the
+                        king's horses and all the king's men couldn't put Humpty
+                        Dumpty together again
+                      upvotes: 1
+                      upvotedBy:
+                        - 6454376c7a688038b4aabe70
+                      downvotes: 0
+                      downvotedBy: []
+                      author:
+                        _id: 644fce3e13055da94a6957cc
+                        lastName: Ogbonna
+                        firstName: Yemi
+                        profilePicture: >-
+                          https://res.cloudinary.com/altcampdev/image/upload/v1686832334/test/images/profile-pictures/644fce3e13055da94a6957cc.png
+                      answer:
+                        - 646941a2e3ca4868110115ef
+                      createdAt: '2023-05-02T12:26:02.492Z'
+                      updatedAt: '2023-05-20T21:54:42.256Z'
+                      __v: 2
+                      slug: >-
+                        munir-how-do-we-provide-callbacks-as-event-driven-mechanisms
+                    isRead: false
+                    owner:
+                      _id: 648f2797193d9a4741831587
+                      firstName: John
+                      lastName: Thomas
+                      profilePicture: ''
+                    createdAt: '2023-06-18T15:55:34.122Z'
+                    updatedAt: '2023-06-18T15:55:34.122Z'
+                    __v: 0
+                  - _id: 648f2d87ad16ebd66a70a0ba
+                    title: Munir's Thought-provoking question
+                    postType: Question
+                    post:
+                      _id: 6451015a6dfb4eaa6f2325b7
+                      title: >-
+                        Munir - How do we provide callbacks as event driven
+                        mechanisms?
+                      body: >-
+                        Performing asynchronous operations has been giving me a
+                        headache. There are so many ways that the permutation
+                        does not support the standards with which we call the
+                        anomalies in the underlying systems. There are so many
+                        factors to consider that make it hard for the average
+                        individual to commute in their daily fashion. All the
+                        king's horses and all the king's men couldn't put Humpty
+                        Dumpty together again
+                      upvotes: 1
+                      upvotedBy:
+                        - 6454376c7a688038b4aabe70
+                      downvotes: 0
+                      downvotedBy: []
+                      author:
+                        _id: 644fce3e13055da94a6957cc
+                        lastName: Ogbonna
+                        firstName: Yemi
+                        profilePicture: >-
+                          https://res.cloudinary.com/altcampdev/image/upload/v1686832334/test/images/profile-pictures/644fce3e13055da94a6957cc.png
+                      answer:
+                        - 646941a2e3ca4868110115ef
+                      createdAt: '2023-05-02T12:26:02.492Z'
+                      updatedAt: '2023-05-20T21:54:42.256Z'
+                      __v: 2
+                      slug: >-
+                        munir-how-do-we-provide-callbacks-as-event-driven-mechanisms
+                    isRead: false
+                    owner:
+                      _id: 648f2797193d9a4741831587
+                      firstName: John
+                      lastName: Thomas
+                      profilePicture: ''
+                    createdAt: '2023-06-18T16:15:03.079Z'
+                    updatedAt: '2023-06-18T16:15:03.079Z'
+                    __v: 0
+                  - _id: 648f2d8bad16ebd66a70a0c6
+                    title: Munir's Thought-provoking question
+                    postType: Question
+                    post:
+                      _id: 6451015a6dfb4eaa6f2325b7
+                      title: >-
+                        Munir - How do we provide callbacks as event driven
+                        mechanisms?
+                      body: >-
+                        Performing asynchronous operations has been giving me a
+                        headache. There are so many ways that the permutation
+                        does not support the standards with which we call the
+                        anomalies in the underlying systems. There are so many
+                        factors to consider that make it hard for the average
+                        individual to commute in their daily fashion. All the
+                        king's horses and all the king's men couldn't put Humpty
+                        Dumpty together again
+                      upvotes: 1
+                      upvotedBy:
+                        - 6454376c7a688038b4aabe70
+                      downvotes: 0
+                      downvotedBy: []
+                      author:
+                        _id: 644fce3e13055da94a6957cc
+                        lastName: Ogbonna
+                        firstName: Yemi
+                        profilePicture: >-
+                          https://res.cloudinary.com/altcampdev/image/upload/v1686832334/test/images/profile-pictures/644fce3e13055da94a6957cc.png
+                      answer:
+                        - 646941a2e3ca4868110115ef
+                      createdAt: '2023-05-02T12:26:02.492Z'
+                      updatedAt: '2023-05-20T21:54:42.256Z'
+                      __v: 2
+                      slug: >-
+                        munir-how-do-we-provide-callbacks-as-event-driven-mechanisms
+                    isRead: false
+                    owner:
+                      _id: 648f2797193d9a4741831587
+                      firstName: John
+                      lastName: Thomas
+                      profilePicture: ''
+                    createdAt: '2023-06-18T16:15:07.384Z'
+                    updatedAt: '2023-06-18T16:15:07.384Z'
+                    __v: 0
+                  - _id: 648f2e0894f44d3bc9ab3574
+                    title: Munir's Thought-provoking question
+                    postType: Question
+                    post:
+                      _id: 6451015a6dfb4eaa6f2325b7
+                      title: >-
+                        Munir - How do we provide callbacks as event driven
+                        mechanisms?
+                      body: >-
+                        Performing asynchronous operations has been giving me a
+                        headache. There are so many ways that the permutation
+                        does not support the standards with which we call the
+                        anomalies in the underlying systems. There are so many
+                        factors to consider that make it hard for the average
+                        individual to commute in their daily fashion. All the
+                        king's horses and all the king's men couldn't put Humpty
+                        Dumpty together again
+                      upvotes: 1
+                      upvotedBy:
+                        - 6454376c7a688038b4aabe70
+                      downvotes: 0
+                      downvotedBy: []
+                      author:
+                        _id: 644fce3e13055da94a6957cc
+                        lastName: Ogbonna
+                        firstName: Yemi
+                        profilePicture: >-
+                          https://res.cloudinary.com/altcampdev/image/upload/v1686832334/test/images/profile-pictures/644fce3e13055da94a6957cc.png
+                      answer:
+                        - 646941a2e3ca4868110115ef
+                      createdAt: '2023-05-02T12:26:02.492Z'
+                      updatedAt: '2023-05-20T21:54:42.256Z'
+                      __v: 2
+                      slug: >-
+                        munir-how-do-we-provide-callbacks-as-event-driven-mechanisms
+                    isRead: false
+                    owner:
+                      _id: 648f2797193d9a4741831587
+                      firstName: John
+                      lastName: Thomas
+                      profilePicture: ''
+                    createdAt: '2023-06-18T16:17:12.315Z'
+                    updatedAt: '2023-06-18T16:17:12.315Z'
                     __v: 0
 
   /bookmarks/{bookmarkId}:
@@ -2636,6 +2909,33 @@ components:
                   type: string
                 content:
                   type: string
+                upvotes:
+                  type: integer
+                upvotedBy:
+                  type: array
+                  items:
+                    type: string
+                author:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    firstname:
+                      type: string
+                    lastname:
+                      type: string
+                    profilePicture:
+                      type: string
+                comments:
+                  type: array
+                  items:
+                    type: string
+                createdAt:
+                  type: string
+                updatedAt:
+                  type: string
+                __v:
+                  type: integer
             isRead:
               type: boolean
               default: false
