@@ -42,7 +42,10 @@ describe('Creating a bookmark', () => {
 
   test('is successful if a user is logged in', async () => {
     const postsInDb = await helper.postsInDb();
-    const { _id, content } = postsInDb[0];
+    const { _id, content, author } = postsInDb[0];
+    const postAuthor = helper.accountsAsJson.find(
+      ({ _id }) => _id === author.toString()
+    );
     // Log in as a student
     const user = helper.accountsAsJson[0];
     await login(user);
@@ -76,6 +79,12 @@ describe('Creating a bookmark', () => {
       expect.objectContaining({
         _id: _id.toString(),
         content: content,
+        author: expect.objectContaining({
+          _id: postAuthor._id,
+          firstName: postAuthor.firstName,
+          lastName: postAuthor.lastName,
+          profilePicture: expect.any(String),
+        }),
       })
     );
   });
@@ -154,6 +163,9 @@ describe('Updating a bookmark', () => {
     const bookmarkedPost = postsInDb.find(
       ({ _id }) => _id.toString() === post.toString()
     );
+    const bookmarkedPostAuthor = helper.accountsAsJson.find(
+      ({ _id }) => _id === bookmarkedPost.author.toString()
+    );
 
     const user = helper.accountsAsJson.find(
       ({ _id }) => _id === owner.toString()
@@ -186,6 +198,12 @@ describe('Updating a bookmark', () => {
       expect.objectContaining({
         _id: bookmarkedPost._id.toString(),
         content: bookmarkedPost.content,
+        author: expect.objectContaining({
+          _id: bookmarkedPostAuthor._id,
+          firstName: bookmarkedPostAuthor.firstName,
+          lastName: bookmarkedPostAuthor.lastName,
+          profilePicture: expect.any(String),
+        }),
       })
     );
   });

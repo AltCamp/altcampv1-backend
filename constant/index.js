@@ -8,6 +8,12 @@ module.exports = {
     ADMIN: 'Admin',
   },
 
+  AUTHOR_DETAILS: {
+    FIRSTNAME: 'firstName',
+    LASTNAME: 'lastName',
+    PROFILEPICTURE: 'profilePicture',
+  },
+
   GENDER: {
     FEMALE: 'female',
     MALE: 'male',
