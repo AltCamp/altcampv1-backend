@@ -15,7 +15,6 @@ const bookmarkSchema = new mongoose.Schema(
     post: {
       type: mongoose.Types.ObjectId,
       required: true,
-      unique: true,
       ref: function () {
         switch (this.postType) {
           case POST_TYPES.ANSWER:

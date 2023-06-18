@@ -1,30 +1,37 @@
-const Bookmark = require('../../model/bookmark');
+const { AUTHOR_DETAILS } = require('../../constant');
+const { Bookmark } = require('../../model');
 
 const getBookmarks = async (owner) => {
   const bookmarks = await Bookmark.find({ owner })
-    .populate('owner', {
-      firstName: 1,
-      lastName: 1,
-      profilePicture: 1,
+    .populate({
+      path: 'owner',
+      select: Object.values(AUTHOR_DETAILS),
     })
-    .populate('post', {
-      content: 1,
-      body: 1,
+    .populate({
+      path: 'post',
+      populate: {
+        path: 'author',
+        model: 'Account',
+        select: Object.values(AUTHOR_DETAILS),
+      },
     });
-
   return bookmarks;
 };
 
 const getBookmark = async (bookmarkId) => {
   const bookmark = await Bookmark.findById(bookmarkId)
-    .populate('owner', {
-      firstName: 1,
-      lastName: 1,
-      profilePicture: 1,
+    .populate({
+      path: 'owner',
+      select: Object.values(AUTHOR_DETAILS),
     })
-    .populate('post', {
-      content: 1,
-      body: 1,
+    .populate({
+      path: 'post',
+      select: 'content body',
+      populate: {
+        path: 'author',
+        model: 'Account',
+        select: Object.values(AUTHOR_DETAILS),
+      },
     });
 
   return bookmark;
@@ -38,15 +45,18 @@ const createBookmark = async ({ author, postId, postType, title }) => {
     owner: author,
   });
 
-  await newBookmark.populate('owner', {
-    firstName: 1,
-    lastName: 1,
-    profilePicture: 1,
+  await newBookmark.populate({
+    path: 'owner',
+    select: Object.values(AUTHOR_DETAILS),
   });
 
-  await newBookmark.populate('post', {
-    content: 1,
-    body: 1,
+  await newBookmark.populate({
+    path: 'post',
+    populate: {
+      path: 'author',
+      model: 'Account',
+      select: Object.values(AUTHOR_DETAILS),
+    },
   });
 
   return newBookmark;
@@ -62,14 +72,17 @@ const updateBookmark = async ({ bookmarkId, bookmark }) => {
       context: 'query',
     }
   )
-    .populate('owner', {
-      firstName: 1,
-      lastName: 1,
-      profilePicture: 1,
+    .populate({
+      path: 'owner',
+      select: Object.values(AUTHOR_DETAILS),
     })
-    .populate('post', {
-      content: 1,
-      body: 1,
+    .populate({
+      path: 'post',
+      populate: {
+        path: 'author',
+        model: 'Account',
+        select: Object.values(AUTHOR_DETAILS),
+      },
     });
 
   return updatedBookmark;
@@ -77,10 +90,9 @@ const updateBookmark = async ({ bookmarkId, bookmark }) => {
 
 const deleteBookmark = async (bookmarkId) => {
   const bookmark = await Bookmark.findByIdAndDelete(bookmarkId)
-    .populate('owner', {
-      firstName: 1,
-      lastName: 1,
-      profilePicture: 1,
+    .populate({
+      path: 'owner',
+      select: Object.values(AUTHOR_DETAILS),
     })
     .populate('post', {
       content: 1,

@@ -1,20 +1,19 @@
-const Post = require('../../model/post');
+const { AUTHOR_DETAILS } = require('../../constant');
+const { Post } = require('../../model');
 
 const getPosts = async ({ query } = {}) => {
-  const posts = await Post.find(query).populate('author', {
-    firstName: 1,
-    lastName: 1,
-    profilePicture: 1,
+  const posts = await Post.find(query).populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
 
   return posts;
 };
 
 const getPost = async (postId) => {
-  const post = await Post.findById(postId).populate('author', {
-    firstName: 1,
-    lastName: 1,
-    profilePicture: 1,
+  const post = await Post.findById(postId).populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
 
   return post;
@@ -22,10 +21,9 @@ const getPost = async (postId) => {
 
 const createPost = async (post) => {
   const newPost = await Post.create(post);
-  await newPost.populate('author', {
-    firstName: 1,
-    lastName: 1,
-    profilePicture: 1,
+  await newPost.populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
   return newPost;
 };
@@ -36,10 +34,9 @@ const updatePost = async ({ postId, post }) => {
     runValidators: true,
     context: 'query',
   });
-  await updatedPost.populate('author', {
-    firstName: 1,
-    lastName: 1,
-    profilePicture: 1,
+  await updatedPost.populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
 
   return updatedPost;
@@ -47,10 +44,9 @@ const updatePost = async ({ postId, post }) => {
 
 const deletePost = async (postId) => {
   const post = await Post.findByIdAndDelete(postId);
-  await post.populate('author', {
-    firstName: 1,
-    lastName: 1,
-    profilePicture: 1,
+  await post.populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
 
   return post;
@@ -62,10 +58,9 @@ const isPostAuthor = async ({ userId, postId }) => {
 };
 
 const upvotePost = async ({ userId, postId }) => {
-  const post = await Post.findById(postId).populate('author', {
-    firstName: 1,
-    lastName: 1,
-    profilePicture: 1,
+  const post = await Post.findById(postId).populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
   if (!post) {
     return false;

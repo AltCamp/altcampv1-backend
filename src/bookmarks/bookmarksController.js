@@ -1,5 +1,9 @@
 const bookmarksService = require('./bookmarksService');
-const { NotFoundError, UnAuthorizedError } = require('../../utils/customError');
+const {
+  NotFoundError,
+  UnAuthorizedError,
+  ConflictError,
+} = require('../../utils/customError');
 const responseHandler = require('../../utils/responseHandler');
 const { RESPONSE_MESSAGE } = require('../../constant');
 
@@ -21,12 +25,21 @@ const getBookmark = async (req, res) => {
 
 const getAllBookmarks = async (req, res) => {
   const owner = req.user._id;
-  const bookmark = await bookmarksService.getBookmarks(owner);
-  new responseHandler(res, bookmark, 200, RESPONSE_MESSAGE.SUCCESS);
+  const bookmarks = await bookmarksService.getBookmarks(owner);
+  new responseHandler(res, bookmarks, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 
 const createBookmark = async (req, res) => {
   const payload = { ...req.body };
+  const bookmarks = await bookmarksService.getBookmarks(req.user._id);
+
+  const bookmarkExists = bookmarks.some(
+    (bookmark) => bookmark.post._id.toString() === payload.postId
+  );
+
+  if (bookmarkExists) {
+    throw new ConflictError(RESPONSE_MESSAGE.CONFLICT('Bookmark'));
+  }
 
   const newBookmark = await bookmarksService.createBookmark({
     ...payload,
@@ -55,7 +68,6 @@ const updateBookmark = async (req, res) => {
 
   if (!updatedBookmark) throw new NotFoundError('Not Found');
 
-  // send response to client
   new responseHandler(res, updatedBookmark, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 

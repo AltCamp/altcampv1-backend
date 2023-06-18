@@ -1,11 +1,10 @@
-const Answer = require('../../model/answer');
-const Question = require('../../model/question');
+const { AUTHOR_DETAILS } = require('../../constant');
+const { Answer, Question } = require('../../model');
 
 const getAnswer = async (id) => {
-  const answers = await Answer.find({ id }).populate('author', {
-    firstName: 1,
-    lastName: 1,
-    profilePicture: 1,
+  const answers = await Answer.find({ id }).populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
 
   return answers;
@@ -14,10 +13,9 @@ const getAnswer = async (id) => {
 const getAnswers = async (questionId) => {
   const answers = await Answer.find({
     question: questionId,
-  }).populate('author', {
-    firstName: 1,
-    lastName: 1,
-    profilePicture: 1,
+  }).populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
 
   return answers;
@@ -32,10 +30,9 @@ const createAnswer = async (answer) => {
 
   await question.save();
   await newAnswer.save();
-  await newAnswer.populate('author', {
-    firstName: 1,
-    lastName: 1,
-    profilePicture: 1,
+  await newAnswer.populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
 
   return newAnswer;
@@ -50,47 +47,39 @@ const updateAnswer = async (id, { content }) => {
       runValidators: true,
       context: 'query',
     }
-  ).populate('author', {
-    firstName: 1,
-    lastName: 1,
-    profilePicture: 1,
+  ).populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
 
   return updatedAnswer;
 };
 
 const upvoteAnswer = async ({ id, userId }) => {
-  const answer = await Answer.findById(id).populate('author', {
-    firstName: 1,
-    lastName: 1,
-    profilePicture: 1,
+  const answer = await Answer.findById(id).populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
   if (!answer) {
     return false;
   }
 
-  // Check if user has already liked answer
   if (answer.upvotedBy.includes(userId)) {
-    // Remove like
     answer.upvotes--;
     const searchIndex = answer.upvotedBy.indexOf(userId);
     answer.upvotedBy.splice(searchIndex, 1);
 
-    // Update database
     await answer.save();
 
     return answer;
   }
 
-  // Check if user has already disliked answer
   if (answer.downvotedBy.includes(userId)) {
-    // Remove dislike
     answer.downvotes--;
     const searchIndex = answer.downvotedBy.indexOf(userId);
     answer.downvotedBy.splice(searchIndex, 1);
   }
 
-  // Update database
   answer.upvotes++;
   answer.upvotedBy.push(userId);
   await answer.save();
@@ -99,37 +88,30 @@ const upvoteAnswer = async ({ id, userId }) => {
 };
 
 const downvoteAnswer = async ({ id, userId }) => {
-  const answer = await Answer.findById(id).populate('author', {
-    firstName: 1,
-    lastName: 1,
-    profilePicture: 1,
+  const answer = await Answer.findById(id).populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
   if (!answer) {
     return false;
   }
 
-  // Check if user has already downvoted answer
   if (answer.downvotedBy.includes(userId)) {
-    // Remove downvote
     answer.downvotes--;
     const searchIndex = answer.downvotedBy.indexOf(userId);
     answer.downvotedBy.splice(searchIndex, 1);
 
-    // update database
     await answer.save();
 
     return answer;
   }
 
-  // Check if user has already liked answer
   if (answer.upvotedBy.includes(userId)) {
-    // Remove like
     answer.upvotes--;
     const searchIndex = answer.upvotedBy.indexOf(userId);
     answer.upvotedBy.splice(searchIndex, 1);
   }
 
-  // update database
   answer.downvotes++;
   answer.downvotedBy.push(userId);
   await answer.save();
