@@ -1,5 +1,5 @@
 const { AUTHOR_DETAILS } = require('../../constant');
-const Bookmark = require('../../model/bookmark');
+const { Bookmark } = require('../../model');
 
 const getBookmarks = async (owner) => {
   const bookmarks = await Bookmark.find({ owner })
