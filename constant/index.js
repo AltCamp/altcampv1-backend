@@ -26,6 +26,11 @@ module.exports = {
     QUESTION: 'Question',
   },
 
+  POST_DETAILS: {
+    TITLE: 'title',
+    SLUG: 'slug',
+  },
+
   REGEX_PATTERNS: {
     ALT_SCHOOL_ID: new RegExp('^ALT/SO[EPD]/02[2-9]/[0-9]{0,4}$', 'i'),
     PASSWORD: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'),

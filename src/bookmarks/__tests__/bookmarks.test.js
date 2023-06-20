@@ -5,7 +5,7 @@ const api = supertest(app);
 const helper = require('../../../test/testHelper');
 
 const url = '/bookmarks';
-const postType = 'Post';
+let postType = 'Post';
 const title = 'This is an intriguing thing';
 let token;
 
@@ -14,10 +14,16 @@ beforeAll(async () => {
   await dbConnect();
 
   // get 'dummy' entities from helper
-  const { accounts, bookmarks, students, mentors, posts } = helper;
+  const { accounts, answers, bookmarks, students, mentors, posts } = helper;
 
   // data structure to hold 'dummy' entities to be created
-  const entities = accounts.concat(bookmarks, students, mentors, posts);
+  const entities = accounts.concat(
+    answers,
+    bookmarks,
+    students,
+    mentors,
+    posts
+  );
 
   // create entities in database
   await Promise.all(entities);
@@ -85,6 +91,34 @@ describe('Creating a bookmark', () => {
           lastName: postAuthor.lastName,
           profilePicture: expect.any(String),
         }),
+      })
+    );
+
+    const answersInDb = await helper.answersInDb();
+    const { _id: postId, content: answerTitle, question } = answersInDb[0];
+
+    const questionsInDb = await helper.questionsInDb();
+    const answeredQuestion = questionsInDb.find(
+      ({ _id }) => _id.toString() === question.toString()
+    );
+
+    // send a post request with id of Answer
+    const res = await api
+      .post(url)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title: answerTitle,
+        postType: 'Answer',
+        postId,
+      })
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    expect(res.body.data.post.question).toEqual(
+      expect.objectContaining({
+        _id: answeredQuestion._id.toString(),
+        title: answeredQuestion.title,
+        slug: answeredQuestion.slug,
       })
     );
   });

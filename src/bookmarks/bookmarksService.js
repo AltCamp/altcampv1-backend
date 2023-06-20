@@ -1,4 +1,4 @@
-const { AUTHOR_DETAILS } = require('../../constant');
+const { AUTHOR_DETAILS, POST_DETAILS } = require('../../constant');
 const { Bookmark } = require('../../model');
 
 const getBookmarks = async (owner) => {
@@ -9,11 +9,18 @@ const getBookmarks = async (owner) => {
     })
     .populate({
       path: 'post',
-      populate: {
-        path: 'author',
-        model: 'Account',
-        select: Object.values(AUTHOR_DETAILS),
-      },
+      populate: [
+        {
+          path: 'author',
+          model: 'Account',
+          select: Object.values(AUTHOR_DETAILS),
+        },
+        {
+          path: 'question',
+          model: 'Question',
+          select: Object.values(POST_DETAILS),
+        },
+      ],
     });
   return bookmarks;
 };
@@ -26,12 +33,18 @@ const getBookmark = async (bookmarkId) => {
     })
     .populate({
       path: 'post',
-      select: 'content body',
-      populate: {
-        path: 'author',
-        model: 'Account',
-        select: Object.values(AUTHOR_DETAILS),
-      },
+      populate: [
+        {
+          path: 'author',
+          model: 'Account',
+          select: Object.values(AUTHOR_DETAILS),
+        },
+        {
+          path: 'question',
+          model: 'Question',
+          select: Object.values(POST_DETAILS),
+        },
+      ],
     });
 
   return bookmark;
@@ -52,11 +65,18 @@ const createBookmark = async ({ author, postId, postType, title }) => {
 
   await newBookmark.populate({
     path: 'post',
-    populate: {
-      path: 'author',
-      model: 'Account',
-      select: Object.values(AUTHOR_DETAILS),
-    },
+    populate: [
+      {
+        path: 'author',
+        model: 'Account',
+        select: Object.values(AUTHOR_DETAILS),
+      },
+      {
+        path: 'question',
+        model: 'Question',
+        select: Object.values(POST_DETAILS),
+      },
+    ],
   });
 
   return newBookmark;
