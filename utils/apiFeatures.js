@@ -1,3 +1,5 @@
+const { AUTHOR_DETAILS } = require('../constant');
+
 class APIFeatures {
   constructor(query, queryString) {
     this.query = query;
@@ -8,9 +10,9 @@ class APIFeatures {
     this.query = this.query
       .limit(limit)
       .skip((page - 1) * limit)
-      .populate('author', {
-        firstName: 1,
-        lastName: 1,
+      .populate({
+        path: 'author',
+        select: Object.values(AUTHOR_DETAILS),
       })
       .exec();
     return this;

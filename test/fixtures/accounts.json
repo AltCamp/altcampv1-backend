@@ -7,6 +7,7 @@
     "password": "8XLxWgzXSPh9ABS!",
     "track": "Product Management",
     "accountType": "Student",
+    "profilePicture": "",
     "owner": "3e469f456fcb9104e6eb8a84"
   },
   {
@@ -17,6 +18,7 @@
     "password": "HwEzG1pm4JeR_17!",
     "track": "Data Engineering",
     "accountType": "Student",
+    "profilePicture": "",
     "owner": "ad03b17a919fac29599024a1"
   },
   {
@@ -27,6 +29,7 @@
     "password": "GP6JGWt5fKh1rU0!",
     "track": "Data Science",
     "accountType": "Student",
+    "profilePicture": "",
     "owner": "e826bb2dd56bf53da1c5b616"
   },
   {
@@ -37,6 +40,7 @@
     "password": "h8RPF3gEcy0nvX2!",
     "track": "Product Marketing",
     "accountType": "Student",
+    "profilePicture": "",
     "owner": "afb3d0ced9c5c4cecbf5b8fc"
   },
   {
@@ -47,6 +51,7 @@
     "password": "LqoJg1PxRgfV6mf!",
     "track": "Product Management",
     "accountType": "Mentor",
+    "profilePicture": "",
     "owner": "bacbc27f3dfd0dcba587760f"
   },
   {
@@ -57,6 +62,7 @@
     "password": "KfWyoxVAGY6z5oF!",
     "track": "Product Design",
     "accountType": "Mentor",
+    "profilePicture": "",
     "owner": "523a63a9eaaecbe1c3b71b7e"
   },
   {
@@ -67,6 +73,7 @@
     "password": "jhqe9eQU1ivP_3_!",
     "track": "Frontend Engineering",
     "accountType": "Mentor",
+    "profilePicture": "",
     "owner": "79919bdba8bdd1caf9a0d1dc"
   },
   {
@@ -77,6 +84,7 @@
     "password": "u0BXge50EPVBcb1!",
     "track": "Backend Engineering",
     "accountType": "Mentor",
+    "profilePicture": "",
     "owner": "1b7e7ae63afbf3327fd9cbcb"
   },
   {
@@ -87,6 +95,7 @@
     "password": "AZQTHXISkYUvqu0Q!",
     "track": "Product Design",
     "accountType": "Mentor",
+    "profilePicture": "",
     "owner": "c3cedab3448e06cad589bdd0"
   },
   {
@@ -97,6 +106,7 @@
     "password": "O7WEpToz6x5Aor3!",
     "track": "Data Science",
     "accountType": "Student",
+    "profilePicture": "",
     "owner": "111a78e0cf6c2af8be4ab835"
   }
 ]

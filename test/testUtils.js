@@ -1,6 +1,6 @@
 const cloudinary = require('cloudinary').v2;
 const { faker } = require('@faker-js/faker');
-const { ACCOUNT_TYPES } = require('../constant');
+const { ACCOUNT_TYPES, POST_TYPES } = require('../constant');
 const track = [
   'Frontend Engineering',
   'Backend Engineering',
@@ -32,16 +32,16 @@ const questionIds = [
   'fdc0f999b4bb5950a659d9ca',
 ];
 const postIds = [
-  'a9d505cfbadffbf70a645a4f',
-  '6c83cd0debabcacd36e30117',
-  'dca56db6bb9cc9b6cbbc2b27',
-  'e22a842d0f0adb3fbd7f81db',
-  'eb9ed8d1f84d944fad0061c1',
-  '08b7aee8cba6c1d46cfd2b9b',
-  '9add8b84f14dab17fd99d58b',
-  '565fbd107d62bf7fa2adebde',
-  'b4be9b3dba351ade27ddfdec',
-  'eaedc8bb74aede509cfccacb',
+  '7d2d9845bc4aae6f3cfa49af',
+  'e7fefcdfbabadb4ffb1bebd3',
+  'f48e28d4cfbcd439c354cf29',
+  '9cac1cb3d972a7c6c55cf91d',
+  'aff7ceb1a8f1042acaabaae2',
+  '242070c48b8a0f8c9bc1fa36',
+  'be9c34bfdd066f7e0f0d594e',
+  'c4b7b085caecd4b4ef4ba1d8',
+  'f1c9f3b1aaa7928c5ebac62d',
+  '9aeb2a1caaa2cf74e24778c0',
 ];
 
 /**
@@ -186,6 +186,16 @@ function generateAnswer() {
   };
 }
 
+function createBookmark() {
+  return {
+    _id: faker.database.mongodbObjectId(),
+    title: faker.lorem.sentence(),
+    postType: POST_TYPES.POST,
+    post: faker.helpers.arrayElement(postIds),
+    owner: faker.helpers.arrayElement(accountIds),
+  };
+}
+
 /**
  * Generate post
  * @return {{}} A post object
@@ -239,6 +249,7 @@ function clearImageTestFolder(folderName) {
 
 module.exports = {
   createUser,
+  createBookmark,
   createUserForReq,
   generateAnswer,
   generateComment,

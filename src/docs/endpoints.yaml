@@ -17,8 +17,8 @@ servers:
           - localhost:8000 # Local development server
           - the-altcamp.onrender.com # Development server
 
-# --------------- AUTHENTICATION ---------------------------------------
 paths:
+  # --------------- AUTHENTICATION ---------------
   /auth/register:
     post:
       tags:
@@ -108,7 +108,7 @@ paths:
       deprecated: false
       security: []
 
-  # ------------------------------------ ACCOUNT -------------------------------------
+  # --------------- ACCOUNTS ---------------
   /accounts:
     get:
       tags:
@@ -360,6 +360,43 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationError'
 
+  /accounts/update-password:
+    put:
+      tags:
+        - Accounts
+      security:
+        - bearer: []
+      summary: Post a new question
+      description: This posts a new question
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/updateAccountPassword'
+
+      responses:
+        '201':
+          description: Returns posted question details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/updatePasswordResponse'
+
+        '401':
+          description: 'User not authorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+
+        '422':
+          description: One or more user input not validated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
     delete:
       tags:
         - Accounts
@@ -396,7 +433,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/UnauthorizedError'
 
-  # --------------------------------- POSTS ----------------------
+  # --------------- POSTS ---------------
   /posts:
     get:
       tags:
@@ -478,6 +515,8 @@ paths:
     post:
       tags:
         - Posts
+      security:
+        - bearer: []
       summary: Create a post
       requestBody:
         content:
@@ -579,6 +618,8 @@ paths:
     patch:
       tags:
         - Posts
+      security:
+        - bearer: []
       summary: Update a post
       requestBody:
         content:
@@ -625,6 +666,8 @@ paths:
     delete:
       tags:
         - Posts
+      security:
+        - bearer: []
       summary: Delete a post
       parameters:
         - name: id
@@ -669,6 +712,8 @@ paths:
     patch:
       tags:
         - Posts
+      security:
+        - bearer: []
       summary: Upvote a post
       requestBody:
         content: {}
@@ -713,11 +758,13 @@ paths:
                   updatedAt: '2023-06-04T06:49:29.324Z'
                   __v: 1
 
-  # --------------------------------- COMMENTS ----------------------
+  # --------------- COMMENTS ---------------
   /comments:
     post:
       tags:
         - Comments
+      security:
+        - bearer: []
       summary: Post a comment
       requestBody:
         content:
@@ -858,6 +905,8 @@ paths:
     patch:
       tags:
         - Comments
+      security:
+        - bearer: []
       summary: Update comment to a post
       requestBody:
         content:
@@ -910,6 +959,8 @@ paths:
     patch:
       tags:
         - Comments
+      security:
+        - bearer: []
       summary: Upvote/like a comment
       requestBody:
         content: {}
@@ -953,6 +1004,8 @@ paths:
     patch:
       tags:
         - Comments
+      security:
+        - bearer: []
       summary: Downvote/dislike a comment
       requestBody:
         content: {}
@@ -992,7 +1045,7 @@ paths:
                   updatedAt: '2023-06-04T09:37:17.914Z'
                   __v: 5
 
-  # --------------------------------- QUESTIONS ----------------------
+  # --------------- QUESTIONS ---------------
   /questions:
     post:
       tags:
@@ -1024,8 +1077,6 @@ paths:
     get:
       tags:
         - Questions
-      security:
-        - bearer: []
       summary: Returns posted questions
       description: This returns all posted questions along side other related information
       responses:
@@ -1040,8 +1091,6 @@ paths:
     get:
       tags:
         - Questions
-      security:
-        - bearer: []
       summary: This returns a single question
       description: Accepts the ID of a question and search the database if the question exists
       operationId: getSingleQuestionById
@@ -1215,7 +1264,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BadRequestError'
 
-  # --------------- ANSWERS ------------------------
+  # --------------- ANSWERS ---------------
   /answers:
     post:
       tags:
@@ -1242,8 +1291,6 @@ paths:
     get:
       tags:
         - Answers
-      security:
-        - bearer: []
       summary: Returns posted Answers
       description: This returns all posted Answers for a question
       parameters:
@@ -1265,8 +1312,6 @@ paths:
     get:
       tags:
         - Answers
-      security:
-        - bearer: []
       summary: This returns a single answer
       description: Accepts the ID of a answer and search the database if the answers exists and returns it
       operationId: getSingleAnswerById
@@ -1399,7 +1444,413 @@ paths:
               schema:
                 $ref: '#/components/schemas/BadRequestError'
 
-# ------------------------ COMPONENTS ----------------------------
+  # --------------- BOOKMARKS ---------------
+  /bookmarks:
+    post:
+      tags:
+        - Bookmarks
+      security:
+        - bearer: []
+      summary: Create a bookmark
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/createBookmark'
+              example:
+                title: How to get home
+                postId: 647c3080b26fc62cb642e53f
+                postType: Post
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bookmarkResponse'
+              examples:
+                example-0:
+                  summary: 200 - Bookmark a Post
+                  value:
+                    statusCode: 201
+                    message: Request Successful!
+                    data:
+                      title: How to get home
+                      postType: Post
+                      post:
+                        _id: 648dd3ec9fb3d832dab9dba3
+                        content: A post by emoji 🍷🍷🍷
+                        upvotes: 2
+                        upvotedBy:
+                          - 648dd3c59fb3d832dab9db9d
+                          - 648cc7070bcabbf9100c84b7
+                        author:
+                          _id: 648dd3c59fb3d832dab9db9d
+                          firstName: Emoji
+                          lastName: 😭👀😭👀😭
+                          profilePicture: ''
+                        comments: []
+                        createdAt: '2023-06-17T15:40:28.569Z'
+                        updatedAt: '2023-06-18T10:49:52.297Z'
+                        __v: 2
+                      isRead: false
+                      owner:
+                        _id: 648f2797193d9a4741831587
+                        firstName: John
+                        lastName: Thomas
+                        profilePicture: ''
+                      _id: 648f27f5193d9a474183158f
+                      createdAt: '2023-06-18T15:51:17.556Z'
+                      updatedAt: '2023-06-18T15:51:17.556Z'
+                      __v: 0
+                example-1:
+                  summary: 200 - Boomark a Question
+                  value:
+                    statusCode: 201
+                    message: Request Successful!
+                    data:
+                      title: Munir's Thought-provoking question
+                      postType: Question
+                      post:
+                        _id: 6451015a6dfb4eaa6f2325b7
+                        title: >-
+                          Munir - How do we provide callbacks as event driven
+                          mechanisms?
+                        body: >-
+                          Performing asynchronous operations has been giving me
+                          a headache. There are so many ways that the
+                          permutation does not support the standards with which
+                          we call the anomalies in the underlying systems. There
+                          are so many factors to consider that make it hard for
+                          the average individual to commute in their daily
+                          fashion. All the king's horses and all the king's men
+                          couldn't put Humpty Dumpty together again
+                        upvotes: 1
+                        upvotedBy:
+                          - 6454376c7a688038b4aabe70
+                        downvotes: 0
+                        downvotedBy: []
+                        author:
+                          _id: 644fce3e13055da94a6957cc
+                          lastName: Ogbonna
+                          firstName: Yemi
+                          profilePicture: >-
+                            https://res.cloudinary.com/altcampdev/image/upload/v1686832334/test/images/profile-pictures/644fce3e13055da94a6957cc.png
+                        answer:
+                          - 646941a2e3ca4868110115ef
+                        createdAt: '2023-05-02T12:26:02.492Z'
+                        updatedAt: '2023-05-20T21:54:42.256Z'
+                        __v: 2
+                        slug: >-
+                          munir-how-do-we-provide-callbacks-as-event-driven-mechanisms
+                      isRead: false
+                      owner:
+                        _id: 648f2797193d9a4741831587
+                        firstName: John
+                        lastName: Thomas
+                        profilePicture: ''
+                      _id: 648f28b7193d9a474183159d
+                      createdAt: '2023-06-18T15:54:31.194Z'
+                      updatedAt: '2023-06-18T15:54:31.194Z'
+                      __v: 0
+                example-2:
+                  summary: 200 - Bookmark an answer
+                  value:
+                    statusCode: 201
+                    message: Request Successful!
+                    data:
+                      title: My favoourite answer
+                      postType: Answer
+                      post:
+                        _id: 646941a2e3ca4868110115ef
+                        content: bffdsdf i am testing
+                        upvotes: 0
+                        upvotedBy: []
+                        downvotes: 0
+                        downvotedBy: []
+                        question:
+                          _id: 6451015a6dfb4eaa6f2325b7
+                          title: >-
+                            Munir - How do we provide callbacks as event driven
+                            mechanisms?
+                          slug: >-
+                            munir-how-do-we-provide-callbacks-as-event-driven-mechanisms
+                        author:
+                          _id: 6469416ee3ca4868110115e6
+                          firstName: Danjuma
+                          lastName: Etim
+                          profilePicture: >-
+                            https://res.cloudinary.com/altcampdev/image/upload/v1684862212/profile-pictures/6469416ee3ca4868110115e6.jpg
+                        createdAt: '2023-05-20T21:54:42.111Z'
+                        updatedAt: '2023-05-20T21:54:42.111Z'
+                        __v: 0
+                      isRead: false
+                      owner:
+                        _id: 648f2797193d9a4741831587
+                        firstName: John
+                        lastName: Thomas
+                        profilePicture: ''
+                      _id: 64918be45bee2a86989fa9b2
+                      createdAt: '2023-06-20T11:22:12.058Z'
+                      updatedAt: '2023-06-20T11:22:12.058Z'
+                      __v: 0
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                statusCode: 409
+                message: Bookmark already exists!
+                error: Conflict
+    get:
+      tags:
+        - Bookmarks
+      security:
+        - bearer: []
+      summary: Get all bookmarks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bookmarkResponse'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  - _id: 648f2e0894f44d3bc9ab3574
+                    title: Munir's Thought-provoking question
+                    postType: Question
+                    post:
+                      _id: 6451015a6dfb4eaa6f2325b7
+                      title: >-
+                        Munir - How do we provide callbacks as event driven
+                        mechanisms?
+                      body: >-
+                        Performing asynchronous operations has been giving me a
+                        headache. There are so many ways that the permutation
+                        does not support the standards with which we call the
+                        anomalies in the underlying systems. There are so many
+                        factors to consider that make it hard for the average
+                        individual to commute in their daily fashion. All the
+                        king's horses and all the king's men couldn't put Humpty
+                        Dumpty together again
+                      upvotes: 1
+                      upvotedBy:
+                        - 6454376c7a688038b4aabe70
+                      downvotes: 0
+                      downvotedBy: []
+                      author:
+                        _id: 644fce3e13055da94a6957cc
+                        lastName: Ogbonna
+                        firstName: Yemi
+                        profilePicture: >-
+                          https://res.cloudinary.com/altcampdev/image/upload/v1686832334/test/images/profile-pictures/644fce3e13055da94a6957cc.png
+                      answer:
+                        - 646941a2e3ca4868110115ef
+                      createdAt: '2023-05-02T12:26:02.492Z'
+                      updatedAt: '2023-05-20T21:54:42.256Z'
+                      __v: 2
+                      slug: >-
+                        munir-how-do-we-provide-callbacks-as-event-driven-mechanisms
+                    isRead: false
+                    owner:
+                      _id: 648f2797193d9a4741831587
+                      firstName: John
+                      lastName: Thomas
+                      profilePicture: ''
+                    createdAt: '2023-06-18T16:17:12.315Z'
+                    updatedAt: '2023-06-18T16:17:12.315Z'
+                    __v: 0
+                  - _id: 64918be45bee2a86989fa9b2
+                    title: My favoourite answer
+                    postType: Answer
+                    post:
+                      _id: 646941a2e3ca4868110115ef
+                      content: bffdsdf i am testing
+                      upvotes: 0
+                      upvotedBy: []
+                      downvotes: 0
+                      downvotedBy: []
+                      question:
+                        _id: 6451015a6dfb4eaa6f2325b7
+                        title: >-
+                          Munir - How do we provide callbacks as event driven
+                          mechanisms?
+                        slug: >-
+                          munir-how-do-we-provide-callbacks-as-event-driven-mechanisms
+                      author:
+                        _id: 6469416ee3ca4868110115e6
+                        firstName: Danjuma
+                        lastName: Etim
+                        profilePicture: >-
+                          https://res.cloudinary.com/altcampdev/image/upload/v1684862212/profile-pictures/6469416ee3ca4868110115e6.jpg
+                      createdAt: '2023-05-20T21:54:42.111Z'
+                      updatedAt: '2023-05-20T21:54:42.111Z'
+                      __v: 0
+                    isRead: false
+                    owner:
+                      _id: 648f2797193d9a4741831587
+                      firstName: John
+                      lastName: Thomas
+                      profilePicture: ''
+                    createdAt: '2023-06-20T11:22:12.058Z'
+                    updatedAt: '2023-06-20T11:22:12.058Z'
+                    __v: 0
+
+  /bookmarks/{bookmarkId}:
+    get:
+      tags:
+        - Bookmarks
+      security:
+        - bearer: []
+      summary: Get a bookmark
+      parameters:
+        - name: bookmarkId
+          in: path
+          schema:
+            type: string
+          required: true
+          example: 64817327bf82b63b2a692b9d
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bookmarkResponse'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64817327bf82b63b2a692b9d
+                  title: Tips for resolving git conflicts
+                  postType: Post
+                  post:
+                    _id: 647c3104b26fc62cb642e545
+                    content: >-
+                      2 Performing asynchronous operations has been giving me a
+                      headache. There are so many ways that the permutation does
+                      not support the standards with which we call the anomalies
+                      in the underlying systems. There are so many factors to
+                      consider that make it hard for the average individual to
+                      commute in their daily fashion. All the king's horses and
+                      all the king's men couldn't put Humpty Dumpty together
+                      again
+                  isRead: false
+                  owner:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  createdAt: '2023-06-08T06:20:23.065Z'
+                  updatedAt: '2023-06-08T06:20:23.065Z'
+                  __v: 0
+    patch:
+      tags:
+        - Bookmarks
+      security:
+        - bearer: []
+      summary: Update bookmark(s)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                title: Into the webzies
+                isRead: 'true'
+      parameters:
+        - name: bookmarkId
+          in: path
+          schema:
+            type: string
+          required: true
+          example: 64817327bf82b63b2a692b9d
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bookmarkResponse'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64817327bf82b63b2a692b9d
+                  title: Into the webzies
+                  postType: Post
+                  post:
+                    _id: 647c3104b26fc62cb642e545
+                    content: >-
+                      2 Performing asynchronous operations has been giving me a
+                      headache. There are so many ways that the permutation does
+                      not support the standards with which we call the anomalies
+                      in the underlying systems. There are so many factors to
+                      consider that make it hard for the average individual to
+                      commute in their daily fashion. All the king's horses and
+                      all the king's men couldn't put Humpty Dumpty together
+                      again
+                  isRead: true
+                  owner:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  createdAt: '2023-06-08T06:20:23.065Z'
+                  updatedAt: '2023-06-08T06:30:35.566Z'
+                  __v: 0
+    delete:
+      tags:
+        - Bookmarks
+      security:
+        - bearer: []
+      summary: Delete a bookmark
+      parameters:
+        - name: bookmarkId
+          in: path
+          schema:
+            type: string
+          required: true
+          example: 64817327bf82b63b2a692b9d
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/bookmarkResponse'
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 64817327bf82b63b2a692b9d
+                  title: Into the webzies
+                  postType: Post
+                  post:
+                    _id: 647c3104b26fc62cb642e545
+                    content: >-
+                      2 Performing asynchronous operations has been giving me a
+                      headache. There are so many ways that the permutation does
+                      not support the standards with which we call the anomalies
+                      in the underlying systems. There are so many factors to
+                      consider that make it hard for the average individual to
+                      commute in their daily fashion. All the king's horses and
+                      all the king's men couldn't put Humpty Dumpty together
+                      again
+                  isRead: true
+                  owner:
+                    _id: 64750feb02591ccffadd7717
+                    firstName: BadGuy
+                    lastName: Bushenga
+                  createdAt: '2023-06-08T06:20:23.065Z'
+                  updatedAt: '2023-06-08T06:30:35.566Z'
+                  __v: 0
+
+# --------------- COMPONENTS ---------------
 components:
   schemas:
     signUpAccountRequest:
@@ -1707,7 +2158,7 @@ components:
                   type: string
                 __v:
                   type: number
-                  defaul: 0
+                  default: 0
             createdAt:
               type: string
               default: '2023-01-01T00:10:52.567Z'
@@ -1876,14 +2327,18 @@ components:
         firstname: newTest
         lastname: newSampling
 
-    updateStudentPasswordRequest:
-      title: update student api
+    updateAccountPassword:
+      title: update account password
       type: object
       properties:
+        oldPassword:
+          type: string
         password:
           type: string
       example:
-        password: newTestPassword1@
+        oldPassword: oldTestPassword1@
+        password: newTestPassword1$
+        retypePassword: newTestPassword1$
 
     ValidationError:
       type: object
@@ -1962,7 +2417,7 @@ components:
                           type: string
                         __v:
                           type: number
-                          defaul: 0
+                          default: 0
                     _id:
                       type: string
                     createdAt:
@@ -2008,7 +2463,7 @@ components:
                       type: string
                     __v:
                       type: number
-                      defaul: 0
+                      default: 0
                 _id:
                   type: string
                 gender:
@@ -2278,6 +2733,105 @@ components:
         questionId:
           type: string
 
+    createBookmark:
+      type: object
+      required:
+        - title
+        - postId
+        - postType
+      properties:
+        title:
+          type: string
+        postId:
+          type: string
+        postType:
+          type: string
+          enum:
+            - Post
+            - Question
+            - Answer
+            - Comment
+
+    updateBookmark:
+      type: object
+      properties:
+        title:
+          type: string
+        isRead:
+          type: boolean
+
+    bookmarkResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            title:
+              type: string
+            postType:
+              type: string
+            post:
+              type: object
+              properties:
+                _id:
+                  type: string
+                content:
+                  type: string
+                upvotes:
+                  type: integer
+                upvotedBy:
+                  type: array
+                  items:
+                    type: string
+                author:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    firstname:
+                      type: string
+                    lastname:
+                      type: string
+                    profilePicture:
+                      type: string
+                comments:
+                  type: array
+                  items:
+                    type: string
+                createdAt:
+                  type: string
+                updatedAt:
+                  type: string
+                __v:
+                  type: integer
+            isRead:
+              type: boolean
+              default: false
+            owner:
+              type: object
+              properties:
+                _id:
+                  type: string
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                profilePicture:
+                  type: string
+            _id:
+              type: string
+            createdAt:
+              type: number
+            updatedAt:
+              type: number
+            __v:
+              type: integer
+              default: 0
+
     newAnswerDetails:
       type: object
       properties:
@@ -2380,162 +2934,196 @@ components:
               updatedAt:
                 type: number
 
-  # ----------------------------------------------------
-  consolidated:
-    examples:
-      mentorLoginRequest:
-        value:
-          email: lilylearn@mail.com
-          password: 8&jsfjhJD(@
+    updatePasswordResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            isDeleted:
+              type: boolean
+            _id:
+              type: string
+            firstname:
+              type: string
+            lastname:
+              type: string
+            email:
+              type: string
+            accountType:
+              type: string
+            owner:
+              type: string
+            createdAt:
+              type: string
+            updatedAt:
+              type: string
+            bio:
+              type: string
+            profilePicture:
+              type: string
+            __v:
+              type: number
+    # ----------------------------------------------------
+    consolidated:
+      example:
+        mentorLoginRequest:
+          value:
+            email: lilylearn@mail.com
+            password: 8&jsfjhJD(@
 
-      studentLoginRequest:
-        value:
-          email: johnny.dope@mail.com
-          password: Pkgj748_h!@
+        studentLoginRequest:
+          value:
+            email: johnny.dope@mail.com
+            password: Pkgj748_h!@
 
-      mentorLoginResponse:
-        value:
-          statusCode: 200
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Lily
-              lastName: Olaniyan
-              email: lilylearn@mail.com
-              track: Frontend Engineering
-              accountType: Mentor
-              owner:
+        mentorLoginResponse:
+          value:
+            statusCode: 200
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Lily
+                lastName: Olaniyan
+                email: lilylearn@mail.com
+                track: Frontend Engineering
+                accountType: Mentor
+                owner:
+                  _id: some ID
+                  __v: 0
                 _id: some ID
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      studentLoginResponse:
-        value:
-          statusCode: 200
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Johan
-              lastName: Dolapo
-              email: johnny.dope@mail.com
-              track: Frontend Engineering
-              accountType: Student
-              owner:
+        studentLoginResponse:
+          value:
+            statusCode: 200
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Johan
+                lastName: Dolapo
+                email: johnny.dope@mail.com
+                track: Frontend Engineering
+                accountType: Student
+                owner:
+                  _id: some ID
+                  __v: 0
                 _id: some ID
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      altStudentLoginResponse:
-        value:
-          statusCode: 200
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Johan
-              lastName: Dolapo
-              email: johnny.dope@mail.com
-              track: Frontend Engineering
-              accountType: Student
-              owner:
+        altStudentLoginResponse:
+          value:
+            statusCode: 200
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Johan
+                lastName: Dolapo
+                email: johnny.dope@mail.com
+                track: Frontend Engineering
+                accountType: Student
+                owner:
+                  _id: some ID
+                  altSchoolId: 'ALT/SOD/023/0010'
+                  __v: 0
                 _id: some ID
-                altSchoolId: 'ALT/SOD/023/0010'
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      mentorSignUpResponse:
-        value:
-          statusCode: 201
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Lily
-              lastName: Olaniyan
-              email: lilylearn@mail.com
-              track: Frontend Engineering
-              accountType: Mentor
-              owner:
+        mentorSignUpResponse:
+          value:
+            statusCode: 201
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Lily
+                lastName: Olaniyan
+                email: lilylearn@mail.com
+                track: Frontend Engineering
+                accountType: Mentor
+                owner:
+                  _id: some ID
+                  __v: 0
                 _id: some ID
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      studentSignUpResponse:
-        value:
-          statusCode: 201
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Johan
-              lastName: Dolapo
-              email: johnny.dope@mail.com
-              track: Frontend Engineering
-              accountType: Student
-              owner:
+        studentSignUpResponse:
+          value:
+            statusCode: 201
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Johan
+                lastName: Dolapo
+                email: johnny.dope@mail.com
+                track: Frontend Engineering
+                accountType: Student
+                owner:
+                  _id: some ID
+                  __v: 0
                 _id: some ID
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      altStudentSignUpResponse:
-        value:
-          statusCode: 201
-          message: Request Successful!
-          data:
-            token: Bearer token
-            user:
-              firstName: Johan
-              lastName: Dolapo
-              email: johnny.dope@mail.com
-              track: Frontend Engineering
-              accountType: Student
-              owner:
+        altStudentSignUpResponse:
+          value:
+            statusCode: 201
+            message: Request Successful!
+            data:
+              token: Bearer token
+              user:
+                firstName: Johan
+                lastName: Dolapo
+                email: johnny.dope@mail.com
+                track: Frontend Engineering
+                accountType: Student
+                owner:
+                  _id: some ID
+                  altSchoolId: 'ALT/SOD/023/0010'
+                  __v: 0
                 _id: some ID
-                altSchoolId: 'ALT/SOD/023/0010'
-                __v: 0
-              _id: some ID
-              createdAt: '2023-01-01T00:10:52.567Z'
-              updatedAt: '2023-01-01T00:10:52.567Z'
+                createdAt: '2023-01-01T00:10:52.567Z'
+                updatedAt: '2023-01-01T00:10:52.567Z'
 
-      mentorSignupRequest:
-        value:
-          firstName: Lily
-          lastName: Olaniyan
-          email: lilylearn@mail.com
-          password: 8&jsfjhJD(@
-          track: Frontend Engineering
-          category: Mentor
+        mentorSignupRequest:
+          value:
+            firstName: Lily
+            lastName: Olaniyan
+            email: lilylearn@mail.com
+            password: 8&jsfjhJD(@
+            track: Frontend Engineering
+            category: Mentor
 
-      altStudentSignupRequest:
-        value:
-          firstName: Johan
-          lastName: Dolapo
-          email: johnny.dope@mail.com
-          password: Pkgj748_h!@
-          track: Frontend Engineering
-          category: Student
-          altSchoolId: 'ALT/SOD/023/0010'
+        altStudentSignupRequest:
+          value:
+            firstName: Johan
+            lastName: Dolapo
+            email: johnny.dope@mail.com
+            password: Pkgj748_h!@
+            track: Frontend Engineering
+            category: Student
+            altSchoolId: 'ALT/SOD/023/0010'
 
-      studentSignupRequest:
-        value:
-          firstName: Johan
-          lastName: Dolapo
-          email: johnny.dope@mail.com
-          password: Pkgj748_h!@
-          track: Frontend Engineering
-          category: Student
+        studentSignupRequest:
+          value:
+            firstName: Johan
+            lastName: Dolapo
+            email: johnny.dope@mail.com
+            password: Pkgj748_h!@
+            track: Frontend Engineering
+            category: Student
 
   # ----------------------------------------------------
 

@@ -58,6 +58,16 @@ async function getAccounts(req, res) {
   new responseHandler(res, accounts, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
+async function updatePassword(req, res) {
+  const token = await accountsService.updatePassword(
+    req.user._id,
+    req.body.oldPassword,
+    req.body.password
+  );
+
+  new responseHandler(res, token, 200, RESPONSE_MESSAGE.SUCCESS);
+}
+
 async function getAccount(req, res) {
   const { id } = req.params;
   const account = await accountsService.getSingleAccount(id);
@@ -88,4 +98,5 @@ module.exports = {
   updateAccount,
   uploadProfilePicture,
   deleteProfilePicture,
+  updatePassword,
 };

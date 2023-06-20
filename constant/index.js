@@ -8,9 +8,27 @@ module.exports = {
     ADMIN: 'Admin',
   },
 
+  AUTHOR_DETAILS: {
+    FIRSTNAME: 'firstName',
+    LASTNAME: 'lastName',
+    PROFILEPICTURE: 'profilePicture',
+  },
+
   GENDER: {
     FEMALE: 'female',
     MALE: 'male',
+  },
+
+  POST_TYPES: {
+    ANSWER: 'Answer',
+    COMMENT: 'Comment',
+    POST: 'Post',
+    QUESTION: 'Question',
+  },
+
+  POST_DETAILS: {
+    TITLE: 'title',
+    SLUG: 'slug',
   },
 
   REGEX_PATTERNS: {

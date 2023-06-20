@@ -1,10 +1,10 @@
-const Comment = require('../../model/comment');
-const Post = require('../../model/post');
+const { AUTHOR_DETAILS } = require('../../constant');
+const { Comment, Post } = require('../../model/');
 
 const getComment = async (id) => {
-  const comment = await Comment.findById(id).populate('author', {
-    firstName: 1,
-    lastName: 1,
+  const comment = await Comment.findById(id).populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
 
   return comment;
@@ -13,9 +13,9 @@ const getComment = async (id) => {
 const getComments = async (postId) => {
   const comments = await Comment.find({
     post: postId,
-  }).populate('author', {
-    firstName: 1,
-    lastName: 1,
+  }).populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
 
   return comments;
@@ -30,9 +30,9 @@ const createComment = async (comment) => {
 
   await post.save();
   await newComment.save();
-  await newComment.populate('author', {
-    firstName: 1,
-    lastName: 1,
+  await newComment.populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
 
   return newComment;
@@ -47,18 +47,18 @@ const updateComment = async (id, { content }) => {
       runValidators: true,
       context: 'query',
     }
-  ).populate('author', {
-    firstName: 1,
-    lastName: 1,
+  ).populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
 
   return updatedComment;
 };
 
 const upvoteComment = async ({ id, userId }) => {
-  const comment = await Comment.findById(id).populate('author', {
-    firstName: 1,
-    lastName: 1,
+  const comment = await Comment.findById(id).populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
   if (!comment) {
     return false;
@@ -88,9 +88,9 @@ const upvoteComment = async ({ id, userId }) => {
 };
 
 const downvoteComment = async ({ id, userId }) => {
-  const comment = await Comment.findById(id).populate('author', {
-    firstName: 1,
-    lastName: 1,
+  const comment = await Comment.findById(id).populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
   });
   if (!comment) {
     return false;

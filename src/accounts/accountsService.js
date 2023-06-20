@@ -1,15 +1,10 @@
 const { omit } = require('lodash');
 const cloudinary = require('cloudinary').v2;
 const { cloudinary: cloudinaryConfig } = require('../../config');
-const { ACCOUNT_TYPES } = require('../../constant');
-const Account = require('../../model/account');
+const { Account, ...Model } = require('../../model');
 const { NotFoundError, UnAuthorizedError } = require('../../utils/customError');
-const Mentor = require('../../model/mentor');
-const Student = require('../../model/student');
-const Model = {
-  mentor: Mentor,
-  student: Student,
-};
+const { verifyPassword } = require('../../utils/helper');
+
 const { validateCredentials } = require('../../utils/helper');
 cloudinary.config({
   cloud_name: cloudinaryConfig.name,
@@ -27,26 +22,22 @@ async function accountExists(email) {
   return false;
 }
 
-async function getStudents() {
-  const students = await Account.find({
-    accountType: ACCOUNT_TYPES.STUDENT,
-  }).populate('owner');
+async function updatePassword(userId, oldPassword, newPassword) {
+  let user = await Account.findOne(userId).select('+password');
 
-  return students;
-}
+  const check = await verifyPassword(oldPassword, user.password);
+  if (!check) {
+    throw new UnAuthorizedError();
+  }
 
-async function getMentors() {
-  const mentors = await Account.find({
-    accountType: ACCOUNT_TYPES.MENTOR,
-  }).populate('owner');
-
-  return mentors;
+  user.password = newPassword;
+  await user.save();
+  user = omit(user.toObject(), ['password']);
+  return user;
 }
 
 async function getAccounts(filters) {
-  const accountType = filters.category
-    ? { accountType: ACCOUNT_TYPES[filters.category.toUpperCase()] }
-    : {};
+  const accountType = filters.category ? { accountType: filters.category } : {};
   const accounts = await Account.find(accountType).populate('owner');
 
   return accounts;
@@ -64,23 +55,6 @@ async function updateAccount({ id, payload }) {
     runValidators: true,
     context: 'query',
   }).populate('owner');
-
-  return account;
-}
-
-async function changeAccountPassword({ id, password }) {
-  let account = await Account.findById(id).populate('owner');
-  if (!account) {
-    return false;
-  }
-
-  // save password from request
-  account.password = password;
-  await account.save();
-
-  // prepare response data
-  omit(account.toObject(), ['password']);
-  account = omit(account.toObject(), ['password']);
 
   return account;
 }
@@ -107,7 +81,7 @@ async function deleteAccount({ id, password }) {
 
 async function createAccount({ category, altSchoolId, ...payload }) {
   const obj = (altSchoolId && { altSchoolId }) || {};
-  const { _id: owner } = await Model[category.toLowerCase()].create(obj);
+  const { _id: owner } = await Model[category].create(obj);
   const account = await Account.create({
     ...payload,
     owner,
@@ -162,13 +136,11 @@ async function deleteProfilePicture(id) {
 module.exports = {
   accountExists,
   createAccount,
-  changeAccountPassword,
   getAccounts,
-  getMentors,
   getSingleAccount,
-  getStudents,
   updateAccount,
   uploadProfilePicture,
   deleteProfilePicture,
   deleteAccount,
+  updatePassword,
 };

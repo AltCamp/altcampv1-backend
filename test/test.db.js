@@ -11,6 +11,8 @@ exports.dbConnect = async function () {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   };
+  mongoose.set('strictQuery', true);
+  mongoose.set('strictPopulate', false);
 
   mongoose.connect(uri, mongooseOpt);
 };
