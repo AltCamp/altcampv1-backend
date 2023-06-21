@@ -31,10 +31,10 @@ const getAllBookmarks = async (req, res) => {
 
 const createBookmark = async (req, res) => {
   const payload = { ...req.body };
-  const bookmarks = await bookmarksService.getBookmarks(
+  req.query.isPaginated = false;
+  const { data: bookmarks } = await bookmarksService.getBookmarks(
     req.user._id,
-    req,
-    false
+    req
   );
 
   const bookmarkExists = bookmarks.some(

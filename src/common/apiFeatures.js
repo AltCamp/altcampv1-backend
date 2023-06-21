@@ -5,6 +5,14 @@ class APIFeatures {
   }
 
   async paginate() {
+    if (!this.queryString.isPaginated) {
+      const data = await this.query.exec();
+
+      return {
+        data,
+      };
+    }
+
     let { page = 1, limit = 10 } = this.queryString;
     page = Number(page);
     limit = Number(limit);
@@ -61,6 +69,17 @@ class APIFeatures {
     }
 
     this.query = this.query.find(queryObj);
+
+    return this;
+  }
+
+  sort() {
+    if (this.queryString.sort) {
+      const sortBy = this.queryString.sort.split(',').join(' ');
+      this.query = this.query.sort(sortBy);
+    } else {
+      this.query = this.query.sort('-createdAt');
+    }
 
     return this;
   }

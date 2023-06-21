@@ -2,7 +2,7 @@ const { apiFeatures } = require('../common');
 const { AUTHOR_DETAILS, POST_DETAILS } = require('../../constant');
 const { Bookmark } = require('../../model');
 
-const getBookmarks = async (owner, { query }, isPaginated = true) => {
+const getBookmarks = async (owner, { query }) => {
   const bookmarksQuery = Bookmark.find({ owner })
     .populate({
       path: 'owner',
@@ -23,9 +23,7 @@ const getBookmarks = async (owner, { query }, isPaginated = true) => {
         },
       ],
     });
-  const bookmarks = isPaginated
-    ? await new apiFeatures(bookmarksQuery, query).paginate()
-    : bookmarksQuery.exec();
+  const bookmarks = await new apiFeatures(bookmarksQuery, query).paginate();
   return bookmarks;
 };
 
