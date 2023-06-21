@@ -1,10 +1,14 @@
-const APIFeatures = require('../../utils/apiFeatures');
 const { AUTHOR_DETAILS } = require('../../constant');
 const { Question } = require('../../model');
+const { apiFeatures } = require('../common');
 
-const getQuestions = async (req) => {
-  const questions = new APIFeatures(Question.find({}), req.query).paginate();
-  return await questions.query;
+const getQuestions = async ({ query }) => {
+  const questionsQuery = Question.find({}).populate({
+    path: 'author',
+    select: Object.values(AUTHOR_DETAILS),
+  });
+  const questions = await new apiFeatures(questionsQuery, query).paginate();
+  return questions;
 };
 
 const getQuestion = async (questionId) => {

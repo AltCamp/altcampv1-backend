@@ -25,13 +25,17 @@ const getBookmark = async (req, res) => {
 
 const getAllBookmarks = async (req, res) => {
   const owner = req.user._id;
-  const bookmarks = await bookmarksService.getBookmarks(owner);
-  new responseHandler(res, bookmarks, 200, RESPONSE_MESSAGE.SUCCESS);
+  const { data, meta } = await bookmarksService.getBookmarks(owner, req);
+  new responseHandler(res, data, 200, RESPONSE_MESSAGE.SUCCESS, meta);
 };
 
 const createBookmark = async (req, res) => {
   const payload = { ...req.body };
-  const bookmarks = await bookmarksService.getBookmarks(req.user._id);
+  const bookmarks = await bookmarksService.getBookmarks(
+    req.user._id,
+    req,
+    false
+  );
 
   const bookmarkExists = bookmarks.some(
     (bookmark) => bookmark.post._id.toString() === payload.postId

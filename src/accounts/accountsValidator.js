@@ -1,7 +1,8 @@
 const Joi = require('joi');
 const { ACCOUNT_TYPES, REGEX_PATTERNS, TRACKS } = require('../../constant');
+const { paginationSchema } = require('../common');
 
-const getAccountsValidator = Joi.object({
+const getAccountsValidator = paginationSchema.keys({
   category: Joi.string()
     .optional()
     .valid(...Object.values(ACCOUNT_TYPES)),
