@@ -38,9 +38,10 @@ async function updatePassword(userId, oldPassword, newPassword) {
 
 async function getAccounts({ query }) {
   const accountsQuery = Account.find({}).populate('owner');
-  const results = new apiFeatures(accountsQuery, query);
-  results.filter();
-  const accounts = await results.paginate();
+  const accounts = await new apiFeatures(accountsQuery, query)
+    .filter()
+    .sort()
+    .paginate();
   return accounts;
 }
 

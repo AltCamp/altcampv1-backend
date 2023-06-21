@@ -7,7 +7,10 @@ const getPosts = async ({ query } = {}) => {
     path: 'author',
     select: Object.values(AUTHOR_DETAILS),
   });
-  const posts = await new apiFeatures(postsQuery, query).paginate();
+  const posts = await new apiFeatures(postsQuery, query)
+    .filter()
+    .sort()
+    .paginate();
   return posts;
 };
 

@@ -7,7 +7,10 @@ const getQuestions = async ({ query }) => {
     path: 'author',
     select: Object.values(AUTHOR_DETAILS),
   });
-  const questions = await new apiFeatures(questionsQuery, query).paginate();
+  const questions = await new apiFeatures(questionsQuery, query)
+    .filter()
+    .sort()
+    .paginate();
   return questions;
 };
 
