@@ -18,21 +18,18 @@ const getPost = async (req, res) => {
 };
 
 const getAllPosts = async (req, res) => {
-  const questions = await postsService.getPosts();
-  new responseHandler(res, questions, 200, RESPONSE_MESSAGE.SUCCESS);
+  const { data, meta } = await postsService.getPosts(req);
+  new responseHandler(res, data, 200, RESPONSE_MESSAGE.SUCCESS, meta);
 };
 
 const createPost = async (req, res) => {
-  // grab request data
   const { content } = req.body;
 
-  // create post
   const newPost = await postsService.createPost({
     content,
     author: req.user._id,
   });
 
-  // send response to client
   new responseHandler(res, newPost, 201, RESPONSE_MESSAGE.SUCCESS);
 };
 
@@ -85,7 +82,6 @@ const upvotePost = async (req, res) => {
 
   if (!upvote) throw new BadRequestError('Unable to upvote post');
 
-  // send response to client
   new responseHandler(res, upvote, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 

@@ -6,12 +6,13 @@ const {
   updateBookmarkValidator,
 } = require('./bookmarksValidator');
 const validatorMiddleware = require('../../middleware/validator');
+const { paginationSchema, validator } = require('../common');
 const limiter = require('../../middleware/rateLimit');
 
 router.use(verifyUser);
 router
   .route('/')
-  .get(bookmarks.getAllBookmarks)
+  .get(validator.query(paginationSchema), bookmarks.getAllBookmarks)
   .post(
     limiter(),
     validatorMiddleware(createBookmarkValidator),

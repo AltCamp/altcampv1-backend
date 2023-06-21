@@ -52,10 +52,9 @@ async function deleteAccount(req, res, next) {
 }
 
 async function getAccounts(req, res) {
-  const filters = { ...req.query };
-  const accounts = await accountsService.getAccounts(filters);
+  const { data, meta } = await accountsService.getAccounts(req);
 
-  new responseHandler(res, accounts, 200, RESPONSE_MESSAGE.SUCCESS);
+  new responseHandler(res, data, 200, RESPONSE_MESSAGE.SUCCESS, meta);
 }
 
 async function updatePassword(req, res) {

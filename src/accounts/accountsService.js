@@ -4,8 +4,8 @@ const { cloudinary: cloudinaryConfig } = require('../../config');
 const { Account, ...Model } = require('../../model');
 const { NotFoundError, UnAuthorizedError } = require('../../utils/customError');
 const { verifyPassword } = require('../../utils/helper');
-
 const { validateCredentials } = require('../../utils/helper');
+const { apiFeatures } = require('../common');
 cloudinary.config({
   cloud_name: cloudinaryConfig.name,
   api_key: cloudinaryConfig.key,
@@ -36,10 +36,11 @@ async function updatePassword(userId, oldPassword, newPassword) {
   return user;
 }
 
-async function getAccounts(filters) {
-  const accountType = filters.category ? { accountType: filters.category } : {};
-  const accounts = await Account.find(accountType).populate('owner');
-
+async function getAccounts({ query }) {
+  const accountsQuery = Account.find({}).populate('owner');
+  const results = new apiFeatures(accountsQuery, query);
+  results.filter();
+  const accounts = await results.paginate();
   return accounts;
 }
 

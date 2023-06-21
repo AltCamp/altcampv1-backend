@@ -6,11 +6,12 @@ const {
   updatePostValidator,
 } = require('./postsValidator');
 const validatorMiddleware = require('../../middleware/validator');
+const { paginationSchema, validator } = require('../common');
 const limiter = require('../../middleware/rateLimit');
 
 router
   .route('/')
-  .get(posts.getAllPosts)
+  .get(validator.query(paginationSchema), posts.getAllPosts)
   .post(
     limiter(),
     verifyUser,

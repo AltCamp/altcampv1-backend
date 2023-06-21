@@ -1,12 +1,13 @@
 const { AUTHOR_DETAILS } = require('../../constant');
 const { Post } = require('../../model');
+const { apiFeatures } = require('../common');
 
 const getPosts = async ({ query } = {}) => {
-  const posts = await Post.find(query).populate({
+  const postsQuery = Post.find({}).populate({
     path: 'author',
     select: Object.values(AUTHOR_DETAILS),
   });
-
+  const posts = await new apiFeatures(postsQuery, query).paginate();
   return posts;
 };
 
