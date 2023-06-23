@@ -26,6 +26,11 @@ module.exports = {
     MALE: 'male',
   },
 
+  TOKEN_TYPE: {
+    PASSWORD_RESET: 'password_reset',
+    EMAIL_VERIFICATION: 'email_verification',
+  },
+
   MEDIA_SIZE_LIMITS: {
     PROFILEPICTURE: 1024 * 512,
   },

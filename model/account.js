@@ -45,6 +45,10 @@ const accountSchema = new Schema(
       enum: Object.values(ACCOUNT_TYPES),
       default: ACCOUNT_TYPES.STUDENT,
     },
+    emailIsVerified: {
+      type: Boolean,
+      default: false,
+    },
     isDeleted: {
       type: Boolean,
       default: false,
