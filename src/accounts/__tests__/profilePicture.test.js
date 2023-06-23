@@ -10,6 +10,7 @@ const { clearImageTestFolder } = require('../../../test/testUtils');
 
 let token;
 let profilePicture;
+let invalidProfilePicture;
 
 const filePath = path.join(
   process.cwd(),
@@ -17,9 +18,18 @@ const filePath = path.join(
   'fixtures',
   'base64Image.txt'
 );
+const pathToInvalidPicture = path.join(
+  process.cwd(),
+  'test',
+  'fixtures',
+  'base64Imagegreaterthan500kb.txt'
+);
 
 beforeAll(async () => {
   profilePicture = fs.readFileSync(filePath, { encoding: 'utf-8' });
+  invalidProfilePicture = fs.readFileSync(pathToInvalidPicture, {
+    encoding: 'utf-8',
+  });
 
   await dbConnect();
 
@@ -58,6 +68,16 @@ describe('Upload profile picture', () => {
     ).toBe(true);
   });
 
+  it('should return an error if image size is greater than 1MB', async () => {
+    const response = await api
+      .put('/accounts/profile-picture')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ profilePicture: invalidProfilePicture });
+
+    expect(response.status).toBe(422);
+    expect(response.body.message).toBe('Image size should not exceed 500KB!');
+  });
+
   it('should return an error if payload contains unwanted properties', async () => {
     const response = await api
       .put('/accounts/profile-picture')
@@ -74,6 +94,9 @@ describe('Upload profile picture', () => {
       .attach('profilePicture', 'test/fixtures/testFile.txt');
 
     expect(response.status).toBe(422);
+    expect(response.body.message).toBe(
+      'Please use a valid image format. Valid formats include: png, jpg, jpeg, gif'
+    );
   });
 });
 
