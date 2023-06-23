@@ -18,7 +18,6 @@ const registerAccount = async (req, res) => {
     throw new ConflictError(RESPONSE_MESSAGE.CONFLICT(payload.category));
   }
   const { token, user } = registrationData;
-  sendVerificationMail(user);
 
   res.cookie('jwt_token', token);
   new responseHandler(
