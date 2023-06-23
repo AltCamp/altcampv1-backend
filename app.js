@@ -6,6 +6,7 @@ const logger = require('morgan');
 const { errorHandler } = require('./utils/errorHandler');
 const cors = require('cors');
 require('express-async-errors');
+const { CLIENT_URLS } = require('./constant');
 
 const indexRouter = require('./routes/index');
 
@@ -17,21 +18,16 @@ app.use(Sentry.Handlers.tracingHandler());
 
 app.use(
   cors({
-    origin: [
-      'http://localhost:5173',
-      'http://127.0.0.1:5173',
-      'https://stdybdyv1.netlify.app',
-      'https://altcampv1.netlify.app',
-    ],
+    origin: Object.values(CLIENT_URLS),
   })
 );
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: false }));
 app.use(cookieParser());
 
 app.get('/', (req, res) => {
-  res.redirect('https://altcampv1.netlify.app');
+  res.redirect(CLIENT_URLS.ALTCAMPNETLIFY);
 });
 
 app.use('/', indexRouter);

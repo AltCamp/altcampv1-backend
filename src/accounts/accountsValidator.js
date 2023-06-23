@@ -1,5 +1,11 @@
 const Joi = require('joi');
-const { ACCOUNT_TYPES, REGEX_PATTERNS, TRACKS } = require('../../constant');
+const {
+  ACCOUNT_TYPES,
+  REGEX_PATTERNS,
+  TRACKS,
+  MEDIA_SIZE_LIMITS,
+  VALID_IMAGE_FORMATS,
+} = require('../../constant');
 const { paginationSchema } = require('../common');
 
 const getAccountsValidator = paginationSchema.keys({
@@ -39,7 +45,19 @@ const profileValidator = Joi.object({
 });
 
 const imageValidator = Joi.object({
-  profilePicture: Joi.string().required(),
+  profilePicture: Joi.string()
+    .regex(REGEX_PATTERNS.BASE64IMAGE)
+    .max(MEDIA_SIZE_LIMITS.PROFILEPICTURE)
+    .required()
+    .messages({
+      'string.max': 'Image size should not exceed 500KB!',
+      'string.pattern.base': `Please use a valid image format. Valid formats include: ${Object.values(
+        VALID_IMAGE_FORMATS
+      ).join(', ')}`,
+      'any.required': `Please use a valid image format. Valid formats include: ${Object.values(
+        VALID_IMAGE_FORMATS
+      ).join(', ')}`,
+    }),
 });
 
 const deleteAccountValidator = Joi.object({

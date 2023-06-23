@@ -14,9 +14,27 @@ module.exports = {
     PROFILEPICTURE: 'profilePicture',
   },
 
+  CLIENT_URLS: {
+    LOCALHOST: 'http://localhost:5173',
+    LOCALHOST2: 'http://127.0.0.1:5173',
+    STUDYBUDDYNETLIFY: 'https://stdybdyv1.netlify.app',
+    ALTCAMPNETLIFY: 'https://altcampv1.netlify.app',
+  },
+
   GENDER: {
     FEMALE: 'female',
     MALE: 'male',
+  },
+
+  MEDIA_SIZE_LIMITS: {
+    PROFILEPICTURE: 1024 * 512,
+  },
+
+  VALID_IMAGE_FORMATS: {
+    PNG: 'png',
+    JPG: 'jpg',
+    JPEG: 'jpeg',
+    GIF: 'gif',
   },
 
   POST_TYPES: {
@@ -33,6 +51,7 @@ module.exports = {
 
   REGEX_PATTERNS: {
     ALT_SCHOOL_ID: new RegExp('^ALT/SO[EPD]/02[2-9]/[0-9]{0,4}$', 'i'),
+    BASE64IMAGE: new RegExp('^data:image/(png|jpeg|jpg|gif);base64', 'i'),
     PASSWORD: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'),
   },
 
