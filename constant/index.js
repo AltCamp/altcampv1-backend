@@ -14,6 +14,13 @@ module.exports = {
     PROFILEPICTURE: 'profilePicture',
   },
 
+  CLIENT_URLS: {
+    LOCALHOST: 'http://localhost:5173',
+    LOCALHOST2: 'http://127.0.0.1:5173',
+    STUDYBUDDYNETLIFY: 'https://stdybdyv1.netlify.app',
+    ALTCAMPNETLIFY: 'https://altcampv1.netlify.app',
+  },
+
   GENDER: {
     FEMALE: 'female',
     MALE: 'male',
