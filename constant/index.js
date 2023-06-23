@@ -26,6 +26,17 @@ module.exports = {
     MALE: 'male',
   },
 
+  MEDIA_SIZE_LIMITS: {
+    PROFILEPICTURE: 1024 * 512,
+  },
+
+  VALID_IMAGE_FORMATS: {
+    PNG: 'png',
+    JPG: 'jpg',
+    JPEG: 'jpeg',
+    GIF: 'gif',
+  },
+
   POST_TYPES: {
     ANSWER: 'Answer',
     COMMENT: 'Comment',
@@ -40,6 +51,7 @@ module.exports = {
 
   REGEX_PATTERNS: {
     ALT_SCHOOL_ID: new RegExp('^ALT/SO[EPD]/02[2-9]/[0-9]{0,4}$', 'i'),
+    BASE64IMAGE: new RegExp('^data:image/(png|jpeg|jpg|gif);base64', 'i'),
     PASSWORD: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])'),
   },
 
