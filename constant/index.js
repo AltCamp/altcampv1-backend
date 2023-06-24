@@ -79,4 +79,12 @@ module.exports = {
     'PRODUCT-MANAGEMENT': 'Product Management',
     'PRODUCT-MARKETING': 'Product Marketing',
   },
+
+  AUTH: {
+    OAUTH2: 'OAUTH2',
+  },
+
+  SERVICE: {
+    GMAIL: 'gmail',
+  },
 };

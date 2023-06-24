@@ -5,16 +5,16 @@ const { join } = require('path');
 
 const config = require('../config');
 const TokenService = require('../src/token.service');
-const { TOKEN_TYPE } = require('../constant');
+const { TOKEN_TYPE, AUTH, SERVICE } = require('../constant');
 const { BadRequestError } = require('./customError');
 
 async function sendEmail(opt) {
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: SERVICE.GMAIL,
     port: 587,
     secure: true,
     auth: {
-      type: 'OAUTH2',
+      type: AUTH.OAUTH2,
       user: config.nodemailer.user,
       clientId: config.nodemailer.client_id,
       clientSecret: config.nodemailer.client_secret,
@@ -30,12 +30,9 @@ async function sendEmail(opt) {
     html: opt.body,
   };
 
-  const sendMail = await transporter.sendMail(mailOptions);
-  if (!sendMail) throw new BadRequestError(sendMail);
-
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
-      console.log(error);
+      // ...
     } else {
       console.log('Email sent: ' + info.response);
     }
@@ -75,4 +72,4 @@ const sendVerificationMail = async (user) => {
   });
 };
 
-module.exports = { sendVerificationMail };
+module.exports = { sendVerificationMail, sendEmail };

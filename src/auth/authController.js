@@ -57,7 +57,7 @@ const sendEmailVerification = async (req, res) => {
     res,
     undefined,
     200,
-    `Email verification send to ${req.user.email}`
+    'Please check your registered email for the 4 digit OTP'
   );
 };
 
@@ -71,9 +71,9 @@ const verifyEmailOtp = async (req, res) => {
     token: otp,
   });
 
-  if (!token) throw new BadRequestError('Otp not found!');
+  if (!token) throw new BadRequestError('OTP not found!');
 
-  if (!token.token === otp) throw new BadRequestError('Incorrect otp!');
+  if (!token.token === otp) throw new BadRequestError('Incorrect OTP!');
 
   if (token.expiryTime <= Date.now())
     throw new BadRequestError('Expired Token');
@@ -82,7 +82,7 @@ const verifyEmailOtp = async (req, res) => {
 
   await user.save();
   await token.delete();
-  res.json({ msg: 'Email verified successfully!' });
+  new responseHandler(res, undefined, 200, 'Email verification successful!');
 };
 
 module.exports = {
