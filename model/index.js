@@ -7,6 +7,7 @@ const Models = {
   Post: require('./post'),
   Question: require('./question'),
   Student: require('./student'),
+  Token: require('./token'),
 };
 
 module.exports = Models;

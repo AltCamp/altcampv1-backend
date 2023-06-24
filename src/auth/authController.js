@@ -1,7 +1,19 @@
-const { RESPONSE_MESSAGE } = require('../../constant');
-const { ConflictError, UnAuthorizedError } = require('../../utils/customError');
+const {
+  RESPONSE_MESSAGE,
+  TOKEN_TYPE,
+  EMAIL_TEMPLATES,
+  EMAIL_SUBJECTS,
+} = require('../../constant');
+const {
+  ConflictError,
+  UnAuthorizedError,
+  BadRequestError,
+} = require('../../utils/customError');
 const responseHandler = require('../../utils/responseHandler');
 const authService = require('./authService');
+const TokenService = require('../token/tokenService');
+const accountService = require('../accounts/accountsService');
+const mailService = require('../mailer/mailerService');
 
 const registerAccount = async (req, res) => {
   const payload = { ...req.body };
@@ -42,8 +54,61 @@ const userLogout = async (req, res) => {
   new responseHandler(res, undefined, 200, RESPONSE_MESSAGE.LOGOUT);
 };
 
+const verifyEmail = async (req, res) => {
+  if (req.user.emailIsVerified)
+    throw new BadRequestError(RESPONSE_MESSAGE.ALREADY_VERIFIED);
+
+  const otpCode = Math.floor(Math.random() * 9000) + 1000;
+  const token = await TokenService.createToken({
+    token: otpCode,
+    type: TOKEN_TYPE.EMAIL_VERIFICATION,
+    owner: req.user.id,
+  });
+
+  if (!token) throw new BadRequestError();
+
+  const mailServicePayload = {
+    context: { name: req.user.name, token },
+    email: req.user.email,
+    templateName: EMAIL_TEMPLATES.EMAIL_VERIFICATION,
+    subject: EMAIL_SUBJECTS.EMAIL_VERIFICATION,
+  };
+
+  await mailService.sendMail(mailServicePayload);
+
+  new responseHandler(res, undefined, 200, RESPONSE_MESSAGE.SUCCESS);
+};
+
+const verifyEmailOtp = async (req, res) => {
+  const otp = req.body.token;
+
+  const user = await accountService.getSingleAccount(req.user.id);
+  if (!user) throw new BadRequestError('User does not exist!');
+
+  const token = await TokenService.getToken({
+    type: TOKEN_TYPE.EMAIL_VERIFICATION,
+    owner: user.id,
+    token: otp,
+  });
+
+  if (!token) throw new BadRequestError('OTP not found!');
+
+  if (!token.token === otp) throw new BadRequestError('Incorrect OTP!');
+
+  if (token.expiryTime <= Date.now())
+    throw new BadRequestError('Expired Token');
+
+  user.emailIsVerified = true;
+  await user.save();
+  await token.delete();
+
+  new responseHandler(res, undefined, 200, 'Email verification successful!');
+};
+
 module.exports = {
   registerAccount,
   userLogin,
   userLogout,
+  verifyEmailOtp,
+  verifyEmail,
 };

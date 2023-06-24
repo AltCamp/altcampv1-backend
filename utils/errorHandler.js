@@ -21,6 +21,9 @@ function errorHandler(err, req, res, next) {
           .join('.   ')
       : err.details.map((item) => item.message).join('.   ');
     customError.statusCode = errStatusCode ? errStatusCode : 422;
+    customError.statusCode === 422
+      ? (customError.error = 'Validation Error')
+      : true;
   }
 
   if (err.type === 'query' || err.type === 'params') {
@@ -33,6 +36,16 @@ function errorHandler(err, req, res, next) {
     customError.statusCode = 409;
     customError.msg = `${Object.keys(err.keyPattern)[0]} already exists!`;
     customError.error = 'Conflict';
+  }
+
+  if (err.responseCode === 535) {
+    customError.statusCode = 500;
+    customError.msg = 'Unable to send e-mail!';
+    customError.error = 'Server error';
+  }
+
+  if (err.code === 'ENOENT') {
+    customError.msg = 'Please contact the server administrator!';
   }
 
   res.status(customError.statusCode).json({

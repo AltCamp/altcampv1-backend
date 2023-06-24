@@ -6,6 +6,14 @@ const {
   TRACKS,
 } = require('../../constant');
 
+const otpValidator = Joi.object({
+  token: Joi.number().integer().required().messages({
+    'number.base': 'token type is invalid',
+    'object.unknown': 'token type is invalid',
+    'any.required': 'token is required',
+  }),
+});
+
 const loginValidator = Joi.object({
   email: Joi.string().email().required().messages({
     'string.email': 'Not a valid email address',
@@ -74,5 +82,6 @@ const createAccountValidator = Joi.object({
 
 module.exports = {
   createAccountValidator,
+  otpValidator,
   loginValidator,
 };

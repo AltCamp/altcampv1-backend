@@ -35,6 +35,7 @@ describe('Auth: Account registration', () => {
       lastName: user.lastName,
       email: user.email,
       track: user.track,
+      emailIsVerified: false,
       isDeleted: false,
       accountType: 'Mentor',
       owner: expect.objectContaining({}),
