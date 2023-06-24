@@ -4,7 +4,7 @@ const {
   userLogin,
   userLogout,
   verifyEmailOtp,
-  sendEmailVerification,
+  verifyEmail,
 } = require('./authController');
 const limiter = require('../../middleware/rateLimit');
 const { createAccountValidator, loginValidator } = require('./authValidator');
@@ -17,7 +17,7 @@ router.use(limiter());
 
 router.post('/login', validatorMiddleware(loginValidator), userLogin);
 
-router.post('/send-email', verifyUser, sendEmailVerification);
+router.post('/verify-email', verifyUser, verifyEmail);
 router.post('/verify-otp', verifyUser, verifyEmailOtp);
 
 router.post(

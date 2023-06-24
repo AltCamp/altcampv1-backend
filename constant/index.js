@@ -21,6 +21,16 @@ module.exports = {
     ALTCAMPNETLIFY: 'https://altcampv1.netlify.app',
   },
 
+  EMAIL_TEMPLATES: {
+    EMAIL_VERIFICATION: 'emailVerification',
+    PASSWORD_RESET: 'passwordReset',
+    WELCOME_ADDRESS: 'welcomeAddress',
+  },
+
+  EMAIL_SUBJECTS: {
+    EMAIL_VERIFICATION: 'AltCamp Verification Code',
+  },
+
   GENDER: {
     FEMALE: 'female',
     MALE: 'male',
@@ -66,6 +76,9 @@ module.exports = {
     LOGOUT: 'You have been logged out!',
     CREATE_SUCCESSFUL: (entity) => `${entity} created successfully`,
     CONFLICT: (entity) => `${entity} already exists!`,
+    NOT_FOUND: (entity) => `${entity} not found!`,
+    INVALID_CREDENTIALS: 'Invalid credentials!',
+    ALREADY_VERIFIED: 'Email is already verified',
   },
 
   TRACKS: {

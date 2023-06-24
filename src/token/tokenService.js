@@ -1,5 +1,5 @@
-const Token = require('../model/token');
-const { BadRequestError } = require('../utils/customError');
+const { Token } = require('../../model');
+const { BadRequestError } = require('../../utils/customError');
 
 class TokenService {
   static async createToken({ token, type, owner }) {

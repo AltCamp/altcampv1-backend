@@ -24,10 +24,19 @@ module.exports = {
   nodemailer: {
     user: process.env.NODEMAILER_USER,
     email: process.env.NODEMAILER_EMAIL,
+  },
+  gmailServiceConfig: {
     client_id: process.env.GOOGLE_CLIENT_ID,
     client_secret: process.env.GOOGLE_CLIENT_SECRET,
     refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
     access_token: process.env.GOOGLE_ACCESS_TOKEN,
+  },
+  smtpConfig: {
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    secure: process.env.SMTP_SECURE,
+    authUser: process.env.SMTP_AUTH_USER,
+    authPass: process.env.SMTP_AUTH_PASS,
   },
   cloudinary: {
     name:
