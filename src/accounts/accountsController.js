@@ -1,7 +1,7 @@
 const { RESPONSE_MESSAGE } = require('../../constant');
 const responseHandler = require('../../utils/responseHandler');
 const accountsService = require('./accountsService');
-const { NotFoundError } = require('../../utils/customError');
+const { NotFoundError, BadRequestError } = require('../../utils/customError');
 
 async function uploadProfilePicture(req, res, next) {
   try {
@@ -90,6 +90,23 @@ async function updateAccount(req, res) {
   new responseHandler(res, account, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  const verifyUserAndSendOtp = await accountsService.forgotPassword({ email });
+
+  if (!verifyUserAndSendOtp) throw new BadRequestError();
+
+  new responseHandler(res, undefined, 200, RESPONSE_MESSAGE.SUCCESS);
+};
+
+const resetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  const reset = await accountsService.resetPassword({ token, newPassword });
+
+  new responseHandler(res, reset, 200, RESPONSE_MESSAGE.SUCCESS);
+};
+
 module.exports = {
   deleteAccount,
   getAccount,
@@ -98,4 +115,6 @@ module.exports = {
   uploadProfilePicture,
   deleteProfilePicture,
   updatePassword,
+  forgotPassword,
+  resetPassword,
 };

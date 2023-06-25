@@ -9,6 +9,8 @@ const {
   uploadProfilePicture,
   deleteProfilePicture,
   updatePassword,
+  forgotPassword,
+  resetPassword,
 } = require('./accountsController');
 const {
   getAccountsValidator,
@@ -17,6 +19,8 @@ const {
   deleteAccountValidator,
   imageValidator,
   passwordValidator,
+  forgotPasswordValidator,
+  resetPasswordValidator,
 } = require('./accountsValidator');
 const validator = require('../common/validator');
 
@@ -47,5 +51,13 @@ router
 router
   .route('/update-password')
   .put(verifyUser, validatorMiddleware(passwordValidator), updatePassword);
+
+router
+  .route('/forgot-password')
+  .post(validatorMiddleware(forgotPasswordValidator), forgotPassword);
+
+router
+  .route('/reset-password')
+  .post(validatorMiddleware(resetPasswordValidator), resetPassword);
 
 module.exports = router;

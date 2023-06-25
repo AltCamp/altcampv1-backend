@@ -23,9 +23,16 @@ const tokenSchema = new mongoose.Schema({
 });
 
 tokenSchema.pre('save', function (next) {
-  this.expiryTime = new Date(
-    this.createdAt.getTime() + 1 * 24 * 60 * 60 * 1000 // A day expiry
-  );
+  if (this.type === TOKEN_TYPE.EMAIL_VERIFICATION) {
+    this.expiryTime = new Date(
+      this.createdAt.getTime() + 1 * 24 * 60 * 60 * 1000 // A day expiry
+    );
+  } else if (this.type === TOKEN_TYPE.PASSWORD_RESET) {
+    this.expiryTime = new Date(
+      this.createdAt.getTime() + 1 * 10 * 60 * 1000 // 10 minutes expiry
+    );
+  }
+
   next();
 });
 

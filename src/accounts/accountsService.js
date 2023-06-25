@@ -2,10 +2,21 @@ const { omit } = require('lodash');
 const cloudinary = require('cloudinary').v2;
 const { cloudinary: cloudinaryConfig } = require('../../config');
 const { Account, ...Model } = require('../../model');
-const { NotFoundError, UnAuthorizedError } = require('../../utils/customError');
+const {
+  NotFoundError,
+  UnAuthorizedError,
+  BadRequestError,
+} = require('../../utils/customError');
 const { verifyPassword } = require('../../utils/helper');
 const { validateCredentials } = require('../../utils/helper');
 const { apiFeatures } = require('../common');
+const {
+  TOKEN_TYPE,
+  EMAIL_TEMPLATES,
+  EMAIL_SUBJECTS,
+} = require('../../constant');
+const mailService = require('../mailer/mailerService');
+const TokenService = require('../token/tokenService');
 cloudinary.config({
   cloud_name: cloudinaryConfig.name,
   api_key: cloudinaryConfig.key,
@@ -35,6 +46,63 @@ async function updatePassword(userId, oldPassword, newPassword) {
   user = omit(user.toObject(), ['password']);
   return user;
 }
+
+const forgotPassword = async ({ email }) => {
+  const validUser = await accountExists(email);
+
+  if (!validUser) throw new BadRequestError('User does not exist!');
+
+  const otpCode = Math.floor(Math.random() * 9000) + 1000;
+
+  const token = await TokenService.createToken({
+    token: otpCode,
+    type: TOKEN_TYPE.PASSWORD_RESET,
+    owner: validUser._id,
+  });
+
+  if (!token) throw new BadRequestError();
+
+  const mailServicePayload = {
+    context: { name: validUser.name, token },
+    email: validUser.email,
+    templateName: EMAIL_TEMPLATES.PASSWORD_RESET,
+    subject: EMAIL_SUBJECTS.PASSWORD_RESET,
+  };
+
+  const sentMail = await mailService.sendMail(mailServicePayload);
+
+  if ([/^[45]\d{2}$/].includes(sentMail.responseCode)) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+const resetPassword = async ({ token, newPassword }) => {
+  const validToken = await TokenService.getToken({
+    type: TOKEN_TYPE.PASSWORD_RESET,
+    token: token,
+  });
+
+  if (!validToken) throw new BadRequestError('Token not found!');
+
+  if (!validToken.token === token) throw new BadRequestError('Invalid token');
+
+  if (validToken.expiryTime <= Date.now())
+    throw new BadRequestError('Expired token');
+
+  let user = await Account.findById(validToken.owner).select('+password');
+
+  if (!user) throw new BadRequestError('User does not exist');
+
+  user.password = newPassword;
+
+  await user.save();
+  await validToken.delete();
+  user = omit(user.toObject(), ['password']);
+
+  return user;
+};
 
 async function getAccounts({ query }) {
   const accountsQuery = Account.find({}).populate('owner');
@@ -145,4 +213,6 @@ module.exports = {
   deleteProfilePicture,
   deleteAccount,
   updatePassword,
+  forgotPassword,
+  resetPassword,
 };

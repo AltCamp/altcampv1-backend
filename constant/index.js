@@ -29,6 +29,7 @@ module.exports = {
 
   EMAIL_SUBJECTS: {
     EMAIL_VERIFICATION: 'AltCamp Verification Code',
+    PASSWORD_RESET: 'AltCamp Password Reset Code',
   },
 
   GENDER: {
