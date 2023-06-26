@@ -7,7 +7,10 @@ const {
   UnAuthorizedError,
   BadRequestError,
 } = require('../../utils/customError');
-const { verifyPassword } = require('../../utils/helper');
+const {
+  verifyPassword,
+  getDifferenceInMinutes,
+} = require('../../utils/helper');
 const { validateCredentials } = require('../../utils/helper');
 const { apiFeatures } = require('../common');
 const {
@@ -62,20 +65,15 @@ const forgotPassword = async ({ email }) => {
 
   if (!token) throw new BadRequestError();
 
+  const tokenValidity = getDifferenceInMinutes(token);
   const mailServicePayload = {
-    context: { name: validUser.name, token },
+    context: { name: validUser.firstName, token: otpCode, tokenValidity },
     email: validUser.email,
     templateName: EMAIL_TEMPLATES.PASSWORD_RESET,
     subject: EMAIL_SUBJECTS.PASSWORD_RESET,
   };
 
-  const sentMail = await mailService.sendMail(mailServicePayload);
-
-  if ([/^[45]\d{2}$/].includes(sentMail.responseCode)) {
-    return false;
-  } else {
-    return true;
-  }
+  await mailService.sendMail(mailServicePayload);
 };
 
 const resetPassword = async ({ token, newPassword }) => {
