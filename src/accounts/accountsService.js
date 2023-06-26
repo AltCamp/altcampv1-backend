@@ -86,8 +86,10 @@ const resetPassword = async ({ token, newPassword }) => {
 
   if (!validToken.token === token) throw new BadRequestError('Invalid token');
 
-  if (validToken.expiryTime <= Date.now())
+  if (validToken.expiryTime.getTime() <= Date.now()) {
+    TokenService.deleteToken(validToken._id);
     throw new BadRequestError('Expired token');
+  }
 
   let user = await Account.findById(validToken.owner).select('+password');
 
