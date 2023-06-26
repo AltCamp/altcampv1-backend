@@ -51,7 +51,7 @@ async function updatePassword(userId, oldPassword, newPassword) {
 }
 
 const forgotPassword = async ({ email }) => {
-  const validUser = await accountExists(email);
+  const validUser = await Account.findOne({ email });
 
   if (!validUser) throw new BadRequestError('User does not exist!');
 

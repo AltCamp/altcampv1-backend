@@ -79,7 +79,7 @@ const resetPasswordValidator = Joi.object({
     .regex(/^\d{4}$/)
     .required()
     .messages({
-      'string.pattern.base': 'Token must be a four-digit number',
+      'string.pattern.base': 'Token is invalid',
       'any.required': 'Token is required',
     }),
   password: Joi.string()
@@ -93,9 +93,9 @@ const resetPasswordValidator = Joi.object({
       'string.empty': 'Password is required',
       'any.required': 'Password is required',
     }),
-  // retypePassword: Joi.string().required().valid(Joi.ref('password')).messages({
-  //   'any.only': 'Password and retype password must match',
-  // }),
+  retypePassword: Joi.string().required().valid(Joi.ref('password')).messages({
+    'any.only': 'Passwords must match',
+  }),
 });
 
 module.exports = {
