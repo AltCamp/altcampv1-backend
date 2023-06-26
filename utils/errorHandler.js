@@ -38,7 +38,7 @@ function errorHandler(err, req, res, next) {
     customError.error = 'Conflict';
   }
 
-  if (err.responseCode === 535) {
+  if (err.responseCode) {
     customError.statusCode = 500;
     customError.msg = 'Unable to send e-mail!';
     customError.error = 'Server error';

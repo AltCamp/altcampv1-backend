@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const { JSDOM } = require('jsdom');
 const domPurify = createDomPurify(new JSDOM().window);
 const slugify = require('slugify');
+const moment = require('moment');
 
 const createHashedToken = (token) => {
   const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
@@ -44,6 +45,13 @@ async function verifyPassword(plain, hashed) {
   return await bcrypt.compare(plain, hashed);
 }
 
+function getDifferenceInMinutes({ createdAt, expiryTime }) {
+  const mExpiryTime = moment(expiryTime);
+  const mCreatedAt = moment(createdAt);
+  const diff = mExpiryTime.diff(mCreatedAt, 'minutes');
+  return `${diff} minute${diff > 1 ? 's' : ''}`;
+}
+
 module.exports = {
   createHashedToken,
   createToken,
@@ -51,4 +59,5 @@ module.exports = {
   sanitiseHTML,
   validateCredentials,
   verifyPassword,
+  getDifferenceInMinutes,
 };

@@ -12,5 +12,9 @@ class TokenService {
   static async getToken(where) {
     return await Token.findOne(where);
   }
+
+  static async deleteToken(_id) {
+    return await Token.deleteOne(_id);
+  }
 }
 module.exports = TokenService;

@@ -90,6 +90,24 @@ async function updateAccount(req, res) {
   new responseHandler(res, account, 200, RESPONSE_MESSAGE.SUCCESS);
 }
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  await accountsService.forgotPassword({ email });
+
+  new responseHandler(res, undefined, 200, RESPONSE_MESSAGE.SUCCESS);
+};
+
+const resetPassword = async (req, res) => {
+  const { token, password } = req.body;
+
+  const reset = await accountsService.resetPassword({
+    token,
+    newPassword: password,
+  });
+
+  new responseHandler(res, reset, 200, RESPONSE_MESSAGE.SUCCESS);
+};
+
 module.exports = {
   deleteAccount,
   getAccount,
@@ -98,4 +116,6 @@ module.exports = {
   uploadProfilePicture,
   deleteProfilePicture,
   updatePassword,
+  forgotPassword,
+  resetPassword,
 };

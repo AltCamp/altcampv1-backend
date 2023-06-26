@@ -14,6 +14,7 @@ const authService = require('./authService');
 const TokenService = require('../token/tokenService');
 const accountService = require('../accounts/accountsService');
 const mailService = require('../mailer/mailerService');
+const { getDifferenceInMinutes } = require('../../utils/helper');
 
 const registerAccount = async (req, res) => {
   const payload = { ...req.body };
@@ -67,8 +68,9 @@ const verifyEmail = async (req, res) => {
 
   if (!token) throw new BadRequestError();
 
+  const tokenValidity = getDifferenceInMinutes(token);
   const mailServicePayload = {
-    context: { name: req.user.name, token },
+    context: { name: req.user.firstName, token: otpCode, tokenValidity },
     email: req.user.email,
     templateName: EMAIL_TEMPLATES.EMAIL_VERIFICATION,
     subject: EMAIL_SUBJECTS.EMAIL_VERIFICATION,
@@ -95,8 +97,10 @@ const verifyEmailOtp = async (req, res) => {
 
   if (!token.token === otp) throw new BadRequestError('Incorrect OTP!');
 
-  if (token.expiryTime <= Date.now())
+  if (token.expiryTime.getTime() <= Date.now()) {
+    TokenService.deleteToken(token._id);
     throw new BadRequestError('Expired Token');
+  }
 
   user.emailIsVerified = true;
   await user.save();

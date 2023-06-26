@@ -66,6 +66,38 @@ const deleteAccountValidator = Joi.object({
   }),
 });
 
+const forgotPasswordValidator = Joi.object({
+  email: Joi.string().email().required().messages({
+    'string.email': 'Not a valid email address',
+    'string.empty': 'Email is required',
+    'any.required': 'Email is required',
+  }),
+});
+
+const resetPasswordValidator = Joi.object({
+  token: Joi.string()
+    .regex(/^\d{4}$/)
+    .required()
+    .messages({
+      'string.pattern.base': 'Token is invalid',
+      'any.required': 'Token is required',
+    }),
+  password: Joi.string()
+    .required()
+    .min(8)
+    .pattern(REGEX_PATTERNS.PASSWORD)
+    .messages({
+      'string.pattern.base':
+        'password must contain uppercase, lowercase, number and special character',
+      'string.min': 'Password must be at least 8 characters long',
+      'string.empty': 'Password is required',
+      'any.required': 'Password is required',
+    }),
+  retypePassword: Joi.string().required().valid(Joi.ref('password')).messages({
+    'any.only': 'Passwords must match',
+  }),
+});
+
 module.exports = {
   deleteAccountValidator,
   getAccountsValidator,
@@ -73,4 +105,6 @@ module.exports = {
   passwordValidator,
   profileBioValidator,
   profileValidator,
+  forgotPasswordValidator,
+  resetPasswordValidator,
 };
