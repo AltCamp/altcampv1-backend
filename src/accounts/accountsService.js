@@ -77,28 +77,29 @@ const forgotPassword = async ({ email }) => {
 };
 
 const resetPassword = async ({ token, newPassword }) => {
-  const validToken = await TokenService.getToken({
+  const userToken = await TokenService.getToken({
     type: TOKEN_TYPE.PASSWORD_RESET,
     token: token,
   });
 
-  if (!validToken) throw new BadRequestError('Token not found!');
+  if (!userToken) throw new BadRequestError('Token not found!');
 
-  if (!validToken.token === token) throw new BadRequestError('Invalid token');
+  if (!userToken.token === token) throw new BadRequestError('Invalid token');
 
-  if (validToken.expiryTime.getTime() <= Date.now()) {
-    TokenService.deleteToken(validToken._id);
+  const isExpired = userToken.expiryTime.getTime() <= Date.now();
+  if (isExpired) {
+    TokenService.deleteToken(userToken._id);
     throw new BadRequestError('Expired token');
   }
 
-  let user = await Account.findById(validToken.owner).select('+password');
+  let user = await Account.findById(userToken.owner).select('+password');
 
   if (!user) throw new BadRequestError('User does not exist');
 
   user.password = newPassword;
 
   await user.save();
-  await validToken.delete();
+  await userToken.delete();
   user = omit(user.toObject(), ['password']);
 
   return user;

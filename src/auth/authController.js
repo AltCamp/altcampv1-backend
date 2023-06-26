@@ -97,7 +97,8 @@ const verifyEmailOtp = async (req, res) => {
 
   if (!token.token === otp) throw new BadRequestError('Incorrect OTP!');
 
-  if (token.expiryTime.getTime() <= Date.now()) {
+  const isExpired = token.expiryTime.getTime() <= Date.now();
+  if (isExpired) {
     TokenService.deleteToken(token._id);
     throw new BadRequestError('Expired Token');
   }
