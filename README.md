@@ -70,7 +70,7 @@ AltCamp by AltSchool is an e-learning platform that allows students to post mess
 5. Start the application:
 
   ```bash
-  $ npm run dev
+  $ npm run start:dev
   ```
 
 6. Run tests:
