@@ -94,6 +94,8 @@ accountSchema.pre('save', async function (next) {
   next();
 });
 
+accountSchema.index({ firstName: 1, lastName: 1 });
+
 const Account = mongoose.model('Account', accountSchema);
 
 module.exports = Account;
