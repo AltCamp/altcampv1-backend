@@ -68,6 +68,25 @@ class APIFeatures {
       queryObj.accountType = queryObj.category;
     }
 
+    if (queryObj.searchTerm) {
+      const searchTerm = queryObj.searchTerm.trim();
+
+      if (searchTerm !== '') {
+        const searchRegex = new RegExp(searchTerm, 'i');
+
+        const nameQuery = {
+          $or: [
+            { firstName: { $regex: searchRegex } },
+            { lastName: { $regex: searchRegex } },
+          ],
+        };
+
+        this.query = this.query.find(nameQuery);
+      }
+
+      delete queryObj.searchTerm;
+    }
+
     this.query = this.query.find(queryObj);
 
     return this;
