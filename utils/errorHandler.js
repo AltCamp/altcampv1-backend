@@ -1,5 +1,4 @@
 function errorHandler(err, req, res, next) {
-  console.log(err);
   let customError = {
     msg: err.msg || err.message || 'Something went wrong',
     statusCode: err.statusCode || 500,
