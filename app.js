@@ -27,7 +27,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: false }));
 app.use(cookieParser());
 
 app.get('/', (req, res) => {
-  res.redirect(CLIENT_URLS.ALTCAMPNETLIFY);
+  res.send('Lets make magic! 🚀');
 });
 
 app.use('/', indexRouter);
