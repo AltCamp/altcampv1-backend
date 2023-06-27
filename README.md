@@ -6,20 +6,31 @@
 
 ## About AltCamp
 
-AltCamp by AltSchool is an e-learning platform that allows students to post messages to the discussion threads, interact and receive feedback from other students and instructors, and hence create a deeper understanding of the subject matter being discussed.
+AltCamp by AltSchool is an e-learning platform that allows students to post messages to the discussion threads, interact, and receive feedback from other students and instructors, creating a deeper understanding of the subject matter being discussed.
 
-## API Documentation
+## Quick Links
 
-The API documentation can be found [here](https://the-altcamp.onrender.com/api-docs).
-Follow [this link](https://documenter.getpostman.com/view/21313847/2s93eePUTg#intro) to the Postman Collection
+### API
+- Base URL: https://the-altcamp.onrender.com
+- Documentation: https://the-altcamp.onrender.com/api-docs or `<base_url>/api-docs`
+- Postman Collection: https://documenter.getpostman.com/view/21313847/2s93eePUTg#intro
 
-## Contributing
+### Frontend
+- Live URL: https://altcampv1.netlify.app
+- GitHub Repository: https://github.com/AltCamp/altcampv1-frontend
 
-We welcome contributions to this project. For detailed information on how to go about contributing to this project, please read our:
+### Design
+- Figma: https://www.figma.com/file/xYVO33gFoAqIJMyluGdd8M/ALTCAMP?type=design&node-id=112-1241&mode=design&t=wzi8NTlLzrpQP9dU-0
 
-- [Contributing Guidelines](/CONTRIBUTING.md)
-- [Style Guide](/CONTRIBUTING.md#style-guide)
-- [Code of Conduct](/CODE_OF_CONDUCT.md)
+### Project Management
+- Project Board: https://coda.io/d/AltCamp_dD2LqZxW5Lw/Back-End-Engineering-Team_su_Ao#_luCDb
+
+
+## Features
+- User authentication and authorization
+- User profile management
+- Communinity discussion threads, upvotes/downvotes, and likes
+- Feed posts, comments and likes
 
 ## Built With
 
@@ -29,6 +40,54 @@ We welcome contributions to this project. For detailed information on how to go 
 - [Mongoose](https://mongoosejs.com/) - MongoDB object modeling for Node.js
 - [Jest](https://jestjs.io/) - JavaScript testing framework
 - [Supertest](https://github.com/ladjs/supertest#readme) - HTTP assertions made easy via superagent
+
+## Quick Start
+
+1. Clone the repository:
+
+  ```bash
+  $ git clone https://github.com/AltCamp/altcampv1-backend.git
+  ```
+
+2. Navigate into the cloned repository folder:
+
+  ```bash
+  $ cd altcampv1-backend
+  ```
+
+3. Install dependencies:
+
+  ```bash
+  $ npm install
+  ```
+
+4. Copy the example environment file and make the required configuration changes in the .env file:
+
+  ```bash
+  $ cp example.env .env
+  ```
+
+5. Start the application:
+
+  ```bash
+  $ npm run dev
+  ```
+
+6. Run tests:
+
+  ```bash
+  $ npm run test
+  ```
+
+7. Import the [Postman collection](https://documenter.getpostman.com/view/21313847/2s93eePUTg#intro) to view the API endpoints and test the endpoints.
+
+## Contributing
+
+We welcome contributions to this project. For detailed information on how to contribute, please read our:
+
+- [Contributing Guidelines](/CONTRIBUTING.md)
+- [Style Guide](/CONTRIBUTING.md#style-guide)
+- [Code of Conduct](/CODE_OF_CONDUCT.md)
 
 ## License
 
