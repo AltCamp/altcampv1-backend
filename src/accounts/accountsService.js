@@ -8,15 +8,16 @@ const {
   BadRequestError,
 } = require('../../utils/customError');
 const {
+  tokenExpires,
+  validateCredentials,
   verifyPassword,
-  getDifferenceInMinutes,
 } = require('../../utils/helper');
-const { validateCredentials } = require('../../utils/helper');
 const { apiFeatures } = require('../common');
 const {
   TOKEN_TYPE,
   EMAIL_TEMPLATES,
   EMAIL_SUBJECTS,
+  OTP_VALIDITY,
 } = require('../../constant');
 const mailService = require('../mailer/mailerService');
 const TokenService = require('../token/tokenService');
@@ -55,19 +56,20 @@ const forgotPassword = async ({ email }) => {
 
   if (!validUser) throw new BadRequestError('User does not exist!');
 
-  const otpCode = Math.floor(Math.random() * 9000) + 1000;
-
   const token = await TokenService.createToken({
-    token: otpCode,
     type: TOKEN_TYPE.PASSWORD_RESET,
     owner: validUser._id,
+    timeToLive: OTP_VALIDITY.PASSWORD_RESET,
   });
 
   if (!token) throw new BadRequestError();
 
-  const tokenValidity = getDifferenceInMinutes(token);
   const mailServicePayload = {
-    context: { name: validUser.firstName, token: otpCode, tokenValidity },
+    context: {
+      name: validUser.firstName,
+      token: token.token,
+      tokenValidity: tokenExpires(OTP_VALIDITY.PASSWORD_RESET),
+    },
     email: validUser.email,
     templateName: EMAIL_TEMPLATES.PASSWORD_RESET,
     subject: EMAIL_SUBJECTS.PASSWORD_RESET,

@@ -53,6 +53,11 @@ module.exports = {
     GIF: 'gif',
   },
 
+  OTP_VALIDITY: {
+    EMAIL_VERIFICATION: process.env.EMAIL_VERIFICATION_OTP_VALIDITY,
+    PASSWORD_RESET: process.env.PASSWORD_RESET_OTP_VALIDITY,
+  },
+
   POST_TYPES: {
     ANSWER: 'Answer',
     COMMENT: 'Comment',
