@@ -3,6 +3,7 @@ const {
   TOKEN_TYPE,
   EMAIL_TEMPLATES,
   EMAIL_SUBJECTS,
+  OTP_VALIDITY,
 } = require('../../constant');
 const {
   ConflictError,
@@ -14,7 +15,7 @@ const authService = require('./authService');
 const TokenService = require('../token/tokenService');
 const accountService = require('../accounts/accountsService');
 const mailService = require('../mailer/mailerService');
-const { getDifferenceInMinutes } = require('../../utils/helper');
+const { tokenExpires } = require('../../utils/helper');
 
 const registerAccount = async (req, res) => {
   const payload = { ...req.body };
@@ -59,18 +60,20 @@ const verifyEmail = async (req, res) => {
   if (req.user.emailIsVerified)
     throw new BadRequestError(RESPONSE_MESSAGE.ALREADY_VERIFIED);
 
-  const otpCode = Math.floor(Math.random() * 9000) + 1000;
   const token = await TokenService.createToken({
-    token: otpCode,
     type: TOKEN_TYPE.EMAIL_VERIFICATION,
     owner: req.user.id,
+    timeToLive: OTP_VALIDITY.EMAIL_VERIFICATION,
   });
 
   if (!token) throw new BadRequestError();
 
-  const tokenValidity = getDifferenceInMinutes(token);
   const mailServicePayload = {
-    context: { name: req.user.firstName, token: otpCode, tokenValidity },
+    context: {
+      name: req.user.firstName,
+      token: token.token,
+      tokenValidity: tokenExpires(OTP_VALIDITY.EMAIL_VERIFICATION),
+    },
     email: req.user.email,
     templateName: EMAIL_TEMPLATES.EMAIL_VERIFICATION,
     subject: EMAIL_SUBJECTS.EMAIL_VERIFICATION,
@@ -96,12 +99,6 @@ const verifyEmailOtp = async (req, res) => {
   if (!token) throw new BadRequestError('OTP not found!');
 
   if (!token.token === otp) throw new BadRequestError('Incorrect OTP!');
-
-  const isExpired = token.expiryTime.getTime() <= Date.now();
-  if (isExpired) {
-    TokenService.deleteToken(token._id);
-    throw new BadRequestError('Expired Token');
-  }
 
   user.emailIsVerified = true;
   await user.save();

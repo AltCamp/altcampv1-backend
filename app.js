@@ -18,7 +18,7 @@ app.use(Sentry.Handlers.tracingHandler());
 
 app.use(
   cors({
-    origin: Object.values(CLIENT_URLS),
+    origin: CLIENT_URLS,
   })
 );
 app.use(logger('dev'));
