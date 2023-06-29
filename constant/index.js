@@ -14,12 +14,7 @@ module.exports = {
     PROFILEPICTURE: 'profilePicture',
   },
 
-  CLIENT_URLS: {
-    LOCALHOST: 'http://localhost:5173',
-    LOCALHOST2: 'http://127.0.0.1:5173',
-    STUDYBUDDYNETLIFY: 'https://stdybdyv1.netlify.app',
-    ALTCAMPNETLIFY: 'https://altcampv1.netlify.app',
-  },
+  CLIENT_URLS: process.env.CORS_ALLOWED_ORIGINS?.split(',') || [],
 
   EMAIL_TEMPLATES: {
     EMAIL_VERIFICATION: 'emailVerification',
@@ -51,6 +46,11 @@ module.exports = {
     JPG: 'jpg',
     JPEG: 'jpeg',
     GIF: 'gif',
+  },
+
+  OTP_VALIDITY: {
+    EMAIL_VERIFICATION: process.env.EMAIL_VERIFICATION_OTP_VALIDITY,
+    PASSWORD_RESET: process.env.PASSWORD_RESET_OTP_VALIDITY,
   },
 
   POST_TYPES: {

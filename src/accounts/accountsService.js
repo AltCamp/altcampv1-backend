@@ -8,15 +8,16 @@ const {
   BadRequestError,
 } = require('../../utils/customError');
 const {
+  tokenExpires,
+  validateCredentials,
   verifyPassword,
-  getDifferenceInMinutes,
 } = require('../../utils/helper');
-const { validateCredentials } = require('../../utils/helper');
 const { apiFeatures } = require('../common');
 const {
   TOKEN_TYPE,
   EMAIL_TEMPLATES,
   EMAIL_SUBJECTS,
+  OTP_VALIDITY,
 } = require('../../constant');
 const mailService = require('../mailer/mailerService');
 const TokenService = require('../token/tokenService');
@@ -55,19 +56,20 @@ const forgotPassword = async ({ email }) => {
 
   if (!validUser) throw new BadRequestError('User does not exist!');
 
-  const otpCode = Math.floor(Math.random() * 9000) + 1000;
-
   const token = await TokenService.createToken({
-    token: otpCode,
     type: TOKEN_TYPE.PASSWORD_RESET,
     owner: validUser._id,
+    timeToLive: OTP_VALIDITY.PASSWORD_RESET,
   });
 
   if (!token) throw new BadRequestError();
 
-  const tokenValidity = getDifferenceInMinutes(token);
   const mailServicePayload = {
-    context: { name: validUser.firstName, token: otpCode, tokenValidity },
+    context: {
+      name: validUser.firstName,
+      token: token.token,
+      tokenValidity: tokenExpires(OTP_VALIDITY.PASSWORD_RESET),
+    },
     email: validUser.email,
     templateName: EMAIL_TEMPLATES.PASSWORD_RESET,
     subject: EMAIL_SUBJECTS.PASSWORD_RESET,
@@ -77,28 +79,29 @@ const forgotPassword = async ({ email }) => {
 };
 
 const resetPassword = async ({ token, newPassword }) => {
-  const validToken = await TokenService.getToken({
+  const userToken = await TokenService.getToken({
     type: TOKEN_TYPE.PASSWORD_RESET,
     token: token,
   });
 
-  if (!validToken) throw new BadRequestError('Token not found!');
+  if (!userToken) throw new BadRequestError('Token not found!');
 
-  if (!validToken.token === token) throw new BadRequestError('Invalid token');
+  if (!userToken.token === token) throw new BadRequestError('Invalid token');
 
-  if (validToken.expiryTime.getTime() <= Date.now()) {
-    TokenService.deleteToken(validToken._id);
+  const isExpired = userToken.expiresAt.getTime() <= Date.now();
+  if (isExpired) {
+    TokenService.deleteToken(userToken._id);
     throw new BadRequestError('Expired token');
   }
 
-  let user = await Account.findById(validToken.owner).select('+password');
+  let user = await Account.findById(userToken.owner).select('+password');
 
   if (!user) throw new BadRequestError('User does not exist');
 
   user.password = newPassword;
 
   await user.save();
-  await validToken.delete();
+  await userToken.delete();
   user = omit(user.toObject(), ['password']);
 
   return user;

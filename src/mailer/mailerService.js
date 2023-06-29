@@ -4,7 +4,7 @@ const handlebars = require('handlebars');
 const { createTransport } = require('nodemailer');
 const { smtpConfig, nodemailer } = require('../../config');
 
-const smptOpts = {
+const smtpOpts = {
   host: smtpConfig.host,
   port: smtpConfig.port,
   secure: smtpConfig.secure,
@@ -29,7 +29,7 @@ const buildEmailTemplate = (templateName) => {
   );
 };
 
-const sendMail = async (payload, transportOptions = smptOpts) => {
+const sendMail = async (payload, transportOptions = smtpOpts) => {
   const transporter = createTransport(transportOptions);
   const emailTemplate = buildEmailTemplate(payload.templateName)(
     payload.context

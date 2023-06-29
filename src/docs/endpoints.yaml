@@ -401,8 +401,6 @@ paths:
     post:
       tags:
         - Accounts
-      security:
-        - bearer: []
       summary: Request OTP to change password
       description: This sends OTP to your mail for change of password
       requestBody:
@@ -438,8 +436,6 @@ paths:
     post:
       tags:
         - Accounts
-      security:
-        - bearer: []
       summary: Reset password using OTP
       description: This resets your password using OTP
       requestBody:
