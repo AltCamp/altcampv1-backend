@@ -2,48 +2,53 @@ const express = require('express');
 const Sentry = require('@sentry/node');
 const initializeSentry = require('./middleware/sentry');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+const morgan = require('morgan');
+const { Logger } = require('./utils');
 const { errorHandler } = require('./utils/errorHandler');
 const cors = require('cors');
 require('express-async-errors');
-const { CLIENT_URLS } = require('./constant');
-
+const { CLIENT_URLS, STUDY_BUDDY } = require('./constant');
 const indexRouter = require('./routes/index');
-
 const app = express();
 
 initializeSentry();
-app.use(Sentry.Handlers.requestHandler());
-app.use(Sentry.Handlers.tracingHandler());
 
-app.use(
-  cors({
-    origin: CLIENT_URLS,
-  })
-);
-app.use(logger('dev'));
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: false }));
-app.use(cookieParser());
+global.logger = Logger.createLogger({ label: STUDY_BUDDY });
 
-app.get('/', (req, res) => {
-  res.send('Lets make magic! 🚀');
-});
+const appConfig = (app) => {
+  app.use(Sentry.Handlers.requestHandler());
+  app.use(Sentry.Handlers.tracingHandler());
 
-app.use('/', indexRouter);
+  app.use(
+    cors({
+      origin: CLIENT_URLS,
+    })
+  );
+  app.use(morgan('combined', { stream: logger.stream }));
+  app.use(express.json({ limit: '50mb' }));
+  app.use(express.urlencoded({ limit: '50mb', extended: false }));
+  app.use(cookieParser());
 
-app.use(
-  Sentry.Handlers.errorHandler({
-    shouldHandleError(error) {
-      // Capture all 404 and 500 errors
-      if (error.statusCode === 404 || error.statusCode === 500) {
-        return true;
-      }
-      return false;
-    },
-  })
-);
+  app.get('/', (req, res) => {
+    res.send('Lets make magic! 🚀');
+  });
+  app.use('/', indexRouter);
+  app.use(
+    Sentry.Handlers.errorHandler({
+      shouldHandleError(error) {
+        // Capture all 404 and 500 errors
+        if (error.statusCode === 404 || error.statusCode === 500) {
+          return true;
+        }
+        return false;
+      },
+    })
+  );
 
-app.use(errorHandler);
+  app.use(errorHandler);
+};
+
+//Initialize app
+appConfig(app);
 
 module.exports = app;
