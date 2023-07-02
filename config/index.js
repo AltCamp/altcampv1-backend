@@ -1,6 +1,8 @@
 require('dotenv').config();
+const root = require('app-root-path');
 
 module.exports = {
+  root_path: root.path,
   app: {
     port: process.env.PORT || 8000,
     name: process.env.NAME,

@@ -2,6 +2,10 @@ module.exports = {
   DEVELOPMENT: 'development',
   PRODUCTION: 'production',
 
+  STUDY_BUDDY: 'Study Buddy',
+  DB_CONNECTED: 'Database connected successfully to',
+  ERR_DB_CONNECTION: 'Database connection failed',
+
   ACCOUNT_TYPES: {
     STUDENT: 'Student',
     MENTOR: 'Mentor',
