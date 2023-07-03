@@ -21,10 +21,10 @@ const appConfig = (app) => {
 
   app.use(
     cors({
-      origin: CLIENT_URLS,
+      origin: Array.from(CLIENT_URLS),
     })
   );
-  //eslint-disable-next-line
+
   app.use(morgan('combined', { stream: logger.stream }));
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ limit: '50mb', extended: false }));
@@ -49,7 +49,6 @@ const appConfig = (app) => {
   app.use(errorHandler);
 };
 
-//Initialize app
 appConfig(app);
 
 module.exports = app;
