@@ -10,6 +10,9 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
   },
+  globals: {
+    logger: 'readonly',
+  },
   rules: {
     'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],
