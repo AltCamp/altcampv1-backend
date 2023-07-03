@@ -7,13 +7,13 @@ const { Logger } = require('./utils');
 const { errorHandler } = require('./utils/errorHandler');
 const cors = require('cors');
 require('express-async-errors');
-const { CLIENT_URLS, STUDY_BUDDY } = require('./constant');
+const { CLIENT_URLS, ALT_CAMP } = require('./constant');
 const indexRouter = require('./routes/index');
 const app = express();
 
 initializeSentry();
 
-global.logger = Logger.createLogger({ label: STUDY_BUDDY });
+global.logger = Logger.createLogger({ label: ALT_CAMP });
 
 const appConfig = (app) => {
   app.use(Sentry.Handlers.requestHandler());
@@ -24,6 +24,7 @@ const appConfig = (app) => {
       origin: CLIENT_URLS,
     })
   );
+  //eslint-disable-next-line
   app.use(morgan('combined', { stream: logger.stream }));
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ limit: '50mb', extended: false }));

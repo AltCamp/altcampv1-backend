@@ -1,13 +1,8 @@
 const winston = require('winston');
-const fs = require('fs');
 const config = require('../config');
 
-const { createLogger, format, transports } = winston;
-const { combine, timestamp, label, printf, json, colorize } = format;
-
-const logFormat = printf(({ level, message, label, timestamp }) => {
-  return `${timestamp} ${level} : ${message}`;
-});
+const { format } = winston;
+const { combine, timestamp, label, printf, colorize } = format;
 
 const getLogToProcess = (fileOpt, consoleOpt) => {
   const logArray = [];
@@ -40,7 +35,7 @@ class Logger {
           colorize({ all: true }),
           printf(
             (msg) =>
-              `[${new Date(msg.timestamp).toUTCString()}]: ${msg.label} : - ${
+              `[${new Date(msg.timestamp).toUTCString()}]: ${msg.label}: - ${
                 msg.level
               }: ${msg.message}`
           )
@@ -96,7 +91,7 @@ class Logger {
     });
     logger.stream = {
       write(message) {
-        logger.info(`${message}++++ `);
+        logger.info(`${message}`);
       },
     };
     return logger;
@@ -113,6 +108,7 @@ class Logger {
    * @returns { Object } - An instance of logger.
    * @memberof Logger
    */
+  // eslint-disable-next-line no-unused-vars
   static createLogger(options) {
     const loggerInstance = new Logger(options);
     return loggerInstance.Init();
