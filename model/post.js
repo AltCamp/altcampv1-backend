@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-const { Helper } = require('../utils');
-
-const { sanitiseHTML } = Helper;
+const { sanitiseHTML } = require('../utils/helper');
 
 const postSchema = new mongoose.Schema(
   {
