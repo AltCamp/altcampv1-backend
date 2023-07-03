@@ -2,7 +2,7 @@ module.exports = {
   DEVELOPMENT: 'development',
   PRODUCTION: 'production',
 
-  STUDY_BUDDY: 'Study Buddy',
+  ALT_CAMP: 'AltCamp',
   DB_CONNECTED: 'Database connected successfully to',
   ERR_DB_CONNECTION: 'Database connection failed',
 
