@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const { Helper } = require('../utils');
-const { generateSlug, sanitiseHTML } = Helper;
+const { generateSlug, sanitiseHTML } = require('../utils/helper');
 
 const questionSchema = new mongoose.Schema(
   {
