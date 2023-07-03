@@ -23,7 +23,10 @@ const getBookmarks = async (owner, { query }) => {
         },
       ],
     });
-  const bookmarks = await new apiFeatures(bookmarksQuery, query).paginate();
+  const bookmarks = await new apiFeatures(bookmarksQuery, query)
+    .filter()
+    .sort()
+    .paginate();
   return bookmarks;
 };
 
