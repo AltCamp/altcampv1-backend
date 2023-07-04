@@ -366,8 +366,8 @@ paths:
         - Accounts
       security:
         - bearer: []
-      summary: Post a new question
-      description: This posts a new question
+      summary: Change password
+      description: This changes old password to a new one
       requestBody:
         content:
           application/json:
@@ -396,6 +396,69 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+
+  /accounts/forgot-password:
+    post:
+      tags:
+        - Accounts
+      summary: Request OTP to change password
+      description: This sends OTP to your mail for change of password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/forgotPassword'
+
+      responses:
+        '200':
+          description: Returns request successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/forgotPasswordResponse'
+
+        '400':
+          description: 'User does not exist'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+
+        '500':
+          description: Email containing OTP was not sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailServerError'
+
+  /accounts/reset-password:
+    post:
+      tags:
+        - Accounts
+      summary: Reset password using OTP
+      description: This resets your password using OTP
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/resetPassword'
+
+      responses:
+        '200':
+          description: Returns the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resetPasswordResponse'
+
+        '400':
+          description: An invalid token or the token has expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
 
     delete:
       tags:
@@ -2340,6 +2403,32 @@ components:
         password: newTestPassword1$
         retypePassword: newTestPassword1$
 
+    forgotPassword:
+      title: Request OTP for password reset
+      required:
+        - email
+      type: object
+      properties:
+        email:
+          type: string
+      example:
+        email: test@example.com
+
+    resetPassword:
+      title: Reset password using OTP
+      required:
+        - token
+        - password
+      type: object
+      properties:
+        token:
+          type: string
+        password:
+          type: string
+      example:
+        token: 'A four digit token'
+        password: Otgj7346_h!&
+
     ValidationError:
       type: object
       properties:
@@ -2354,6 +2443,21 @@ components:
         statusCode: 422
         message: One or more of user input not validated
         error: Unprocessable Entity
+
+    MailServerError:
+      type: object
+      properties:
+        messsage:
+          type: string
+        statusCode:
+          type: number
+          default: 500
+        error:
+          type: string
+      example:
+        statusCode: 500
+        message: connect ECONNREFUSED host:port
+        error: Something went wrong
 
     BadRequestError:
       type: object
@@ -2968,6 +3072,52 @@ components:
               type: string
             __v:
               type: number
+
+    forgotPasswordResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          default: 200
+        message:
+          type: string
+
+    resetPasswordResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          default: 200
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            isDeleted:
+              type: boolean
+            _id:
+              type: string
+            firstname:
+              type: string
+            lastname:
+              type: string
+            email:
+              type: string
+            accountType:
+              type: string
+            owner:
+              type: string
+            createdAt:
+              type: string
+            updatedAt:
+              type: string
+            bio:
+              type: string
+            profilePicture:
+              type: string
+            __v:
+              type: number
+
     # ----------------------------------------------------
     consolidated:
       example:

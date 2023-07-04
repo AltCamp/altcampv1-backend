@@ -1,7 +1,7 @@
 # AltCampv1-backend
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## About AltCamp
@@ -111,6 +111,7 @@ This project is licensed under the MIT License - see the [LICENSE](/LICENSE) fil
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Arndy345"><img src="https://avatars.githubusercontent.com/u/56146728?v=4?s=100" width="100px;" alt="Nonso Andrew Ugbodu"/><br /><sub><b>Nonso Andrew Ugbodu</b></sub></a><br /><a href="https://github.com/AltCamp/altcampv1-backend/commits?author=Arndy345" title="Code">💻</a> <a href="https://github.com/AltCamp/altcampv1-backend/commits?author=Arndy345" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://linktr.ee/olatisun"><img src="https://avatars.githubusercontent.com/u/86102079?v=4?s=100" width="100px;" alt="Module"/><br /><sub><b>Module</b></sub></a><br /><a href="https://github.com/AltCamp/altcampv1-backend/commits?author=Olatisunkanmi" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
