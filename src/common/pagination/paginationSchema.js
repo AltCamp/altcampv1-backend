@@ -6,6 +6,7 @@ const paginationSchema = Joi.object().keys({
   sort: Joi.string().optional(),
   searchTerm: Joi.string().optional(),
   isPaginated: Joi.boolean().optional(),
+  userId: Joi.string().optional(),
 });
 
 module.exports = paginationSchema;
