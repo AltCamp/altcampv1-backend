@@ -1,0 +1,17 @@
+name: altcamp api
+  
+on: 
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: |
+          npm i
+          npm start
