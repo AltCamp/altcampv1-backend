@@ -14,6 +14,7 @@ const app = express();
 initializeSentry();
 
 global.logger = Logger.createLogger({ label: ALT_CAMP });
+require('./src/common/cache');
 
 const appConfig = (app) => {
   app.use(Sentry.Handlers.requestHandler());
