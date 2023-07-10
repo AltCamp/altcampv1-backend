@@ -5,17 +5,16 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('study-buddy:server');
 var http = require('http');
 const connectDatabase = require('../utils/db');
 
-const config = require('../config');
+const { app: appConfig, db } = require('../config');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(config.app.port);
+var port = normalizePort(appConfig.port);
 app.set('port', port);
 
 /**
@@ -83,8 +82,7 @@ function onError(error) {
  */
 
 async function onListening() {
-  connectDatabase(config.db.name);
   var addr = server.address();
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  logger.info('Listening on ' + bind);
 }
