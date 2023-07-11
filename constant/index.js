@@ -45,6 +45,11 @@ module.exports = {
     PROFILEPICTURE: 1024 * 512,
   },
 
+  REDIS: {
+    CONNECTION_ERROR: 'Redis connection error',
+    KEEPING_ALIVE: 'Redis - keeping alive',
+  },
+
   VALID_IMAGE_FORMATS: {
     PNG: 'png',
     JPG: 'jpg',

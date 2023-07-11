@@ -33,6 +33,9 @@ module.exports = {
     refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
     access_token: process.env.GOOGLE_ACCESS_TOKEN,
   },
+  redis: {
+    url: process.env.REDIS_URL,
+  },
   smtpConfig: {
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,

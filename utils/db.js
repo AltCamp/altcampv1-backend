@@ -6,7 +6,7 @@ const connectDatabase = async (url) => {
   mongoose.set('strictPopulate', false);
   try {
     const connect = await mongoose.connect(url);
-    logger.info(` ${DB_CONNECTED} ${connect.connection.host}`);
+    logger.info(`${DB_CONNECTED} ${connect.connection.host}`);
   } catch (err) {
     logger.error(`${ERR_DB_CONNECTION} ${err.message}`);
   }
