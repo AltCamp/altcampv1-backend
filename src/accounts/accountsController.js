@@ -92,18 +92,15 @@ async function updateAccount(req, res) {
 
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
-  await accountsService.forgotPassword({ email });
+  const requestId = await accountsService.requestPasswordReset({ email });
 
-  new responseHandler(res, undefined, 200, RESPONSE_MESSAGE.SUCCESS);
+  new responseHandler(res, { requestId }, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 
 const resetPassword = async (req, res) => {
-  const { token, password } = req.body;
+  const payload = { ...req.body };
 
-  const reset = await accountsService.resetPassword({
-    token,
-    newPassword: password,
-  });
+  const reset = await accountsService.resetPassword(payload);
 
   new responseHandler(res, reset, 200, RESPONSE_MESSAGE.SUCCESS);
 };

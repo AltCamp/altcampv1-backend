@@ -75,6 +75,7 @@ const forgotPasswordValidator = Joi.object({
 });
 
 const resetPasswordValidator = Joi.object({
+  requestId: Joi.string().required(),
   token: Joi.string()
     .regex(/^\d{4}$/)
     .required()
