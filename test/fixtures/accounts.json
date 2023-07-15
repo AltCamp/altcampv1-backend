@@ -8,7 +8,8 @@
     "track": "Product Management",
     "accountType": "Student",
     "profilePicture": "",
-    "owner": "3e469f456fcb9104e6eb8a84"
+    "owner": "3e469f456fcb9104e6eb8a84",
+    "emailIsVerified": true
   },
   {
     "_id": "d7aebfdadd09c1db42abe3c4",
@@ -30,7 +31,8 @@
     "track": "Data Science",
     "accountType": "Student",
     "profilePicture": "",
-    "owner": "e826bb2dd56bf53da1c5b616"
+    "owner": "e826bb2dd56bf53da1c5b616",
+    "emailIsVerified": true
   },
   {
     "_id": "c5dfc38b35a8dda8abc311ab",
@@ -41,7 +43,8 @@
     "track": "Product Marketing",
     "accountType": "Student",
     "profilePicture": "",
-    "owner": "afb3d0ced9c5c4cecbf5b8fc"
+    "owner": "afb3d0ced9c5c4cecbf5b8fc",
+    "emailIsVerified": true
   },
   {
     "_id": "5cfe8e39796a42feee77deff",
@@ -52,7 +55,8 @@
     "track": "Product Management",
     "accountType": "Mentor",
     "profilePicture": "",
-    "owner": "bacbc27f3dfd0dcba587760f"
+    "owner": "bacbc27f3dfd0dcba587760f",
+    "emailIsVerified": true
   },
   {
     "_id": "adbdff05abe7cb81ecbecee5",

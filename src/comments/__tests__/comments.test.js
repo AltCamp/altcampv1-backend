@@ -3,6 +3,7 @@ const supertest = require('supertest');
 const api = supertest(app);
 const helper = require('../../../test/testHelper');
 const { dbConnect, dbCleanUP, dbDisconnect } = require('../../../test/test.db');
+const { RESPONSE_MESSAGE, ACCOUNT_TYPES } = require('../../../constant');
 
 const url = '/comments';
 let token;
@@ -45,8 +46,32 @@ describe('Creating comment', () => {
       .expect(401);
   });
 
-  it('is successful if a user is logged in', async () => {
-    const user = helper.accountsAsJson[4];
+  it('fails if a non-verified user is logged in', async () => {
+    const user = helper.accountsAsJson.find((account) => {
+      return account.emailIsVerified !== true;
+    });
+    await login(user);
+
+    const response = await api
+      .post(url)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        content: comment.content,
+        postId: post._id,
+      })
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body.message).toBe(RESPONSE_MESSAGE.NOT_VERIFIED);
+  });
+
+  it('is successful if a verified user is logged in', async () => {
+    const user = helper.accountsAsJson.find((account) => {
+      return (
+        account.emailIsVerified === true &&
+        account.accountType === ACCOUNT_TYPES.STUDENT
+      );
+    });
     await login(user);
 
     const response = await api
@@ -99,7 +124,12 @@ describe('Modifying a comment', () => {
   });
 
   it('fails if a logged in user is not the author', async () => {
-    const user = helper.accountsAsJson[1];
+    const user = helper.accountsAsJson.find((account) => {
+      return (
+        account.emailIsVerified === true &&
+        account.accountType === ACCOUNT_TYPES.MENTOR
+      );
+    });
     await login(user);
 
     await api
@@ -155,7 +185,12 @@ describe('Upvoting a comment', () => {
     comment = commentsInDb[2];
 
     const users = helper.accountsAsJson;
-    user = users[0];
+    user = users.find((account) => {
+      return (
+        account.emailIsVerified === true &&
+        account.accountType === ACCOUNT_TYPES.MENTOR
+      );
+    });
     await login(user);
 
     const response = await api
@@ -173,7 +208,12 @@ describe('Upvoting a comment', () => {
       profilePicture: expect.any(String),
     });
 
-    user = users[1];
+    user = users.find((account) => {
+      return (
+        account.emailIsVerified === true &&
+        account.accountType === ACCOUNT_TYPES.STUDENT
+      );
+    });
     await login(user);
 
     const res = await api
@@ -228,7 +268,12 @@ describe('Downvoting a comment', () => {
 
   it('is successful if a user is logged in', async () => {
     const users = helper.accountsAsJson;
-    user = users[0];
+    user = users.find((account) => {
+      return (
+        account.emailIsVerified === true &&
+        account.accountType === ACCOUNT_TYPES.MENTOR
+      );
+    });
     await login(user);
 
     const response = await api
@@ -246,7 +291,12 @@ describe('Downvoting a comment', () => {
       profilePicture: expect.any(String),
     });
 
-    user = users[1];
+    user = users.find((account) => {
+      return (
+        account.emailIsVerified === true &&
+        account.accountType === ACCOUNT_TYPES.STUDENT
+      );
+    });
     await login(user);
 
     const res = await api
