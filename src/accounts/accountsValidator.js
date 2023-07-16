@@ -99,6 +99,11 @@ const resetPasswordValidator = Joi.object({
   }),
 });
 
+const validateTokenValidator = Joi.object({
+  requestId: resetPasswordValidator.extract('requestId'),
+  token: resetPasswordValidator.extract('token'),
+});
+
 module.exports = {
   deleteAccountValidator,
   getAccountsValidator,
@@ -108,4 +113,5 @@ module.exports = {
   profileValidator,
   forgotPasswordValidator,
   resetPasswordValidator,
+  validateTokenValidator,
 };

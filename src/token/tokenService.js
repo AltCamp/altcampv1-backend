@@ -26,5 +26,14 @@ class TokenService {
   static async deleteToken(_id) {
     return await redisClient.del(_id);
   }
+
+  static async validateToken({ requestId, type, otp }) {
+    const key = type + requestId;
+    const tokenObj = await this.getToken(key);
+
+    if (!tokenObj?.token) return false;
+
+    return Number(otp) === tokenObj.token;
+  }
 }
 module.exports = TokenService;
