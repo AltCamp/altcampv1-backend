@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const questions = require('./questionsController');
-const { verifyUser } = require('../../middleware/authenticate');
+const {
+  authEmailIsVerified,
+  authOptional,
+} = require('../../middleware/authenticate');
 const {
   createQuestionValidator,
   updateQuestionValidator,
@@ -11,27 +14,35 @@ const limiter = require('../../middleware/rateLimit');
 
 router
   .route('/')
-  .get(validator.query(paginationSchema), questions.getAllQuestions)
+  .get(
+    authOptional,
+    validator.query(paginationSchema),
+    questions.getAllQuestions
+  )
   .post(
     limiter(),
-    verifyUser,
+    authEmailIsVerified,
     validatorMiddleware(createQuestionValidator),
     questions.createQuestion
   );
 
 router
   .route('/:id')
-  .get(questions.getQuestion)
+  .get(authOptional, questions.getQuestion)
   .patch(
     limiter(),
-    verifyUser,
+    authEmailIsVerified,
     validatorMiddleware(updateQuestionValidator),
     questions.updateQuestion
   )
-  .delete(verifyUser, questions.deleteQuestion);
+  .delete(authEmailIsVerified, questions.deleteQuestion);
 
-router.route('/:id/upvote').patch(verifyUser, questions.upvoteQuestion);
+router
+  .route('/:id/upvote')
+  .patch(authEmailIsVerified, questions.upvoteQuestion);
 
-router.route('/:id/downvote').patch(verifyUser, questions.downvoteQuestion);
+router
+  .route('/:id/downvote')
+  .patch(authEmailIsVerified, questions.downvoteQuestion);
 
 module.exports = router;

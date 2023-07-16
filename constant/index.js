@@ -89,6 +89,8 @@ module.exports = {
     NOT_FOUND: (entity) => `${entity} not found!`,
     INVALID_CREDENTIALS: 'Invalid credentials!',
     ALREADY_VERIFIED: 'Email is already verified',
+    NOT_VERIFIED: 'Email is not verified',
+    UNAUTHORIZED: 'Unauthorized',
   },
 
   TRACKS: {
