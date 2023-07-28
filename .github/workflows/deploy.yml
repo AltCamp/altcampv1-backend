@@ -2,12 +2,10 @@ name: Deployment pipeline
 
 on:
   push:
-    branches: [dev]
-  pull_request: 
-    branches: [dev]
+    branches: [main]
 
 jobs:
-  deployment_pipeline:
+  pre_build_run:
     runs-on: ubuntu-20.04
 
     environment:
@@ -36,3 +34,23 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_EXPIRY: ${{ secrets.JWT_EXPIRY }}
         run: npm run test
+
+  build:
+    needs: pre_build_run
+    runs-on: self-hosted
+
+    environment: 
+      name: Pre-deployment
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Decrypt files
+        run: |
+          gpg --decrypt --quiet --batch --passphrase="$PASSPHRASE" --pinentry-mode loopback --output .env .locke.gpg
+        env:
+          PASSPHRASE: ${{ secrets.PASSPHRASE }}
+      - name: Install dependencies
+        run: npm install --omit=dev
