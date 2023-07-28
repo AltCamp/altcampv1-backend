@@ -133,15 +133,16 @@ describe('Modifying a question', () => {
   });
 
   test('is successful if a logged in user is the author and email is verified', async () => {
-    // get questions from DB
-    const questions = await helper.questionsInDb();
-
-    // Log in as a student
+    // Log in
     const users = helper.accountsAsJson;
-    const user = users.find(
-      (user) => user._id === questions[0].author.toString()
-    );
+    const user = users.find((user) => user.emailIsVerified);
     await login(user);
+
+    // get question from DB
+    const questions = await helper.questionsInDb();
+    const question = questions.find(
+      (question) => question.author._id.toString() === user._id.toString()
+    );
 
     // send a patch request to update question
     const body = 'An updated body of a question to aid testing. Let us get it!';
@@ -149,7 +150,7 @@ describe('Modifying a question', () => {
     const slug = generateSlug(title);
 
     const response = await api
-      .patch(`/questions/${questions[0]._id.toString()}`)
+      .patch(`/questions/${question._id.toString()}`)
       .set('Authorization', `Bearer ${token}`)
       .send({ body, title })
       .expect(200)

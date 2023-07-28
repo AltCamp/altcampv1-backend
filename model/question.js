@@ -1,7 +1,13 @@
-const mongoose = require('mongoose');
+const { model, Schema, Types } = require('mongoose');
+const {
+  authorSchema,
+  baseSchema,
+  dislikeSchema,
+  likeSchema,
+} = require('./schemas');
 const { generateSlug, sanitiseHTML } = require('../utils/helper');
 
-const questionSchema = new mongoose.Schema(
+const questionSchema = new Schema(
   {
     title: {
       type: String,
@@ -10,39 +16,13 @@ const questionSchema = new mongoose.Schema(
     },
     body: {
       type: String,
-      required: true,
     },
     slug: {
       type: String,
       required: true,
     },
-    upvotes: {
-      type: Number,
-      default: 0,
-    },
-    upvotedBy: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: 'Account',
-      },
-    ],
-    downvotes: {
-      type: Number,
-      default: 0,
-    },
-    downvotedBy: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: 'Account',
-      },
-    ],
-    author: {
-      type: mongoose.Types.ObjectId,
-      ref: 'Account',
-      required: true,
-    },
     answer: {
-      type: [mongoose.Types.ObjectId],
+      type: [Types.ObjectId],
       ref: 'Answer',
     },
   },
@@ -83,6 +63,14 @@ questionSchema.pre('validate', function (next) {
   next();
 });
 
-const Question = mongoose.model('Question', questionSchema);
+const Question = model(
+  'Question',
+  baseSchema
+    .clone()
+    .add(questionSchema)
+    .add(authorSchema)
+    .add(dislikeSchema)
+    .add(likeSchema)
+);
 
 module.exports = Question;
