@@ -1,5 +1,5 @@
 const passport = require('passport');
-const Account = require('../model/account');
+const { Account } = require('../model');
 const JwtStrategy = require('passport-jwt').Strategy;
 
 const config = require('../config/index');
@@ -24,16 +24,16 @@ opts.jwtFromRequest = tokenExtractor;
 opts.secretOrKey = config.jwt.secret;
 
 passport.use(
-  new JwtStrategy(opts, (payload, done) => {
-    Account.findById(payload.id, (err, user) => {
-      if (err) {
-        return done(err, false);
-      } else if (user) {
-        return done(null, user);
-      } else {
+  new JwtStrategy(opts, async ({ id }, done) => {
+    try {
+      const user = await Account.findById(id);
+      if (!user) {
         return done(null, false);
       }
-    });
+      return done(null, user);
+    } catch (err) {
+      return done(err, false);
+    }
   })
 );
 

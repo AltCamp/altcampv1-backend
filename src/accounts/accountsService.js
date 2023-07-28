@@ -39,7 +39,7 @@ async function accountExists(email) {
 }
 
 async function updatePassword(userId, oldPassword, newPassword) {
-  let user = await Account.findOne(userId).select('+password');
+  let user = await Account.findById(userId).select('+password');
 
   const check = await verifyPassword(oldPassword, user.password);
   if (!check) {
