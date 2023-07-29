@@ -93,6 +93,10 @@ module.exports = {
     UNAUTHORIZED: 'Unauthorized',
   },
 
+  TAG_DETAILS: {
+    NAME: 'name',
+  },
+
   TRACKS: {
     'BACKEND-ENGINEERING': 'Backend Engineering',
     'CLOUD-ENGINEERING': 'Cloud Engineering',

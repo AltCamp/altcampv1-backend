@@ -64,6 +64,14 @@ class APIFeatures {
       queryObj.tags = { $in: queryObj.tags.split(',') };
     }
 
+    if (queryObj.tagName) {
+      const tagNames = queryObj.tagName
+        .split(',')
+        .map((tag) => new RegExp(tag, 'i'));
+
+      queryObj.name = { $in: tagNames };
+    }
+
     if (queryObj.category) {
       queryObj.accountType = queryObj.category;
     }
