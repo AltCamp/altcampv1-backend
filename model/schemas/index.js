@@ -18,6 +18,10 @@ const baseSchema = new Schema(
     content: {
       type: String,
     },
+    tags: {
+      type: [Types.ObjectId],
+      ref: 'Tag',
+    },
   },
   {
     timestamps: true,
