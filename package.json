@@ -8,7 +8,8 @@
     "lint": "eslint .",
     "format:check": "npx prettier --check .",
     "format:write": "npx prettier --write .",
-    "test": "APP_ENV=test jest --runInBand"
+    "test": "APP_ENV=test jest --runInBand",
+    "seed:track": "node ./seeders/trackSeeder.js"
   },
   "husky": {
     "hooks": {

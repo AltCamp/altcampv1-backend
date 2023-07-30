@@ -8,6 +8,7 @@ const Models = {
   Question: require('./question'),
   Student: require('./student'),
   Token: require('./token'),
+  Track: require('./track'),
 };
 
 module.exports = Models;
