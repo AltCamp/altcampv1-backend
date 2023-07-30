@@ -50,7 +50,7 @@ describe('Creating a bookmark', () => {
     const postsInDb = await helper.postsInDb();
     const { _id, content, author } = postsInDb[0];
     const postAuthor = helper.accountsAsJson.find(
-      ({ _id }) => _id === author.toString()
+      ({ _id }) => _id === author._id.toString()
     );
     // Log in as a student
     const user = helper.accountsAsJson[0];
@@ -198,7 +198,7 @@ describe('Updating a bookmark', () => {
       ({ _id }) => _id.toString() === post.toString()
     );
     const bookmarkedPostAuthor = helper.accountsAsJson.find(
-      ({ _id }) => _id === bookmarkedPost.author.toString()
+      ({ _id }) => _id === bookmarkedPost.author._id.toString()
     );
 
     const user = helper.accountsAsJson.find(

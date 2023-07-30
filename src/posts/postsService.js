@@ -1,12 +1,8 @@
-const { AUTHOR_DETAILS } = require('../../constant');
 const { Post } = require('../../model');
 const { apiFeatures } = require('../common');
 
 const getPosts = async ({ query } = {}) => {
-  const postsQuery = Post.find({}).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  const postsQuery = Post.find({});
   const posts = await new apiFeatures(postsQuery, query)
     .filter()
     .sort()
@@ -15,20 +11,14 @@ const getPosts = async ({ query } = {}) => {
 };
 
 const getPost = async (postId) => {
-  const post = await Post.findById(postId).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  const post = await Post.findById(postId);
 
   return post;
 };
 
 const createPost = async (post) => {
   const newPost = await Post.create(post);
-  await newPost.populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+
   return newPost;
 };
 
@@ -38,34 +28,23 @@ const updatePost = async ({ postId, post }) => {
     runValidators: true,
     context: 'query',
   });
-  await updatedPost.populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
 
   return updatedPost;
 };
 
 const deletePost = async (postId) => {
   const post = await Post.findByIdAndDelete(postId);
-  await post.populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
 
   return post;
 };
 
 const isPostAuthor = async ({ userId, postId }) => {
   const { author } = await Post.findById(postId);
-  return userId.toString() === author.toString();
+  return userId.toString() === author._id.toString();
 };
 
 const upvotePost = async ({ userId, postId }) => {
-  const post = await Post.findById(postId).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  const post = await Post.findById(postId);
   if (!post) {
     return false;
   }

@@ -148,7 +148,7 @@ describe('Modifying a comment', () => {
 
     const users = helper.accountsAsJson;
     const user = users.find((user) => {
-      return user._id.toString() === commentInDb.author.toString();
+      return user._id.toString() === commentInDb.author._id.toString();
     });
     await login(user);
 
