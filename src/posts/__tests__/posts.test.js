@@ -54,10 +54,12 @@ describe('Creating a post', () => {
     });
     await login(user);
 
+    const tags = ['askme', 'patience', 'goodfish'];
+
     const response = await api
       .post(url)
       .set('Authorization', `Bearer ${token}`)
-      .send({ content })
+      .send({ content, tags })
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
@@ -76,6 +78,9 @@ describe('Creating a post', () => {
       updatedAt: expect.any(String),
       comments: [],
     });
+    expect(
+      JSON.stringify(response.body.data.tags.map(({ name }) => name))
+    ).toBe(JSON.stringify(Object.values(tags)));
   });
 });
 
@@ -110,11 +115,12 @@ describe('Modifying a post', () => {
     await login(user);
 
     const content = 'Judas and Jonah. Silver lining on/in a whale.';
+    const tags = ['hopes', 'dreams'];
 
     const response = await api
       .patch(`${url}/${postId}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ content })
+      .send({ content, tags })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
@@ -125,6 +131,9 @@ describe('Modifying a post', () => {
       lastName: user.lastName,
       profilePicture: expect.any(String),
     });
+    expect(
+      JSON.stringify(response.body.data.tags.map(({ name }) => name))
+    ).toBe(JSON.stringify(Object.values(tags)));
   });
 });
 

@@ -68,6 +68,7 @@ describe('Creating a question', () => {
     const user = helper.accountsAsJson[0];
     await login(user);
 
+    const tags = ['askme', 'patience', 'goodfish'];
     // generate a question
     const { title, body } = helper.generateQuestion();
     const slug = generateSlug(title);
@@ -79,6 +80,7 @@ describe('Creating a question', () => {
       .send({
         title,
         body,
+        tags,
       })
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -96,6 +98,9 @@ describe('Creating a question', () => {
       profilePicture: expect.any(String),
     });
     expect(response.body.data).toHaveProperty('slug', slug);
+    expect(
+      JSON.stringify(response.body.data.tags.map(({ name }) => name))
+    ).toBe(JSON.stringify(Object.values(tags)));
   });
 });
 
@@ -148,11 +153,12 @@ describe('Modifying a question', () => {
     const body = 'An updated body of a question to aid testing. Let us get it!';
     const title = 'Will Manchester City win the 2023 Champions League?';
     const slug = generateSlug(title);
+    const tags = ['hopes', 'dreams'];
 
     const response = await api
       .patch(`/questions/${question._id.toString()}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ body, title })
+      .send({ body, title, tags })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
@@ -165,6 +171,9 @@ describe('Modifying a question', () => {
       lastName: user.lastName,
       profilePicture: expect.any(String),
     });
+    expect(
+      JSON.stringify(response.body.data.tags.map(({ name }) => name))
+    ).toBe(JSON.stringify(Object.values(tags)));
   });
 });
 
