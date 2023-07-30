@@ -1,11 +1,15 @@
-const tracksService = require('./tracksService');
+const TracksService = require('./tracksService');
 const responseHandler = require('../../utils/responseHandler');
 const { RESPONSE_MESSAGE } = require('../../constant');
 
-const getTracks = async (req, res) => {
-  const tracks = await tracksService.getTracks();
+const tracksService = new TracksService();
 
-  new responseHandler(res, tracks, 200, RESPONSE_MESSAGE.SUCCESS);
-};
+class TracksController {
+  static async getTracks(req, res) {
+    const tracks = await tracksService.getTracks();
 
-module.exports = { getTracks };
+    new responseHandler(res, tracks, 200, RESPONSE_MESSAGE.SUCCESS);
+  }
+}
+
+module.exports = TracksController;

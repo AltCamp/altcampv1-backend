@@ -105,6 +105,10 @@ module.exports = {
     'PRODUCT-MARKETING': 'Product Marketing',
   },
 
+  TRACK_DETAILS: {
+    TRACK: 'track',
+  },
+
   AUTH: {
     OAUTH2: 'OAUTH2',
   },

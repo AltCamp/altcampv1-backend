@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const tracks = require('./tracksController');
+const TracksController = require('./tracksController');
 
-router.route('/').get(tracks.getTracks);
+router.route('/').get(TracksController.getTracks);
 
 module.exports = router;
