@@ -6,6 +6,8 @@ const {
 } = require('../../utils/customError');
 const responseHandler = require('../../utils/responseHandler');
 const { RESPONSE_MESSAGE } = require('../../constant');
+const TagsService = require('../tags/tagsService');
+const tagsService = new TagsService();
 
 const getQuestion = async (req, res) => {
   const questionId = req.params.id;
@@ -23,10 +25,16 @@ const getAllQuestions = async (req, res) => {
 };
 
 const createQuestion = async (req, res) => {
-  const question = { ...req.body };
+  let { tags, ...question } = { ...req.body };
+
+  if (tags) {
+    const tagsInDb = await tagsService.createTags(tags);
+    tags = tagsInDb.map(({ _id }) => _id);
+  }
 
   const newQuestion = await questionsService.createQuestion({
     ...question,
+    tags,
     author: req.user._id,
   });
 
@@ -43,11 +51,15 @@ const updateQuestion = async (req, res) => {
 
   if (!isAuthor) throw new UnAuthorizedError('Unauthorized');
 
-  const question = { ...req.body };
+  let { tags, ...question } = { ...req.body };
+  if (tags) {
+    const tagsInDb = await tagsService.createTags(tags);
+    tags = tagsInDb.map(({ _id }) => _id);
+  }
 
   const updatedQuestion = await questionsService.updateQuestion({
     questionId,
-    question,
+    question: { ...question, tags },
   });
 
   if (!updatedQuestion) throw new NotFoundError('Not Found');
