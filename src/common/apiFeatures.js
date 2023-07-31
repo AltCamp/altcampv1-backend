@@ -61,7 +61,7 @@ class APIFeatures {
     }
 
     if (queryObj.tags) {
-      queryObj.tags = { $in: queryObj.tags.split(',') };
+      queryObj.tags = { $in: queryObj.tags };
     }
 
     if (queryObj.tagName) {

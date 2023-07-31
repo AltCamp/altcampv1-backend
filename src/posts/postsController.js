@@ -20,6 +20,13 @@ const getPost = async (req, res) => {
 };
 
 const getAllPosts = async (req, res) => {
+  const { tags } = req.query;
+  if (tags) {
+    const tagNames = tags.split(',').map((tag) => tag.trim());
+    const tagIds = await tagsService._getTagId(tagNames);
+    req.query.tags = tagIds;
+  }
+
   const { data, meta } = await postsService.getPosts(req);
   new responseHandler(res, data, 200, RESPONSE_MESSAGE.SUCCESS, meta);
 };

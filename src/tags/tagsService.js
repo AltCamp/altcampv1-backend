@@ -20,6 +20,22 @@ class TagsService {
   }
 
   /**
+   * Retrieves a list of tag IDs from the database based on an array of tag names.
+   *
+   * @private
+   * @param {string[]} tags - An array of tag names to find.
+   * @returns {{ _id: string }[]|null} An array of tag IDs or null if no tags are found.
+   */
+  async _getTagId(tags) {
+    const tagPromises = tags.map((tag) => this._tagExists(tag));
+    const tagIdArr = (await Promise.all(tagPromises))
+      .filter((tag) => tag !== null)
+      .map(({ _id }) => _id.toString());
+
+    return tagIdArr;
+  }
+
+  /**
    * Creates a new tag in the database if it doesn't already exist.
    *
    * @private
