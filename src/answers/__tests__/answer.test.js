@@ -174,7 +174,7 @@ describe('Modifying an answer', () => {
     // Log in as a student
     const users = helper.accountsAsJson;
     const user = users.find(
-      (user) => user._id.toString() === answer.author.toString()
+      (user) => user._id.toString() === answer.author._id.toString()
     );
     await login(user);
 

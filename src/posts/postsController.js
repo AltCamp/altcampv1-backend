@@ -6,6 +6,8 @@ const {
 } = require('../../utils/customError');
 const responseHandler = require('../../utils/responseHandler');
 const { RESPONSE_MESSAGE } = require('../../constant');
+const TagsService = require('../tags/tagsService');
+const tagsService = new TagsService();
 
 const getPost = async (req, res) => {
   const postId = req.params.id;
@@ -18,15 +20,28 @@ const getPost = async (req, res) => {
 };
 
 const getAllPosts = async (req, res) => {
+  const { tags } = req.query;
+  if (tags) {
+    const tagNames = tags.split(',').map((tag) => tag.trim());
+    const tagIds = await tagsService._getTagId(tagNames);
+    req.query.tags = tagIds;
+  }
+
   const { data, meta } = await postsService.getPosts(req);
   new responseHandler(res, data, 200, RESPONSE_MESSAGE.SUCCESS, meta);
 };
 
 const createPost = async (req, res) => {
-  const { content } = req.body;
+  let { tags, ...content } = req.body;
+
+  if (tags) {
+    const tagsInDb = await tagsService.createTags(tags);
+    tags = tagsInDb.map(({ _id }) => _id);
+  }
 
   const newPost = await postsService.createPost({
-    content,
+    ...content,
+    tags,
     author: req.user._id,
   });
 
@@ -43,11 +58,15 @@ const updatePost = async (req, res) => {
 
   if (!isAuthor) throw new UnAuthorizedError('Unauthorized');
 
-  const post = { ...req.body };
+  let { tags, ...post } = { ...req.body };
+  if (tags) {
+    const tagsInDb = await tagsService.createTags(tags);
+    tags = tagsInDb.map(({ _id }) => _id);
+  }
 
   const updatedPost = await postsService.updatePost({
     postId,
-    post,
+    post: { ...post, tags },
   });
 
   if (!updatedPost) throw new NotFoundError('Not Found');

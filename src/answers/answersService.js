@@ -1,11 +1,7 @@
-const { AUTHOR_DETAILS } = require('../../constant');
 const { Answer, Question } = require('../../model');
 
 const getAnswer = async (id) => {
-  const answers = await Answer.find({ id }).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  const answers = await Answer.find({ id });
 
   return answers;
 };
@@ -13,9 +9,6 @@ const getAnswer = async (id) => {
 const getAnswers = async (questionId) => {
   const answers = await Answer.find({
     question: questionId,
-  }).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
   });
 
   return answers;
@@ -30,10 +23,6 @@ const createAnswer = async (answer) => {
 
   await question.save();
   await newAnswer.save();
-  await newAnswer.populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
 
   return newAnswer;
 };
@@ -47,19 +36,13 @@ const updateAnswer = async (id, { content }) => {
       runValidators: true,
       context: 'query',
     }
-  ).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  );
 
   return updatedAnswer;
 };
 
 const upvoteAnswer = async ({ id, userId }) => {
-  const answer = await Answer.findById(id).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  const answer = await Answer.findById(id);
   if (!answer) {
     return false;
   }
@@ -88,10 +71,7 @@ const upvoteAnswer = async ({ id, userId }) => {
 };
 
 const downvoteAnswer = async ({ id, userId }) => {
-  const answer = await Answer.findById(id).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  const answer = await Answer.findById(id);
   if (!answer) {
     return false;
   }
@@ -121,7 +101,7 @@ const downvoteAnswer = async ({ id, userId }) => {
 
 const isAnswerAuthor = async ({ userId, answerId }) => {
   const { author } = await Answer.findById(answerId);
-  return userId.toString() === author.toString();
+  return userId.toString() === author._id.toString();
 };
 
 module.exports = {

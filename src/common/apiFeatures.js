@@ -61,7 +61,15 @@ class APIFeatures {
     }
 
     if (queryObj.tags) {
-      queryObj.tags = { $in: queryObj.tags.split(',') };
+      queryObj.tags = { $in: queryObj.tags };
+    }
+
+    if (queryObj.tagName) {
+      const tagNames = queryObj.tagName
+        .split(',')
+        .map((tag) => new RegExp(tag, 'i'));
+
+      queryObj.name = { $in: tagNames };
     }
 
     if (queryObj.category) {

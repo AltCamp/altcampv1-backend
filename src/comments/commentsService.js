@@ -1,11 +1,7 @@
-const { AUTHOR_DETAILS } = require('../../constant');
 const { Comment, Post } = require('../../model/');
 
 const getComment = async (id) => {
-  const comment = await Comment.findById(id).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  const comment = await Comment.findById(id);
 
   return comment;
 };
@@ -13,9 +9,6 @@ const getComment = async (id) => {
 const getComments = async (postId) => {
   const comments = await Comment.find({
     post: postId,
-  }).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
   });
 
   return comments;
@@ -30,10 +23,6 @@ const createComment = async (comment) => {
 
   await post.save();
   await newComment.save();
-  await newComment.populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
 
   return newComment;
 };
@@ -47,19 +36,13 @@ const updateComment = async (id, { content }) => {
       runValidators: true,
       context: 'query',
     }
-  ).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  );
 
   return updatedComment;
 };
 
 const upvoteComment = async ({ id, userId }) => {
-  const comment = await Comment.findById(id).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  const comment = await Comment.findById(id);
   if (!comment) {
     return false;
   }
@@ -88,10 +71,7 @@ const upvoteComment = async ({ id, userId }) => {
 };
 
 const downvoteComment = async ({ id, userId }) => {
-  const comment = await Comment.findById(id).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  const comment = await Comment.findById(id);
   if (!comment) {
     return false;
   }
@@ -121,7 +101,7 @@ const downvoteComment = async ({ id, userId }) => {
 
 const isCommentAuthor = async ({ userId, commentId }) => {
   const { author } = await Comment.findById(commentId);
-  return userId.toString() === author.toString();
+  return userId.toString() === author._id.toString();
 };
 
 module.exports = {

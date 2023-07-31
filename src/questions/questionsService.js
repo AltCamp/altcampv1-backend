@@ -1,12 +1,8 @@
-const { AUTHOR_DETAILS } = require('../../constant');
 const { Question } = require('../../model');
 const { apiFeatures } = require('../common');
 
 const getQuestions = async ({ query }) => {
-  const questionsQuery = Question.find({}).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  const questionsQuery = Question.find({});
   const questions = await new apiFeatures(questionsQuery, query)
     .filter()
     .sort()
@@ -15,20 +11,13 @@ const getQuestions = async ({ query }) => {
 };
 
 const getQuestion = async (questionId) => {
-  const question = await Question.findById(questionId).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  const question = await Question.findById(questionId);
 
   return question;
 };
 
 const createQuestion = async (question) => {
   const newQuestion = await Question.create(question);
-  await newQuestion.populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
   return newQuestion;
 };
 
@@ -41,33 +30,23 @@ const updateQuestion = async ({ questionId, question }) => {
       runValidators: true,
       context: 'query',
     }
-  ).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  );
 
   return updatedQuestion;
 };
 
 const deleteQuestion = async (questionId) => {
-  const question = await Question.findByIdAndDelete(questionId).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
-
+  const question = await Question.findByIdAndDelete(questionId);
   return question;
 };
 
 const isQuestionAuthor = async ({ userId, questionId }) => {
   const { author } = await Question.findById(questionId);
-  return userId.toString() === author.toString();
+  return userId.toString() === author._id.toString();
 };
 
 const upvoteQuestion = async ({ userId, questionId }) => {
-  const question = await Question.findById(questionId).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  const question = await Question.findById(questionId);
   if (!question) {
     return false;
   }
@@ -96,10 +75,7 @@ const upvoteQuestion = async ({ userId, questionId }) => {
 };
 
 const downvoteQuestion = async ({ userId, questionId }) => {
-  const question = await Question.findById(questionId).populate({
-    path: 'author',
-    select: Object.values(AUTHOR_DETAILS),
-  });
+  const question = await Question.findById(questionId);
   if (!question) {
     return false;
   }
