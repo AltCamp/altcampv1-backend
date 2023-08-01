@@ -17,8 +17,9 @@ const getComment = async (req, res) => {
 
 const getComments = async (req, res) => {
   const { postId } = req.query;
+  const userId = req.user?._id;
 
-  const comments = await commentService.getComments(postId);
+  const comments = await commentService.getComments(postId, userId);
 
   new responseHandler(res, comments, 200, RESPONSE_MESSAGE.SUCCESS);
 };

@@ -1,4 +1,5 @@
 const { Comment, Post } = require('../../model/');
+const { addIsBookmarkedField2 } = require('../bookmarks/bookmarksService');
 
 const getComment = async (id) => {
   const comment = await Comment.findById(id);
@@ -6,12 +7,20 @@ const getComment = async (id) => {
   return comment;
 };
 
-const getComments = async (postId) => {
-  const comments = await Comment.find({
+const getComments = async (postId, userId) => {
+  let comments = await Comment.find({
     post: postId,
   });
 
-  return comments;
+  if (!userId) {
+    comments = comments.map((comment) => {
+      return { ...comment.toJSON(), isBookmarked: false };
+    });
+    return comments;
+  }
+
+  const commentsWithBookmarks = await addIsBookmarkedField2(comments, userId);
+  return commentsWithBookmarks;
 };
 
 const createComment = async (comment) => {

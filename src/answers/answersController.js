@@ -17,8 +17,9 @@ const getAnswer = async (req, res) => {
 
 const getAnswers = async (req, res) => {
   const { questionId } = req.query;
+  const userId = req.user?._id;
 
-  const answers = await answerService.getAnswers(questionId);
+  const answers = await answerService.getAnswers(questionId, userId);
 
   new responseHandler(res, answers, 200, RESPONSE_MESSAGE.SUCCESS);
 };

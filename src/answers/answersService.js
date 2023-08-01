@@ -1,4 +1,5 @@
 const { Answer, Question } = require('../../model');
+const { addIsBookmarkedField2 } = require('../bookmarks/bookmarksService');
 
 const getAnswer = async (id) => {
   const answers = await Answer.find({ id });
@@ -6,12 +7,20 @@ const getAnswer = async (id) => {
   return answers;
 };
 
-const getAnswers = async (questionId) => {
-  const answers = await Answer.find({
+const getAnswers = async (questionId, userId) => {
+  let answers = await Answer.find({
     question: questionId,
   });
 
-  return answers;
+  if (!userId) {
+    answers = answers.map((answer) => {
+      return { ...answer.toJSON(), isBookmarked: false };
+    });
+    return answers;
+  }
+
+  const answersWithBookmarks = await addIsBookmarkedField2(answers, userId);
+  return answersWithBookmarks;
 };
 
 const createAnswer = async (answer) => {
