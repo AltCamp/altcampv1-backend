@@ -1,12 +1,21 @@
 const { Post } = require('../../model');
+const { addIsBookmarkedField } = require('../bookmarks/bookmarksService');
 const { apiFeatures } = require('../common');
 
-const getPosts = async ({ query } = {}) => {
+const getPosts = async ({ query } = {}, { userId }) => {
   const postsQuery = Post.find({});
   const posts = await new apiFeatures(postsQuery, query)
     .filter()
     .sort()
     .paginate();
+
+  if (!userId) {
+    posts.data = posts.data.map((post) => {
+      return { ...post.toJSON(), isBookmarked: false };
+    });
+    return posts;
+  }
+  posts.data = await addIsBookmarkedField(posts.data, userId);
   return posts;
 };
 

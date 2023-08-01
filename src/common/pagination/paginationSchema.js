@@ -6,6 +6,7 @@ const paginationSchema = searchSchema.keys({
   page: Joi.number().integer().min(1).optional(),
   sort: Joi.string().optional(),
   isPaginated: Joi.boolean().optional(),
+  userId: Joi.string().optional(),
 });
 
 module.exports = paginationSchema;
