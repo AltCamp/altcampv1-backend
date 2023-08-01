@@ -27,7 +27,9 @@ const getAllQuestions = async (req, res) => {
     req.query.tags = tagIds;
   }
 
-  const { data, meta } = await questionsService.getQuestions(req);
+  const { data, meta } = await questionsService.getQuestions(req, {
+    userId: req.user?._id,
+  });
   new responseHandler(res, data, 200, RESPONSE_MESSAGE.SUCCESS, meta);
 };
 
