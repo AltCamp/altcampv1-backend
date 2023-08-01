@@ -45,6 +45,11 @@ module.exports = {
     PROFILEPICTURE: 1024 * 512,
   },
 
+  REDIS: {
+    CONNECTION_ERROR: 'Redis connection error',
+    KEEPING_ALIVE: 'Redis - keeping alive',
+  },
+
   VALID_IMAGE_FORMATS: {
     PNG: 'png',
     JPG: 'jpg',
@@ -84,6 +89,12 @@ module.exports = {
     NOT_FOUND: (entity) => `${entity} not found!`,
     INVALID_CREDENTIALS: 'Invalid credentials!',
     ALREADY_VERIFIED: 'Email is already verified',
+    NOT_VERIFIED: 'Email is not verified',
+    UNAUTHORIZED: 'Unauthorized',
+  },
+
+  TAG_DETAILS: {
+    NAME: 'name',
   },
 
   TRACKS: {
@@ -96,6 +107,10 @@ module.exports = {
     'PRODUCT-DESIGN': 'Product Design',
     'PRODUCT-MANAGEMENT': 'Product Management',
     'PRODUCT-MARKETING': 'Product Marketing',
+  },
+
+  TRACK_DETAILS: {
+    TRACK: 'track',
   },
 
   AUTH: {

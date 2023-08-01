@@ -3,6 +3,7 @@ const supertest = require('supertest');
 const api = supertest(app);
 const helper = require('../../../test/testHelper');
 const { dbConnect, dbCleanUP, dbDisconnect } = require('../../../test/test.db');
+const { RESPONSE_MESSAGE } = require('../../../constant');
 
 let token;
 let responseAnswerId;
@@ -46,7 +47,35 @@ describe('Creating answer to a question', () => {
       .expect(401);
   });
 
-  it('is successful if a user is logged in', async () => {
+  it('fails if a logged in user is not verified', async () => {
+    // Log in as a student
+    const user = helper.accountsAsJson[5];
+    await login(user);
+
+    // fetch a question
+    const question = helper.questionsAsJson[1];
+
+    // generate answer to question
+    const answer = helper.generateAnswer();
+
+    const response = await api
+      .post('/answers')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        content: answer.content,
+        questionId: question._id,
+      })
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    // check response for specific properties
+    expect(response.body).toHaveProperty(
+      'message',
+      RESPONSE_MESSAGE.NOT_VERIFIED
+    );
+  });
+
+  it('is successful if a user is logged in and verified', async () => {
     // Log in as a student
     const user = helper.accountsAsJson[4];
     await login(user);
@@ -119,7 +148,7 @@ describe('Modifying an answer', () => {
 
   it('fails if a logged in user is not the author', async () => {
     // Log in as a student
-    const user = helper.accountsAsJson[1];
+    const user = helper.accountsAsJson[0];
     await login(user);
 
     // send a patch request to update answer
@@ -145,7 +174,7 @@ describe('Modifying an answer', () => {
     // Log in as a student
     const users = helper.accountsAsJson;
     const user = users.find(
-      (user) => user._id.toString() === answer.author.toString()
+      (user) => user._id.toString() === answer.author._id.toString()
     );
     await login(user);
 
@@ -175,7 +204,38 @@ describe('Upvoting an answer', () => {
     await api.patch(`/answers/upvote/${answer._id.toString()}`).expect(401);
   });
 
-  it('is successful if a user is logged in', async () => {
+  it('fails if a logged in user is not verified', async () => {
+    // Log in as a user
+    const users = helper.accountsAsJson;
+    user = users[1];
+    await login(user);
+
+    // send a patch request to upvote answer
+    const response = await api
+      .patch(`/answers/upvote/${answer._id.toString()}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    // check response for specific properties
+    expect(response.body.message).toBe(RESPONSE_MESSAGE.NOT_VERIFIED);
+
+    // Log in as another user
+    const user2 = users[5];
+    await login(user2);
+
+    // send a patch request to upvote answer
+    const response2 = await api
+      .patch(`/answers/upvote/${answer._id.toString()}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    // check response2 for specific properties
+    expect(response2.body.message).toBe(RESPONSE_MESSAGE.NOT_VERIFIED);
+  });
+
+  it('is successful if a user is logged in and verified', async () => {
     // Log in as a user
     const users = helper.accountsAsJson;
     user = users[0];
@@ -193,7 +253,7 @@ describe('Upvoting an answer', () => {
     expect(response.body.data.upvotedBy).toContain(user._id);
 
     // Log in as another user
-    const user2 = users[1];
+    const user2 = users[4];
     await login(user2);
 
     // send a patch request to upvote answer
@@ -239,7 +299,24 @@ describe('Downvoting an answer', () => {
     await api.patch(`/answers/downvote/${answer._id.toString()}`).expect(401);
   });
 
-  it('is successful if a user is logged in', async () => {
+  it('fails if a user is logged in but not verified', async () => {
+    // Log in as a user
+    const users = helper.accountsAsJson;
+    user = users[1];
+    await login(user);
+
+    // send a patch request to upvote answer
+    const response = await api
+      .patch(`/answers/downvote/${answer._id.toString()}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    // check response for specific properties
+    expect(response.body.message).toBe(RESPONSE_MESSAGE.NOT_VERIFIED);
+  });
+
+  it('is successful if a user is logged in and verified', async () => {
     // Log in as a user
     const users = helper.accountsAsJson;
     user = users[0];
@@ -257,7 +334,7 @@ describe('Downvoting an answer', () => {
     expect(response.body.data.downvotedBy).toContain(user._id);
 
     // Log in as another user
-    const user2 = users[1];
+    const user2 = users[4];
     await login(user2);
 
     // send a patch request to upvote answer

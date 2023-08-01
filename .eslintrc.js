@@ -11,6 +11,7 @@ module.exports = {
     ecmaVersion: 'latest',
   },
   globals: {
+    cache: 'readonly',
     logger: 'readonly',
   },
   rules: {

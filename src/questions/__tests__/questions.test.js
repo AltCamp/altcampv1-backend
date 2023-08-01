@@ -4,6 +4,7 @@ const supertest = require('supertest');
 const api = supertest(app);
 const helper = require('../../../test/testHelper');
 const { generateSlug } = require('../../../utils/helper');
+const { RESPONSE_MESSAGE } = require('../../../constant');
 
 let token;
 
@@ -36,11 +37,38 @@ describe('Creating a question', () => {
       .expect(401);
   });
 
-  test('is successful if a user is logged in', async () => {
+  test('fails if a user is logged in and email is not verified', async () => {
+    // Log in as a student
+    const user = helper.accountsAsJson[1];
+    await login(user);
+
+    // generate a question
+    const { title, body } = helper.generateQuestion();
+
+    // send a post request with generated question
+    const response = await api
+      .post('/questions')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title,
+        body,
+      })
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    // check response for specific properties
+    expect(response.body).toHaveProperty(
+      'message',
+      RESPONSE_MESSAGE.NOT_VERIFIED
+    );
+  });
+
+  test('is successful if a user is logged in and email is verified', async () => {
     // Log in as a student
     const user = helper.accountsAsJson[0];
     await login(user);
 
+    const tags = ['askme', 'patience', 'goodfish'];
     // generate a question
     const { title, body } = helper.generateQuestion();
     const slug = generateSlug(title);
@@ -52,6 +80,7 @@ describe('Creating a question', () => {
       .send({
         title,
         body,
+        tags,
       })
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -69,6 +98,9 @@ describe('Creating a question', () => {
       profilePicture: expect.any(String),
     });
     expect(response.body.data).toHaveProperty('slug', slug);
+    expect(
+      JSON.stringify(response.body.data.tags.map(({ name }) => name))
+    ).toBe(JSON.stringify(Object.values(tags)));
   });
 });
 
@@ -91,7 +123,7 @@ describe('Modifying a question', () => {
     const questions = await helper.questionsInDb();
 
     // Log in as a student
-    const user = helper.accountsAsJson[1];
+    const user = helper.accountsAsJson[2];
     await login(user);
 
     // send a patch request to update question]
@@ -105,26 +137,28 @@ describe('Modifying a question', () => {
       .expect('Content-Type', /application\/json/);
   });
 
-  test('is successful if a logged in user is the author', async () => {
-    // get questions from DB
-    const questions = await helper.questionsInDb();
-
-    // Log in as a student
+  test('is successful if a logged in user is the author and email is verified', async () => {
+    // Log in
     const users = helper.accountsAsJson;
-    const user = users.find(
-      (user) => user._id === questions[0].author.toString()
-    );
+    const user = users.find((user) => user.emailIsVerified);
     await login(user);
+
+    // get question from DB
+    const questions = await helper.questionsInDb();
+    const question = questions.find(
+      (question) => question.author._id.toString() === user._id.toString()
+    );
 
     // send a patch request to update question
     const body = 'An updated body of a question to aid testing. Let us get it!';
     const title = 'Will Manchester City win the 2023 Champions League?';
     const slug = generateSlug(title);
+    const tags = ['hopes', 'dreams'];
 
     const response = await api
-      .patch(`/questions/${questions[0]._id.toString()}`)
+      .patch(`/questions/${question._id.toString()}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ body, title })
+      .send({ body, title, tags })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
@@ -137,6 +171,9 @@ describe('Modifying a question', () => {
       lastName: user.lastName,
       profilePicture: expect.any(String),
     });
+    expect(
+      JSON.stringify(response.body.data.tags.map(({ name }) => name))
+    ).toBe(JSON.stringify(Object.values(tags)));
   });
 });
 
@@ -151,7 +188,30 @@ describe('Upvoting a question', () => {
       .expect(401);
   });
 
-  test('is successful if a user is logged in', async () => {
+  test('fails if a user is logged in and email is not verified', async () => {
+    // get questions from DB
+    let questions = await helper.questionsInDb();
+
+    // Log in as a user
+    const users = helper.accountsAsJson;
+    let user = users[1];
+    await login(user);
+
+    // send a patch request to upvote question
+    const response = await api
+      .patch(`/questions/${questions[0]._id.toString()}/upvote`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    // check response for specific properties
+    expect(response.body).toHaveProperty(
+      'message',
+      RESPONSE_MESSAGE.NOT_VERIFIED
+    );
+  });
+
+  test('is successful if a user is logged in and email is verified', async () => {
     // get questions from DB
     let questions = await helper.questionsInDb();
 
@@ -183,7 +243,7 @@ describe('Upvoting a question', () => {
     questions = await helper.questionsInDb();
 
     // Log in as another user
-    user = users[1];
+    user = users[2];
     await login(user);
 
     // send a patch request to upvote question
@@ -206,7 +266,7 @@ describe('Upvoting a question', () => {
     );
   });
 
-  test('if a user has previously upvoted removes the vote', async () => {
+  test('if a verified user has previously upvoted removes the vote', async () => {
     // get questions from DB
     const questions = await helper.questionsInDb();
 
@@ -235,7 +295,7 @@ describe('Upvoting a question', () => {
     );
   });
 
-  test('if a user has previously downvoted removes the downvote', async () => {
+  test('if a verified user has previously downvoted removes the downvote', async () => {
     // get questions from DB
     const questions = await helper.questionsInDb();
 
@@ -295,7 +355,7 @@ describe('Downvoting a question', () => {
       .expect(401);
   });
 
-  test('is successful if a user is logged in', async () => {
+  test('is successful if a user is logged in and email is verified', async () => {
     // get questions from DB
     let questions = await helper.questionsInDb();
 
@@ -327,7 +387,7 @@ describe('Downvoting a question', () => {
     questions = await helper.questionsInDb();
 
     // Log in as another user
-    user = users[1];
+    user = users[2];
     await login(user);
 
     // send a patch request to downvote question
@@ -350,7 +410,7 @@ describe('Downvoting a question', () => {
     );
   });
 
-  test('if a user has previously downvoted removes the vote', async () => {
+  test('if a verified user has previously downvoted removes the vote', async () => {
     // get questions from DB
     const questions = await helper.questionsInDb();
 
@@ -379,7 +439,7 @@ describe('Downvoting a question', () => {
     );
   });
 
-  test('if a user has previously upvoted removes the upvote', async () => {
+  test('if a verified user has previously upvoted removes the upvote', async () => {
     // get questions from DB
     const questions = await helper.questionsInDb();
 

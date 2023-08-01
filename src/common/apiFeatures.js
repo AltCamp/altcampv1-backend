@@ -5,13 +5,7 @@ class APIFeatures {
   }
 
   async paginate() {
-    if (!this.queryString.isPaginated) {
-      const data = await this.query.exec();
-
-      return {
-        data,
-      };
-    }
+    const isPaginated = this.queryString.isPaginated === true;
 
     let { page = 1, limit = 10 } = this.queryString;
     page = Number(page);
@@ -21,21 +15,28 @@ class APIFeatures {
 
     const totalResults = await this.query.model.countDocuments(countQuery);
 
-    const totalPages = Math.ceil(totalResults / limit);
+    const totalPages = isPaginated ? Math.ceil(totalResults / limit) : 1;
 
-    this.query = this.query.limit(limit).skip((page - 1) * limit);
+    this.query = isPaginated
+      ? this.query.limit(limit).skip((page - 1) * limit)
+      : this.query;
 
     const results = await this.query.exec();
 
     const start = (page - 1) * limit;
     const end = page * limit;
-    const previousPage = start > 0 ? page - 1 : null;
-    const nextPage = end < totalResults ? page + 1 : null;
+    const previousPage = isPaginated ? (start > 0 ? page - 1 : null) : null;
+    const nextPage = isPaginated
+      ? end < totalResults
+        ? page + 1
+        : null
+      : null;
+    const currentPage = isPaginated ? page : 1;
 
     const meta = {
       totalResults,
       totalPages,
-      currentPage: page,
+      currentPage,
       previousPage,
       nextPage,
     };
@@ -61,7 +62,15 @@ class APIFeatures {
     }
 
     if (queryObj.tags) {
-      queryObj.tags = { $in: queryObj.tags.split(',') };
+      queryObj.tags = { $in: queryObj.tags };
+    }
+
+    if (queryObj.tagName) {
+      const tagNames = queryObj.tagName
+        .split(',')
+        .map((tag) => new RegExp(tag, 'i'));
+
+      queryObj.name = { $in: tagNames };
     }
 
     if (queryObj.category) {

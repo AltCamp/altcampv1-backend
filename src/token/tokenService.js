@@ -1,24 +1,39 @@
-const { Token } = require('../../model');
 const { BadRequestError } = require('../../utils/customError');
+const { generate4DigitOTP } = require('../../utils/helper');
+const redisClient = require('../common/cache/cacheService');
 
 class TokenService {
-  static async createToken({ type, owner, timeToLive }) {
-    const otpCode = Math.floor(Math.random() * 9000) + 1000;
-    const ttlMs = Date.now() + 60 * 1000 * timeToLive;
-    const expiresAt = new Date(ttlMs);
+  static async createToken({ requestId, type, owner, timeToLive }) {
+    const otpCode = generate4DigitOTP();
 
-    const data = await Token.create({ token: otpCode, owner, type, expiresAt });
-    if (!data)
+    try {
+      await redisClient.set(
+        `${type + requestId}`,
+        JSON.stringify({ token: otpCode, owner }),
+        { EX: timeToLive }
+      );
+      return otpCode;
+    } catch (error) {
       throw new BadRequestError('An error occurred while creating token!');
-    return data;
+    }
   }
 
   static async getToken(where) {
-    return await Token.findOne(where);
+    const token = await redisClient.get(where);
+    return token ? JSON.parse(token) : token;
   }
 
   static async deleteToken(_id) {
-    return await Token.deleteOne(_id);
+    return await redisClient.del(_id);
+  }
+
+  static async validateToken({ requestId, type, otp }) {
+    const key = type + requestId;
+    const tokenObj = await this.getToken(key);
+
+    if (!tokenObj?.token) return false;
+
+    return Number(otp) === tokenObj.token;
   }
 }
 module.exports = TokenService;

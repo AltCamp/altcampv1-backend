@@ -1,0 +1,17 @@
+version: '0.1'
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-abe:/data
+  mongo:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-abe:/data
+volumes:
+  redis-abe:
+  mongo-abe:

@@ -43,6 +43,7 @@ const postIds = [
   'f1c9f3b1aaa7928c5ebac62d',
   '9aeb2a1caaa2cf74e24778c0',
 ];
+faker.seed(889);
 
 /**
  * Create a user.

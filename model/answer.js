@@ -1,46 +1,30 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { model, Schema, Types } = require('mongoose');
+const {
+  authorSchema,
+  baseSchema,
+  dislikeSchema,
+  likeSchema,
+} = require('./schemas');
 
 const answerSchema = new Schema(
   {
-    content: {
-      type: String,
-      required: true,
-    },
-    upvotes: {
-      type: Number,
-      default: 0,
-    },
-    upvotedBy: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: 'Account',
-      },
-    ],
-    downvotes: {
-      type: Number,
-      default: 0,
-    },
-    downvotedBy: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: 'Account',
-      },
-    ],
     question: {
-      type: mongoose.Types.ObjectId,
+      type: Types.ObjectId,
       ref: 'Question',
-      required: true,
-    },
-    author: {
-      type: mongoose.Types.ObjectId,
-      ref: 'Account',
       required: true,
     },
   },
   { timestamps: true }
 );
 
-const Answer = mongoose.model('Answer', answerSchema);
+const Answer = model(
+  'Answer',
+  baseSchema
+    .clone()
+    .add(answerSchema)
+    .add(authorSchema)
+    .add(dislikeSchema)
+    .add(likeSchema)
+);
 
 module.exports = Answer;

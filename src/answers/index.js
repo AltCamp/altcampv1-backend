@@ -1,5 +1,8 @@
 const router = require('express').Router();
-const { verifyUser } = require('../../middleware/authenticate');
+const {
+  authEmailIsVerified,
+  authOptional,
+} = require('../../middleware/authenticate');
 const validatorMiddleware = require('../../middleware/validator');
 const validator = require('express-joi-validation').createValidator({
   passError: true,
@@ -15,24 +18,26 @@ const limiter = require('../../middleware/rateLimit');
 
 router
   .route('/')
-  .get(validator.query(getAnswersValidator), answers.getAnswers)
+  .get(authOptional, validator.query(getAnswersValidator), answers.getAnswers)
   .post(
     limiter(),
-    verifyUser,
+    authEmailIsVerified,
     validatorMiddleware(createAnswerValidator),
     answers.createAnswer
   );
 
-router.route('/upvote/:id').patch(verifyUser, answers.upvoteAnswer);
+router.route('/upvote/:id').patch(authEmailIsVerified, answers.upvoteAnswer);
 
-router.route('/downvote/:id').patch(verifyUser, answers.downvoteAnswer);
+router
+  .route('/downvote/:id')
+  .patch(authEmailIsVerified, answers.downvoteAnswer);
 
 router
   .route('/:id')
-  .get(validator.params(getAnswerValidator), answers.getAnswer)
+  .get(authOptional, validator.params(getAnswerValidator), answers.getAnswer)
   .patch(
     limiter(),
-    verifyUser,
+    authEmailIsVerified,
     validatorMiddleware(updateAnswerValidator),
     answers.updateAnswer
   );

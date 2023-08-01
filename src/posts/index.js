@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const posts = require('./postsController');
-const { verifyUser } = require('../../middleware/authenticate');
+const {
+  authEmailIsVerified,
+  authOptional,
+} = require('../../middleware/authenticate');
 const {
   createPostValidator,
   updatePostValidator,
@@ -11,25 +14,25 @@ const limiter = require('../../middleware/rateLimit');
 
 router
   .route('/')
-  .get(validator.query(paginationSchema), posts.getAllPosts)
+  .get(authOptional, validator.query(paginationSchema), posts.getAllPosts)
   .post(
     limiter(),
-    verifyUser,
+    authEmailIsVerified,
     validatorMiddleware(createPostValidator),
     posts.createPost
   );
 
 router
   .route('/:id')
-  .get(posts.getPost)
+  .get(authOptional, posts.getPost)
   .patch(
     limiter(),
-    verifyUser,
+    authEmailIsVerified,
     validatorMiddleware(updatePostValidator),
     posts.updatePost
   )
-  .delete(verifyUser, posts.deletePost);
+  .delete(authEmailIsVerified, posts.deletePost);
 
-router.route('/:id/upvote').patch(verifyUser, posts.upvotePost);
+router.route('/:id/upvote').patch(authEmailIsVerified, posts.upvotePost);
 
 module.exports = router;

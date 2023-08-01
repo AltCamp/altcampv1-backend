@@ -2,9 +2,9 @@ name: Deployment pipeline
 
 on:
   push:
-    branches: [main, dev]
+    branches: [dev]
   pull_request: 
-    branches: [main, dev]
+    branches: [dev]
 
 jobs:
   deployment_pipeline:

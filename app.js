@@ -9,11 +9,14 @@ const cors = require('cors');
 require('express-async-errors');
 const { ALT_CAMP } = require('./constant');
 const indexRouter = require('./routes/index');
+const {
+  app: { env },
+} = require('./config');
 const app = express();
 
 initializeSentry();
 
-global.logger = Logger.createLogger({ label: ALT_CAMP });
+require('./src/common/cache');
 
 const appConfig = (app) => {
   app.use(Sentry.Handlers.requestHandler());
@@ -21,9 +24,15 @@ const appConfig = (app) => {
 
   app.use(cors());
 
-  app.use(morgan('combined', { stream: logger.stream }));
+  if (env === 'test') {
+    app.use(morgan('dev'));
+  } else {
+    global.logger = Logger.createLogger({ label: ALT_CAMP });
+    app.use(morgan('combined', { stream: logger.stream }));
+  }
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ limit: '50mb', extended: false }));
+  app.use(express.static('public'));
   app.use(cookieParser());
 
   app.get('/', (req, res) => {

@@ -11,6 +11,7 @@ const {
   updatePassword,
   forgotPassword,
   resetPassword,
+  validatePasswordResetOtp,
 } = require('./accountsController');
 const {
   getAccountsValidator,
@@ -21,6 +22,7 @@ const {
   passwordValidator,
   forgotPasswordValidator,
   resetPasswordValidator,
+  validateTokenValidator,
 } = require('./accountsValidator');
 const validator = require('../common/validator');
 
@@ -55,6 +57,10 @@ router
 router
   .route('/forgot-password')
   .post(validatorMiddleware(forgotPasswordValidator), forgotPassword);
+
+router
+  .route('/verify-password-reset-otp')
+  .post(validatorMiddleware(validateTokenValidator), validatePasswordResetOtp);
 
 router
   .route('/reset-password')

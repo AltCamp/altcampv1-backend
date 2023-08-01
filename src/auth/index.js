@@ -3,13 +3,13 @@ const {
   registerAccount,
   userLogin,
   userLogout,
-  verifyEmailOtp,
   verifyEmail,
+  requestEmailVerification,
 } = require('./authController');
 const limiter = require('../../middleware/rateLimit');
 const {
   createAccountValidator,
-  otpValidator,
+  emailVerificationValidator,
   loginValidator,
 } = require('./authValidator');
 const validatorMiddleware = require('../../middleware/validator');
@@ -21,12 +21,12 @@ router.use(limiter());
 
 router.post('/login', validatorMiddleware(loginValidator), userLogin);
 
-router.post('/verify-email', verifyUser, verifyEmail);
+router.post('/start-email-verification', verifyUser, requestEmailVerification);
 router.post(
-  '/verify-otp',
+  '/verify-email',
   verifyUser,
-  validatorMiddleware(otpValidator),
-  verifyEmailOtp
+  validatorMiddleware(emailVerificationValidator),
+  verifyEmail
 );
 
 router.post(

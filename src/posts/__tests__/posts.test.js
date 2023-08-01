@@ -3,6 +3,7 @@ const app = require('../../../app');
 const supertest = require('supertest');
 const api = supertest(app);
 const helper = require('../../../test/testHelper');
+const { RESPONSE_MESSAGE, ACCOUNT_TYPES } = require('../../../constant');
 
 let token;
 const url = '/posts';
@@ -22,15 +23,15 @@ beforeAll(async () => {
 });
 
 describe('Creating a post', () => {
-  const { content, author } = helper.generatePost();
+  let { content } = helper.generatePost();
 
   test('fails if a user is not logged in', async () => {
     await api.post(url).send({ content }).expect(401);
   });
 
-  test('is successful if a user is logged in', async () => {
+  test('is unsuccessful if a logged in user is unverified', async () => {
     const user = helper.accountsAsJson.find((account) => {
-      return account._id === author.toString();
+      return account.emailIsVerified !== true;
     });
     await login(user);
 
@@ -38,15 +39,36 @@ describe('Creating a post', () => {
       .post(url)
       .set('Authorization', `Bearer ${token}`)
       .send({ content })
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body).toHaveProperty(
+      'message',
+      RESPONSE_MESSAGE.NOT_VERIFIED
+    );
+  });
+
+  test('is successful if a user is logged in', async () => {
+    const user = helper.accountsAsJson.find((account) => {
+      return account.emailIsVerified === true;
+    });
+    await login(user);
+
+    const tags = ['askme', 'patience', 'goodfish'];
+
+    const response = await api
+      .post(url)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ content, tags })
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
     expect(response.body.data).toMatchObject({
       content,
       author: expect.objectContaining({
-        _id: author.toString(),
-        firstName: expect.any(String),
-        lastName: expect.any(String),
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
         profilePicture: expect.any(String),
       }),
       upvotes: 0,
@@ -56,6 +78,9 @@ describe('Creating a post', () => {
       updatedAt: expect.any(String),
       comments: [],
     });
+    expect(
+      JSON.stringify(response.body.data.tags.map(({ name }) => name))
+    ).toBe(JSON.stringify(Object.values(tags)));
   });
 });
 
@@ -68,7 +93,9 @@ describe('Modifying a post', () => {
   });
 
   test('fails if a logged in user is not the author', async () => {
-    const user = helper.accountsAsJson[1];
+    const user = helper.accountsAsJson.find(
+      (account) => account.emailIsVerified === true
+    );
     await login(user);
 
     const content =
@@ -88,11 +115,12 @@ describe('Modifying a post', () => {
     await login(user);
 
     const content = 'Judas and Jonah. Silver lining on/in a whale.';
+    const tags = ['hopes', 'dreams'];
 
     const response = await api
       .patch(`${url}/${postId}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ content })
+      .send({ content, tags })
       .expect(200)
       .expect('Content-Type', /application\/json/);
 
@@ -103,6 +131,9 @@ describe('Modifying a post', () => {
       lastName: user.lastName,
       profilePicture: expect.any(String),
     });
+    expect(
+      JSON.stringify(response.body.data.tags.map(({ name }) => name))
+    ).toBe(JSON.stringify(Object.values(tags)));
   });
 });
 
@@ -112,12 +143,17 @@ describe('Upvoting/liking a post', () => {
     await api.patch(`${url}/${postId}/upvote`).expect(401);
   });
 
-  test('is successful if a user is logged in', async () => {
+  test('is successful if a verified user is logged in', async () => {
     let postsInDb = await helper.postsInDb();
     let post = postsInDb.find((post) => post._id.toString() === postId);
 
     const users = helper.accountsAsJson;
-    let user = users[0];
+    let user = users.find((account) => {
+      return (
+        account.emailIsVerified === true &&
+        account.accountType === ACCOUNT_TYPES.STUDENT
+      );
+    });
     await login(user);
 
     const response = await api
@@ -137,7 +173,12 @@ describe('Upvoting/liking a post', () => {
       })
     );
 
-    user = users[1];
+    user = users.find((account) => {
+      return (
+        account.emailIsVerified === true &&
+        account.accountType === ACCOUNT_TYPES.MENTOR
+      );
+    });
     await login(user);
 
     const res = await api
@@ -158,13 +199,59 @@ describe('Upvoting/liking a post', () => {
     );
   });
 
+  test('is unsuccessful if a non-verified user is logged in', async () => {
+    let postsInDb = await helper.postsInDb();
+    let post = postsInDb.find((post) => post._id.toString() === postId);
+
+    const users = helper.accountsAsJson;
+    let user = users.find((account) => {
+      return (
+        account.emailIsVerified !== true &&
+        account.accountType === ACCOUNT_TYPES.STUDENT
+      );
+    });
+    await login(user);
+
+    const response = await api
+      .patch(`${url}/${postId}/upvote`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body).toHaveProperty(
+      'message',
+      RESPONSE_MESSAGE.NOT_VERIFIED
+    );
+
+    user = users.find((account) => {
+      return (
+        account.emailIsVerified !== true &&
+        account.accountType === ACCOUNT_TYPES.MENTOR
+      );
+    });
+    await login(user);
+
+    const res = await api
+      .patch(`${url}/${post._id}/upvote`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403)
+      .expect('Content-Type', /application\/json/);
+
+    expect(res.body).toHaveProperty('message', RESPONSE_MESSAGE.NOT_VERIFIED);
+  });
+
   test('if a user has previously upvoted/liked removes the upvote/like', async () => {
     const postsInDb = await helper.postsInDb();
     const post = postsInDb.find((post) => {
       return post._id.toString() === postId;
     });
     const users = helper.accountsAsJson;
-    const user = users[0];
+    const user = users.find((account) => {
+      return (
+        account.emailIsVerified === true &&
+        account.accountType === ACCOUNT_TYPES.STUDENT
+      );
+    });
     await login(user);
 
     const response = await api

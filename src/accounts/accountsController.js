@@ -1,7 +1,8 @@
-const { RESPONSE_MESSAGE } = require('../../constant');
+const { RESPONSE_MESSAGE, TOKEN_TYPE } = require('../../constant');
 const responseHandler = require('../../utils/responseHandler');
 const accountsService = require('./accountsService');
 const { NotFoundError } = require('../../utils/customError');
+const TokenService = require('../token/tokenService');
 
 async function uploadProfilePicture(req, res, next) {
   try {
@@ -92,20 +93,30 @@ async function updateAccount(req, res) {
 
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
-  await accountsService.forgotPassword({ email });
+  const requestId = await accountsService.requestPasswordReset({ email });
 
-  new responseHandler(res, undefined, 200, RESPONSE_MESSAGE.SUCCESS);
+  new responseHandler(res, { requestId }, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 
 const resetPassword = async (req, res) => {
-  const { token, password } = req.body;
+  const payload = { ...req.body };
 
-  const reset = await accountsService.resetPassword({
-    token,
-    newPassword: password,
-  });
+  const reset = await accountsService.resetPassword(payload);
 
   new responseHandler(res, reset, 200, RESPONSE_MESSAGE.SUCCESS);
+};
+
+const validatePasswordResetOtp = async (req, res) => {
+  const { requestId, token } = req.body;
+  const data = await TokenService.validateToken({
+    requestId,
+    type: TOKEN_TYPE.PASSWORD_RESET,
+    otp: token,
+  });
+
+  return data
+    ? new responseHandler(res, data, 200, RESPONSE_MESSAGE.SUCCESS)
+    : new responseHandler(res, data, 401, RESPONSE_MESSAGE.UNAUTHORIZED);
 };
 
 module.exports = {
@@ -118,4 +129,5 @@ module.exports = {
   updatePassword,
   forgotPassword,
   resetPassword,
+  validatePasswordResetOtp,
 };

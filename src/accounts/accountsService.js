@@ -11,6 +11,7 @@ const {
   tokenExpires,
   validateCredentials,
   verifyPassword,
+  generateId,
 } = require('../../utils/helper');
 const { apiFeatures } = require('../common');
 const {
@@ -31,14 +32,14 @@ async function accountExists(email) {
   const account = await Account.findOne({ email });
 
   if (account) {
-    return true;
+    return account;
   }
 
   return false;
 }
 
 async function updatePassword(userId, oldPassword, newPassword) {
-  let user = await Account.findOne(userId).select('+password');
+  let user = await Account.findById(userId).select('+password');
 
   const check = await verifyPassword(oldPassword, user.password);
   if (!check) {
@@ -51,12 +52,13 @@ async function updatePassword(userId, oldPassword, newPassword) {
   return user;
 }
 
-const forgotPassword = async ({ email }) => {
-  const validUser = await Account.findOne({ email });
+const requestPasswordReset = async ({ email }) => {
+  const validUser = await accountExists(email);
+  if (!validUser) return;
 
-  if (!validUser) throw new BadRequestError('User does not exist!');
-
+  const requestId = generateId();
   const token = await TokenService.createToken({
+    requestId,
     type: TOKEN_TYPE.PASSWORD_RESET,
     owner: validUser._id,
     timeToLive: OTP_VALIDITY.PASSWORD_RESET,
@@ -67,8 +69,8 @@ const forgotPassword = async ({ email }) => {
   const mailServicePayload = {
     context: {
       name: validUser.firstName,
-      token: token.token,
       tokenValidity: tokenExpires(OTP_VALIDITY.PASSWORD_RESET),
+      token,
     },
     email: validUser.email,
     templateName: EMAIL_TEMPLATES.PASSWORD_RESET,
@@ -76,33 +78,28 @@ const forgotPassword = async ({ email }) => {
   };
 
   await mailService.sendMail(mailServicePayload);
+  return requestId;
 };
 
-const resetPassword = async ({ token, newPassword }) => {
-  const userToken = await TokenService.getToken({
-    type: TOKEN_TYPE.PASSWORD_RESET,
-    token: token,
-  });
+const resetPassword = async ({
+  requestId,
+  token,
+  retypePassword: newPassword,
+}) => {
+  const key = TOKEN_TYPE.PASSWORD_RESET + requestId;
+  const userToken = await TokenService.getToken(key);
 
-  if (!userToken) throw new BadRequestError('Token not found!');
-
-  if (!userToken.token === token) throw new BadRequestError('Invalid token');
-
-  const isExpired = userToken.expiresAt.getTime() <= Date.now();
-  if (isExpired) {
-    TokenService.deleteToken(userToken._id);
-    throw new BadRequestError('Expired token');
-  }
+  if (!userToken || !userToken.token === token)
+    throw new BadRequestError('Invalid token');
 
   let user = await Account.findById(userToken.owner).select('+password');
-
-  if (!user) throw new BadRequestError('User does not exist');
+  if (!user) throw new BadRequestError('Invalid token');
 
   user.password = newPassword;
-
   await user.save();
-  await userToken.delete();
   user = omit(user.toObject(), ['password']);
+
+  TokenService.deleteToken(key);
 
   return user;
 };
@@ -216,6 +213,6 @@ module.exports = {
   deleteProfilePicture,
   deleteAccount,
   updatePassword,
-  forgotPassword,
+  requestPasswordReset,
   resetPassword,
 };
