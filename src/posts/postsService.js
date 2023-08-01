@@ -1,4 +1,5 @@
-const { Post, Bookmark } = require('../../model');
+const { Post } = require('../../model');
+const { addIsBookmarkedField } = require('../bookmarks/bookmarksService');
 const { apiFeatures } = require('../common');
 
 const getPosts = async ({ query } = {}, { userId }) => {
@@ -14,21 +15,8 @@ const getPosts = async ({ query } = {}, { userId }) => {
     });
     return posts;
   }
-  const postIds = posts.data.map((post) => post.id);
-  let bookmarks = await Bookmark.find({
-    id: { $in: [postIds] },
-    owner: userId,
-  });
-  bookmarks = bookmarks.map((each) => each.post.toString());
-  posts.data = posts.data.map((post) => {
-    if (bookmarks.includes(post.id)) {
-      return { ...post.toJSON(), isBookmarked: true };
-    } else {
-      return { ...post.toJSON(), isBookmarked: false };
-    }
-  });
-
-  return posts;
+  const postsWithBookmarks = await addIsBookmarkedField(posts, userId);
+  return postsWithBookmarks;
 };
 
 const getPost = async (postId) => {

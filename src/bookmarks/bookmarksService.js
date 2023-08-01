@@ -132,6 +132,29 @@ const isBookmarkOwner = async ({ userId, bookmarkId }) => {
   return userId.toString() === owner.toString();
 };
 
+const addIsBookmarkedField = async (resources, userId) => {
+  const _resources = { ...resources };
+  try {
+    const resourceIds = _resources.data.map((resource) => resource.id);
+    let bookmarks = await Bookmark.find({
+      id: { $in: [resourceIds] },
+      owner: userId,
+    });
+    bookmarks = bookmarks.map((each) => each.post.toString());
+
+    _resources.data = _resources.data.map((resource) => {
+      if (bookmarks.includes(resource.id)) {
+        return { ...resource.toJSON(), isBookmarked: true };
+      } else {
+        return { ...resource.toJSON(), isBookmarked: false };
+      }
+    });
+    return _resources;
+  } catch (error) {
+    return resources;
+  }
+};
+
 module.exports = {
   getBookmarks,
   getBookmark,
@@ -139,4 +162,5 @@ module.exports = {
   updateBookmark,
   deleteBookmark,
   isBookmarkOwner,
+  addIsBookmarkedField,
 };
