@@ -28,7 +28,7 @@ const getAllPosts = async (req, res) => {
   }
 
   const { data, meta } = await postsService.getPosts(req, {
-    userId: req.query.userId,
+    userId: req.user?._id,
   });
   new responseHandler(res, data, 200, RESPONSE_MESSAGE.SUCCESS, meta);
 };
