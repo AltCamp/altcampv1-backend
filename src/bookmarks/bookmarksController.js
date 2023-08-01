@@ -38,7 +38,7 @@ const createBookmark = async (req, res) => {
   );
 
   const bookmarkExists = bookmarks.some(
-    (bookmark) => bookmark.post._id.toString() === payload.postId
+    (bookmark) => bookmark.post?._id.toString() === payload.postId
   );
 
   if (bookmarkExists) {
@@ -92,10 +92,23 @@ const deleteBookmark = async (req, res) => {
   new responseHandler(res, deleted, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 
+const deleteBookmarks = async (req, res) => {
+  const userId = req.user._id;
+
+  const { bookmarkIds } = req.body;
+  const deletedBookmarks = await bookmarksService.deleteBookmarks({
+    bookmarkIds,
+    userId,
+  });
+
+  new responseHandler(res, deletedBookmarks, 200, RESPONSE_MESSAGE.SUCCESS);
+};
+
 module.exports = {
   getBookmark,
   getAllBookmarks,
   createBookmark,
   updateBookmark,
   deleteBookmark,
+  deleteBookmarks,
 };

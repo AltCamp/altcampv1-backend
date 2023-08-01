@@ -24,7 +24,15 @@ const updateBookmarkValidator = Joi.object({
   isRead: Joi.boolean().optional(),
 });
 
+const deleteBookmarkValidator = Joi.object({
+  bookmarkIds: Joi.array().items(Joi.string()).min(1).messages({
+    'array.min': 'bookmarkIds must be an array with at least one bookmark ID',
+    'array.base': 'bookmarkIds must be an array with at least one bookmark ID',
+  }),
+});
+
 module.exports = {
   createBookmarkValidator,
+  deleteBookmarkValidator,
   updateBookmarkValidator,
 };

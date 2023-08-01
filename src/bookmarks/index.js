@@ -3,6 +3,7 @@ const bookmarks = require('./bookmarksController');
 const { verifyUser } = require('../../middleware/authenticate');
 const {
   createBookmarkValidator,
+  deleteBookmarkValidator,
   updateBookmarkValidator,
 } = require('./bookmarksValidator');
 const validatorMiddleware = require('../../middleware/validator');
@@ -17,6 +18,11 @@ router
     limiter(),
     validatorMiddleware(createBookmarkValidator),
     bookmarks.createBookmark
+  )
+  .delete(
+    limiter(),
+    validatorMiddleware(deleteBookmarkValidator),
+    bookmarks.deleteBookmarks
   );
 
 router
