@@ -15,8 +15,8 @@ const getQuestions = async ({ query } = {}, { userId }) => {
     });
     return questions;
   }
-  const questionsWithBookmarks = await addIsBookmarkedField(questions, userId);
-  return questionsWithBookmarks;
+  questions.data = await addIsBookmarkedField(questions.data, userId);
+  return questions;
 };
 
 const getQuestion = async (questionId) => {

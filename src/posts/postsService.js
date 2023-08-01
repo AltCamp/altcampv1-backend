@@ -15,8 +15,8 @@ const getPosts = async ({ query } = {}, { userId }) => {
     });
     return posts;
   }
-  const postsWithBookmarks = await addIsBookmarkedField(posts, userId);
-  return postsWithBookmarks;
+  posts.data = await addIsBookmarkedField(posts.data, userId);
+  return posts;
 };
 
 const getPost = async (postId) => {

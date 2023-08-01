@@ -1,5 +1,5 @@
 const { Answer, Question } = require('../../model');
-const { addIsBookmarkedField2 } = require('../bookmarks/bookmarksService');
+const { addIsBookmarkedField } = require('../bookmarks/bookmarksService');
 
 const getAnswer = async (id) => {
   const answers = await Answer.find({ id });
@@ -19,10 +19,9 @@ const getAnswers = async (questionId, userId) => {
     return answers;
   }
 
-  const answersWithBookmarks = await addIsBookmarkedField2(answers, userId);
-  return answersWithBookmarks;
+  answers = await addIsBookmarkedField(answers, userId);
+  return answers;
 };
-
 const createAnswer = async (answer) => {
   const newAnswer = await Answer.create(answer);
   newAnswer.question = answer.question;

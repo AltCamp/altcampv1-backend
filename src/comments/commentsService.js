@@ -1,5 +1,5 @@
 const { Comment, Post } = require('../../model/');
-const { addIsBookmarkedField2 } = require('../bookmarks/bookmarksService');
+const { addIsBookmarkedField } = require('../bookmarks/bookmarksService');
 
 const getComment = async (id) => {
   const comment = await Comment.findById(id);
@@ -19,8 +19,8 @@ const getComments = async (postId, userId) => {
     return comments;
   }
 
-  const commentsWithBookmarks = await addIsBookmarkedField2(comments, userId);
-  return commentsWithBookmarks;
+  comments = await addIsBookmarkedField(comments, userId);
+  return comments;
 };
 
 const createComment = async (comment) => {
