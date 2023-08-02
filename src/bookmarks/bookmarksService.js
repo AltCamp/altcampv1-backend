@@ -127,6 +127,15 @@ const deleteBookmark = async (bookmarkId) => {
   return bookmark;
 };
 
+const deleteBookmarks = async ({ bookmarkIds, userId }) => {
+  const deletedBookmarks = await Bookmark.deleteMany({
+    _id: { $in: bookmarkIds },
+    author: userId,
+  });
+
+  return deletedBookmarks;
+};
+
 const isBookmarkOwner = async ({ userId, bookmarkId }) => {
   const { owner } = await Bookmark.findById(bookmarkId);
   return userId.toString() === owner.toString();
@@ -162,6 +171,7 @@ module.exports = {
   createBookmark,
   updateBookmark,
   deleteBookmark,
+  deleteBookmarks,
   isBookmarkOwner,
   addIsBookmarkedField,
 };
