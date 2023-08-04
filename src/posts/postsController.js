@@ -12,7 +12,7 @@ const tagsService = new TagsService();
 const getPost = async (req, res) => {
   const postId = req.params.id;
 
-  const post = await postsService.getPost(postId);
+  const post = await postsService.getPost(postId, { userId: req.user?._id });
 
   if (!post) throw new NotFoundError('Not Found');
 

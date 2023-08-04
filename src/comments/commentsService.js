@@ -1,8 +1,15 @@
 const { Comment, Post } = require('../../model/');
 const { addIsBookmarkedField } = require('../bookmarks/bookmarksService');
 
-const getComment = async (id) => {
-  const comment = await Comment.findById(id);
+const getComment = async (id, { userId }) => {
+  let comment = await Comment.findById(id);
+
+  if (!userId) {
+    comment = { ...comment.toJSON(), isBookmarked: false };
+    return comment;
+  }
+
+  comment = await addIsBookmarkedField(comment, userId);
 
   return comment;
 };
@@ -37,7 +44,7 @@ const createComment = async (comment) => {
 };
 
 const updateComment = async (id, { content }) => {
-  const updatedComment = await Comment.findByIdAndUpdate(
+  let updatedComment = await Comment.findByIdAndUpdate(
     id,
     { content },
     {
@@ -47,63 +54,62 @@ const updateComment = async (id, { content }) => {
     }
   );
 
+  updatedComment = await addIsBookmarkedField(
+    updatedComment,
+    updatedComment?.author?._id
+  );
+
   return updatedComment;
 };
 
 const upvoteComment = async ({ id, userId }) => {
-  const comment = await Comment.findById(id);
+  let comment = await Comment.findById(id);
   if (!comment) {
     return false;
   }
 
   if (comment.upvotedBy.includes(userId)) {
-    comment.upvotes--;
     const searchIndex = comment.upvotedBy.indexOf(userId);
     comment.upvotedBy.splice(searchIndex, 1);
-
-    await comment.save();
-
-    return comment;
+  } else {
+    comment.upvotedBy.push(userId);
   }
+  comment.upvotes = comment.upvotedBy.length;
 
   if (comment.downvotedBy.includes(userId)) {
-    comment.downvotes--;
     const searchIndex = comment.downvotedBy.indexOf(userId);
     comment.downvotedBy.splice(searchIndex, 1);
+    comment.downvotes = comment.downvotedBy.length;
   }
 
-  comment.upvotes++;
-  comment.upvotedBy.push(userId);
   await comment.save();
+  comment = await addIsBookmarkedField(comment, userId);
 
   return comment;
 };
 
 const downvoteComment = async ({ id, userId }) => {
-  const comment = await Comment.findById(id);
+  let comment = await Comment.findById(id);
   if (!comment) {
     return false;
   }
 
   if (comment.downvotedBy.includes(userId)) {
-    comment.downvotes--;
     const searchIndex = comment.downvotedBy.indexOf(userId);
     comment.downvotedBy.splice(searchIndex, 1);
-
-    await comment.save();
-
-    return comment;
+  } else {
+    comment.downvotedBy.push(userId);
   }
+  comment.downvotes = comment.downvotedBy.length;
 
   if (comment.upvotedBy.includes(userId)) {
-    comment.upvotes--;
     const searchIndex = comment.upvotedBy.indexOf(userId);
     comment.upvotedBy.splice(searchIndex, 1);
+    comment.upvotes = comment.upvotedBy.length;
   }
 
-  comment.downvotes++;
-  comment.downvotedBy.push(userId);
   await comment.save();
+  comment = await addIsBookmarkedField(comment, userId);
 
   return comment;
 };

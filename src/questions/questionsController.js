@@ -12,7 +12,9 @@ const tagsService = new TagsService();
 const getQuestion = async (req, res) => {
   const questionId = req.params.id;
 
-  const question = await questionsService.getQuestion(questionId);
+  const question = await questionsService.getQuestion(questionId, {
+    userId: req.user?._id,
+  });
 
   if (!question) throw new NotFoundError('Not Found');
 
