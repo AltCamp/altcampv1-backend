@@ -142,7 +142,9 @@ const isBookmarkOwner = async ({ userId, bookmarkId }) => {
 };
 
 const addIsBookmarkedField = async (resources, userId) => {
-  let _resources = [...resources];
+  const isArray = Array.isArray(resources);
+  let _resources = isArray ? [...resources] : [resources];
+
   try {
     const resourceIds = _resources.map((resource) => resource._id.toString());
 
@@ -159,7 +161,7 @@ const addIsBookmarkedField = async (resources, userId) => {
         return { ...resource.toJSON(), isBookmarked: false };
       }
     });
-    return _resources;
+    return isArray ? _resources : _resources[0];
   } catch (error) {
     return resources;
   }
