@@ -10,9 +10,9 @@ const { RESPONSE_MESSAGE } = require('../../constant');
 const getAnswer = async (req, res) => {
   const { id } = req.params;
 
-  const answers = await answerService.getAnswer(id);
+  const answer = await answerService.getAnswer(id, { userId: req.user?._id });
 
-  new responseHandler(res, answers, 200, RESPONSE_MESSAGE.SUCCESS);
+  new responseHandler(res, answer, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 
 const getAnswers = async (req, res) => {
