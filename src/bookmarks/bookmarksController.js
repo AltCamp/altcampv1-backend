@@ -29,6 +29,20 @@ const getAllBookmarks = async (req, res) => {
   new responseHandler(res, data, 200, RESPONSE_MESSAGE.SUCCESS, meta);
 };
 
+<<<<<<< HEAD
+=======
+const deleteBookmark = async (req, res) => {
+  const { postId } = req.query;
+
+  const deletedBookmark = await bookmarksService.deleteBookmark({
+    author: req.user._id,
+    postId,
+  });
+
+  new responseHandler(res, deletedBookmark, 200, RESPONSE_MESSAGE.SUCCESS);
+};
+
+>>>>>>> c2f0a65 (test: update bookmark-related tests)
 const createBookmark = async (req, res) => {
   const payload = { ...req.body };
   req.query.isPaginated = false;

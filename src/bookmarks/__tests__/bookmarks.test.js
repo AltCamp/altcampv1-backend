@@ -279,20 +279,22 @@ describe('Deleting a bookmark', () => {
     await api
       .delete(`${url}/${_id}`)
       .set('Authorization', `Bearer ${token}`)
-      .expect(401);
+      .expect(404);
   });
 
   test('is successful if user is owner', async () => {
     const bookmarksInDb = await helper.bookmarksInDb();
-    const { _id, owner } = bookmarksInDb[0];
+    const { owner, post } = bookmarksInDb[0];
 
     const user = helper.accountsAsJson.find(
       ({ _id }) => _id === owner.toString()
     );
+    console.log('🚀 ~ file: bookmarks.test.js:292 ~ user:', user);
     await login(user);
 
     await api
-      .delete(`${url}/${_id}`)
+      .delete(`${url}`)
+      .query({ postId: `${post.toString()}` })
       .set('Authorization', `Bearer ${token}`)
       .expect(200);
   });
