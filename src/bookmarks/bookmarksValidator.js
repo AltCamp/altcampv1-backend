@@ -31,8 +31,19 @@ const deleteBookmarkValidator = Joi.object({
   }),
 });
 
+class BookmarksValidator {
+  static validateDeleteBookmark() {
+    return Joi.object({
+      postId: Joi.string().required().messages({
+        'string.empty': 'ID of bookmarked post is required',
+        'any.required': 'ID of bookmarked post is required',
+      }),
+    });
+  }
+}
 module.exports = {
   createBookmarkValidator,
   deleteBookmarkValidator,
   updateBookmarkValidator,
+  BookmarksValidator,
 };

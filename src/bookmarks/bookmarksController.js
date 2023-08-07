@@ -29,8 +29,6 @@ const getAllBookmarks = async (req, res) => {
   new responseHandler(res, data, 200, RESPONSE_MESSAGE.SUCCESS, meta);
 };
 
-<<<<<<< HEAD
-=======
 const deleteBookmark = async (req, res) => {
   const { postId } = req.query;
 
@@ -42,7 +40,6 @@ const deleteBookmark = async (req, res) => {
   new responseHandler(res, deletedBookmark, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 
->>>>>>> c2f0a65 (test: update bookmark-related tests)
 const createBookmark = async (req, res) => {
   const payload = { ...req.body };
   req.query.isPaginated = false;
@@ -87,23 +84,6 @@ const updateBookmark = async (req, res) => {
   if (!updatedBookmark) throw new NotFoundError('Not Found');
 
   new responseHandler(res, updatedBookmark, 200, RESPONSE_MESSAGE.SUCCESS);
-};
-
-const deleteBookmark = async (req, res) => {
-  const bookmarkId = req.params.id;
-
-  const isOwner = await bookmarksService.isBookmarkOwner({
-    userId: req.user._id,
-    bookmarkId,
-  });
-
-  if (!isOwner) throw new UnAuthorizedError('Unauthorized');
-
-  const deleted = await bookmarksService.deleteBookmark(bookmarkId);
-
-  if (!deleted) throw new NotFoundError('Not Found');
-
-  new responseHandler(res, deleted, 200, RESPONSE_MESSAGE.SUCCESS);
 };
 
 const deleteBookmarks = async (req, res) => {
