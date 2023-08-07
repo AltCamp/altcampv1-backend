@@ -1,6 +1,11 @@
 const { apiFeatures } = require('../common');
-const { AUTHOR_DETAILS, POST_DETAILS } = require('../../constant');
+const {
+  AUTHOR_DETAILS,
+  POST_DETAILS,
+  RESPONSE_MESSAGE,
+} = require('../../constant');
 const { Bookmark } = require('../../model');
+const { NotFoundError } = require('../../utils/customError');
 
 const getBookmarks = async (owner, { query }) => {
   const bookmarksQuery = Bookmark.find({ owner })
@@ -87,6 +92,21 @@ const createBookmark = async ({ author, postId, postType, title }) => {
   return newBookmark;
 };
 
+const deleteBookmark = async ({ author, postId }) => {
+  const bookmarkToDelete = await Bookmark.findOne({
+    owner: author,
+    post: postId,
+  });
+  if (!bookmarkToDelete)
+    throw new NotFoundError(RESPONSE_MESSAGE.NOT_FOUND('Bookmark'));
+
+  const payload = {
+    bookmarkIds: [bookmarkToDelete._id],
+    userId: author,
+  };
+  return await deleteBookmarks(payload);
+};
+
 const updateBookmark = async ({ bookmarkId, bookmark }) => {
   const updatedBookmark = await Bookmark.findByIdAndUpdate(
     bookmarkId,
@@ -111,20 +131,6 @@ const updateBookmark = async ({ bookmarkId, bookmark }) => {
     });
 
   return updatedBookmark;
-};
-
-const deleteBookmark = async (bookmarkId) => {
-  const bookmark = await Bookmark.findByIdAndDelete(bookmarkId)
-    .populate({
-      path: 'owner',
-      select: Object.values(AUTHOR_DETAILS),
-    })
-    .populate('post', {
-      content: 1,
-      body: 1,
-    });
-
-  return bookmark;
 };
 
 const deleteBookmarks = async ({ bookmarkIds, userId }) => {
