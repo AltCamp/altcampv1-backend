@@ -7,12 +7,7 @@ const validatorMiddleware = require('../../middleware/validator');
 const validator = require('express-joi-validation').createValidator({
   passError: true,
 });
-const {
-  createCommentValidator,
-  getCommentValidator,
-  getCommentsValidator,
-  updateCommentValidator,
-} = require('./commentsValidator');
+const { CommentsValidator } = require('./commentsValidator');
 const comments = require('./commentsController');
 const limiter = require('../../middleware/rateLimit');
 
@@ -20,13 +15,13 @@ router
   .route('/')
   .get(
     authOptional,
-    validator.query(getCommentsValidator),
+    validator.query(CommentsValidator.validateGetComments()),
     comments.getComments
   )
   .post(
     limiter(),
     authEmailIsVerified,
-    validatorMiddleware(createCommentValidator),
+    validatorMiddleware(CommentsValidator.validateCreateComment()),
     comments.createComment
   );
 
@@ -38,11 +33,15 @@ router
 
 router
   .route('/:id')
-  .get(authOptional, validator.params(getCommentValidator), comments.getComment)
+  .get(
+    authOptional,
+    validator.params(CommentsValidator.validateGetComment()),
+    comments.getComment
+  )
   .patch(
     limiter(),
     authEmailIsVerified,
-    validatorMiddleware(updateCommentValidator),
+    validatorMiddleware(CommentsValidator.validateUpdateComment()),
     comments.updateComment
   );
 
