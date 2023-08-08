@@ -22,6 +22,13 @@ router
   );
 
 router
+  .route('/bulk-delete')
+  .delete(
+    validatorMiddleware(BookmarksValidator.validateBulkDeleteBookmarks()),
+    bookmarks.deleteBookmarks
+  );
+
+router
   .route('/:id')
   .get(bookmarks.getBookmark)
   .patch(
