@@ -16,7 +16,7 @@ router
   .get(validator.query(paginationSchema), bookmarks.getAllBookmarks)
   .post(
     limiter(),
-    validatorMiddleware(createBookmarkValidator),
+    validator.query(BookmarksValidator.validateCreateBookmark()),
     bookmarks.createBookmark
   )
   .delete(

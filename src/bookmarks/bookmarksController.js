@@ -41,7 +41,7 @@ const deleteBookmark = async (req, res) => {
 };
 
 const createBookmark = async (req, res) => {
-  const payload = { ...req.body };
+  const { postId, postType } = req.query;
   req.query.isPaginated = false;
   const { data: bookmarks } = await bookmarksService.getBookmarks(
     req.user._id,
@@ -49,7 +49,7 @@ const createBookmark = async (req, res) => {
   );
 
   const bookmarkExists = bookmarks.some(
-    (bookmark) => bookmark.post?._id.toString() === payload.postId
+    (bookmark) => bookmark.post?._id.toString() === postId
   );
 
   if (bookmarkExists) {
@@ -57,8 +57,9 @@ const createBookmark = async (req, res) => {
   }
 
   const newBookmark = await bookmarksService.createBookmark({
-    ...payload,
-    author: req.user._id,
+    post: postId,
+    postType,
+    owner: req.user._id,
   });
 
   new responseHandler(res, newBookmark, 201, RESPONSE_MESSAGE.SUCCESS);

@@ -60,13 +60,8 @@ const getBookmark = async (bookmarkId) => {
   return bookmark;
 };
 
-const createBookmark = async ({ author, postId, postType, title }) => {
-  const newBookmark = await Bookmark.create({
-    title,
-    postType,
-    post: postId,
-    owner: author,
-  });
+const createBookmark = async (payload) => {
+  const newBookmark = await Bookmark.create(payload);
 
   await newBookmark.populate({
     path: 'owner',
