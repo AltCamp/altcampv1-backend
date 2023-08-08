@@ -3,10 +3,6 @@ const { POST_TYPES } = require('../constant');
 
 const bookmarkSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true,
-    },
     postType: {
       type: String,
       required: true,

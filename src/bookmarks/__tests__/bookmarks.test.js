@@ -6,7 +6,6 @@ const helper = require('../../../test/testHelper');
 
 const url = '/bookmarks';
 let postType = 'Post';
-const title = 'This is an intriguing thing';
 let token;
 
 beforeAll(async () => {
@@ -38,10 +37,9 @@ describe('Creating a bookmark', () => {
     // send a post request with id of Post
     await api
       .post(url)
-      .send({
-        title,
+      .query({
         postType,
-        postId: _id,
+        postId: _id.toString(),
       })
       .expect(401);
   });
@@ -60,17 +58,15 @@ describe('Creating a bookmark', () => {
     const response = await api
       .post(url)
       .set('Authorization', `Bearer ${token}`)
-      .send({
-        title,
+      .query({
         postType,
-        postId: _id,
+        postId: _id.toString(),
       })
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
     // check response for specific properties
     expect(response.body.data).toHaveProperty('_id');
-    expect(response.body.data).toHaveProperty('title', title);
     expect(response.body.data).toHaveProperty('isRead', false);
     expect(response.body.data.owner).toEqual(
       expect.objectContaining({
@@ -95,7 +91,7 @@ describe('Creating a bookmark', () => {
     );
 
     const answersInDb = await helper.answersInDb();
-    const { _id: postId, content: answerTitle, question } = answersInDb[0];
+    const { _id: postId, question } = answersInDb[0];
 
     const questionsInDb = await helper.questionsInDb();
     const answeredQuestion = questionsInDb.find(
@@ -106,10 +102,9 @@ describe('Creating a bookmark', () => {
     const res = await api
       .post(url)
       .set('Authorization', `Bearer ${token}`)
-      .send({
-        title: answerTitle,
+      .query({
         postType: 'Answer',
-        postId,
+        postId: postId.toString(),
       })
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -117,7 +112,6 @@ describe('Creating a bookmark', () => {
     expect(res.body.data.post.question).toEqual(
       expect.objectContaining({
         _id: answeredQuestion._id.toString(),
-        title: answeredQuestion.title,
         slug: answeredQuestion.slug,
       })
     );
@@ -183,7 +177,6 @@ describe('Updating a bookmark', () => {
       .patch(`${url}/${_id}`)
       .set('Authorization', `Bearer ${token}`)
       .send({
-        title: 'Heyyo!',
         isRead: true,
       })
       .expect(401);
@@ -205,19 +198,16 @@ describe('Updating a bookmark', () => {
       ({ _id }) => _id === owner.toString()
     );
     await login(user);
-    const title2 = 'Heyyo!';
 
     const response = await api
       .patch(`${url}/${_id}`)
       .set('Authorization', `Bearer ${token}`)
       .send({
-        title: title2,
         isRead: true,
       })
       .expect(200);
 
     expect(response.body.data).toHaveProperty('_id', _id.toString());
-    expect(response.body.data).toHaveProperty('title', title2);
     expect(response.body.data).toHaveProperty('isRead', true);
     expect(response.body.data.owner).toEqual(
       expect.objectContaining({
@@ -289,7 +279,6 @@ describe('Deleting a bookmark', () => {
     const user = helper.accountsAsJson.find(
       ({ _id }) => _id === owner.toString()
     );
-    console.log('🚀 ~ file: bookmarks.test.js:292 ~ user:', user);
     await login(user);
 
     await api

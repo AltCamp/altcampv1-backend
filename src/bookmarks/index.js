@@ -1,11 +1,7 @@
 const router = require('express').Router();
 const bookmarks = require('./bookmarksController');
 const { verifyUser } = require('../../middleware/authenticate');
-const {
-  createBookmarkValidator,
-  updateBookmarkValidator,
-  BookmarksValidator,
-} = require('./bookmarksValidator');
+const { BookmarksValidator } = require('./bookmarksValidator');
 const validatorMiddleware = require('../../middleware/validator');
 const { paginationSchema, validator } = require('../common');
 const limiter = require('../../middleware/rateLimit');
@@ -16,7 +12,7 @@ router
   .get(validator.query(paginationSchema), bookmarks.getAllBookmarks)
   .post(
     limiter(),
-    validatorMiddleware(createBookmarkValidator),
+    validator.query(BookmarksValidator.validateCreateBookmark()),
     bookmarks.createBookmark
   )
   .delete(
@@ -26,11 +22,18 @@ router
   );
 
 router
+  .route('/bulk-delete')
+  .delete(
+    validatorMiddleware(BookmarksValidator.validateBulkDeleteBookmarks()),
+    bookmarks.deleteBookmarks
+  );
+
+router
   .route('/:id')
   .get(bookmarks.getBookmark)
   .patch(
     limiter(),
-    validatorMiddleware(updateBookmarkValidator),
+    validatorMiddleware(BookmarksValidator.validateUpdateBookmarks()),
     bookmarks.updateBookmark
   );
 
