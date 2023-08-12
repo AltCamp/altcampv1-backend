@@ -9,18 +9,22 @@ const createQuestionValidator = Joi.object({
     'string.empty': 'Body is required',
     'any.required': 'Body is required',
   }),
-  tags: Joi.array().items(Joi.string()).min(1).optional().messages({
-    'array.min': 'Tags must be an array with at least one item',
-    'array.base': 'Tags must be an array with at least one item',
+  tags: Joi.array().items(Joi.string()).min(1).max(3).optional().messages({
+    'array.min': 'The tags array must have a minimum of 1 item',
+    'array.max': 'The tags array must have a maximum of 3 items',
+    'array.base':
+      'The tags array must have a minimum of 1 item and a maximum of 3 items',
   }),
 });
 
 const updateQuestionValidator = Joi.object({
   title: Joi.string().optional().max(100),
   body: Joi.string().optional(),
-  tags: Joi.array().items(Joi.string()).min(1).optional().messages({
-    'array.min': 'Tags must be an array with at least one item',
-    'array.base': 'Tags must be an array with at least one item',
+  tags: Joi.array().items(Joi.string()).min(1).max(3).optional().messages({
+    'array.min': 'The tags array must have a minimum of 1 item',
+    'array.max': 'The tags array must have a maximum of 3 items',
+    'array.base':
+      'The tags array must have a minimum of 1 item and a maximum of 3 items',
   }),
 });
 
