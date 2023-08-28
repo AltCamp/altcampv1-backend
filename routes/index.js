@@ -21,5 +21,8 @@ router.use('/bookmarks', bookmarksRouter);
 router.use('/tags', tagsRouter);
 router.use('/tracks', tracksRouter);
 router.use('/api-docs', apiDocs);
+router.use('/health', (req, res) => {
+  return res.json({ status: 'ok' });
+});
 
 module.exports = router;
