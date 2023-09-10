@@ -8,6 +8,7 @@
     "lint": "eslint .",
     "format:check": "npx prettier --check .",
     "format:write": "npx prettier --write .",
+    "pretest": "node test",
     "test": "APP_ENV=test jest --runInBand",
     "seed:track": "node ./seeders/trackSeeder.js"
   },
