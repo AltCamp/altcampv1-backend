@@ -21,8 +21,8 @@ module.exports = {
   CLIENT_URLS: process.env.CORS_ALLOWED_ORIGINS?.split(',') || [],
 
   EMAIL_TEMPLATES: {
-    EMAIL_VERIFICATION: 'emailVerification',
-    PASSWORD_RESET: 'passwordReset',
+    EMAIL_VERIFICATION: 'emailVerification.hbs',
+    PASSWORD_RESET: 'passwordReset.hbs',
     WELCOME_ADDRESS: 'welcomeAddress',
   },
 

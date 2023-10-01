@@ -25,7 +25,7 @@ handlebars.registerPartial('partialName', 'partialValue');
 
 const buildEmailTemplate = (templateName) => {
   return handlebars.compile(
-    readFileSync(join(__dirname, `/templates/${templateName}.hbs`), 'utf-8')
+    readFileSync(join(__dirname, `/templates/${templateName}`), 'utf-8')
   );
 };
 
