@@ -41,6 +41,15 @@ module.exports = {
     EMAIL_VERIFICATION: 'email_verification',
   },
 
+  MediaProviders: {
+    CLOUDINARY: 'cloudinary',
+  },
+
+  MEDIA_TYPE: {
+    IMAGE: 'image',
+    VIDEO: 'video',
+  },
+
   MEDIA_SIZE_LIMITS: {
     PROFILEPICTURE: 1024 * 512,
   },
