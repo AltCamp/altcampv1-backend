@@ -31,8 +31,8 @@ const getPost = async (postId, { userId }) => {
   return post;
 };
 
-const createPost = async (post) => {
-  const newPost = await Post.create(post);
+const createPost = async (post, session = null) => {
+  const [newPost] = await Post.create([post], { session });
 
   return newPost;
 };
