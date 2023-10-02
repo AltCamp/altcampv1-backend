@@ -8,6 +8,7 @@ const { JSDOM } = require('jsdom');
 const domPurify = createDomPurify(new JSDOM().window);
 const slugify = require('slugify');
 const { v4 } = require('uuid');
+const { rm } = require('fs');
 
 const createHashedToken = (token) => {
   const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
@@ -45,6 +46,16 @@ async function verifyPassword(plain, hashed) {
   return await bcrypt.compare(plain, hashed);
 }
 
+async function removeFromDisk(path) {
+  return new Promise((resolve) => {
+    resolve(
+      rm(path, (err) => {
+        if (err) console.error(err);
+      })
+    );
+  });
+}
+
 function tokenExpires(ttl) {
   const mttl = Math.floor(parseInt(ttl, 10) / 60);
   return `${mttl} minute${mttl > 1 ? 's' : ''}`;
@@ -68,4 +79,5 @@ module.exports = {
   validateCredentials,
   verifyPassword,
   tokenExpires,
+  removeFromDisk,
 };

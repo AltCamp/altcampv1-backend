@@ -9,6 +9,7 @@ const responseHandler = require('../../utils/responseHandler');
 const { RESPONSE_MESSAGE, MediaProviders } = require('../../constant');
 const TagsService = require('../tags/tagsService');
 const MediaServiceFactory = require('../common/media');
+const { removeFromDisk } = require('../../utils/helper');
 const tagsService = new TagsService();
 
 const getPost = async (req, res) => {
@@ -65,6 +66,11 @@ const createPost = async (req, res) => {
       );
 
       media = mediaInDb.map((item) => item._id);
+      Promise.all(
+        req.files.map((file) => {
+          return removeFromDisk(file.path);
+        })
+      );
     }
 
     const newPost = await postsService.createPost(
