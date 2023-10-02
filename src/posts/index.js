@@ -11,6 +11,7 @@ const {
 const validatorMiddleware = require('../../middleware/validator');
 const { paginationSchema, validator } = require('../common');
 const limiter = require('../../middleware/rateLimit');
+const { upload } = require('../../middleware/multer');
 
 router
   .route('/')
@@ -18,6 +19,7 @@ router
   .post(
     limiter(),
     authEmailIsVerified,
+    upload.array('files'),
     validatorMiddleware(createPostValidator),
     posts.createPost
   );

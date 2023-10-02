@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const postsService = require('./postsService');
 const {
   BadRequestError,
@@ -5,8 +6,9 @@ const {
   UnAuthorizedError,
 } = require('../../utils/customError');
 const responseHandler = require('../../utils/responseHandler');
-const { RESPONSE_MESSAGE } = require('../../constant');
+const { RESPONSE_MESSAGE, MediaProviders } = require('../../constant');
 const TagsService = require('../tags/tagsService');
+const MediaServiceFactory = require('../common/media');
 const tagsService = new TagsService();
 
 const getPost = async (req, res) => {
@@ -34,20 +36,55 @@ const getAllPosts = async (req, res) => {
 };
 
 const createPost = async (req, res) => {
+  let media;
   let { tags, ...content } = req.body;
+  const user = req.user._id;
 
-  if (tags) {
-    const tagsInDb = await tagsService.createTags(tags);
-    tags = tagsInDb.map(({ _id }) => _id);
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    if (tags) {
+      const tagsInDb = await tagsService.createTags(tags, user, session);
+      tags = tagsInDb.map(({ _id }) => _id);
+    }
+
+    if (req.files) {
+      const mediaService = MediaServiceFactory.getService(
+        MediaProviders.CLOUDINARY
+      );
+      const mediaInDb = await Promise.all(
+        req.files.map((file) => {
+          return mediaService.saveMedia(
+            {
+              media: file,
+              owner: req.user._id,
+            },
+            session
+          );
+        })
+      );
+
+      media = mediaInDb.map((item) => item._id);
+    }
+
+    const newPost = await postsService.createPost(
+      {
+        ...content,
+        tags,
+        media,
+        author: req.user._id,
+      },
+      session
+    );
+    await session.commitTransaction();
+
+    new responseHandler(res, newPost, 201, RESPONSE_MESSAGE.SUCCESS);
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
   }
-
-  const newPost = await postsService.createPost({
-    ...content,
-    tags,
-    author: req.user._id,
-  });
-
-  new responseHandler(res, newPost, 201, RESPONSE_MESSAGE.SUCCESS);
 };
 
 const updatePost = async (req, res) => {

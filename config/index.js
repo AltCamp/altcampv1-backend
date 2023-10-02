@@ -3,6 +3,7 @@ const root = require('app-root-path');
 
 module.exports = {
   root_path: root.path,
+  uploadPath: `${root.path}/.temp/upload`,
   app: {
     port: process.env.PORT || 8000,
     name: process.env.NAME,
