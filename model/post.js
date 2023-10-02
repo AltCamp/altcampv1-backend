@@ -1,12 +1,22 @@
 const { model, Schema, Types } = require('mongoose');
 const { sanitiseHTML } = require('../utils/helper');
 const { authorSchema, baseSchema, likeSchema } = require('./schemas');
+const autopopulate = require('mongoose-autopopulate');
 
 const postSchema = new Schema(
   {
     comments: {
       type: [Types.ObjectId],
       ref: 'Comment',
+    },
+    media: {
+      type: [Types.ObjectId],
+      ref: 'Media',
+      autopopulate: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {
@@ -34,6 +44,8 @@ postSchema.pre('validate', function (next) {
 
   next();
 });
+
+postSchema.plugin(autopopulate);
 
 const Post = model(
   'Post',
