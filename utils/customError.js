@@ -46,6 +46,14 @@ class ForbiddenResourceError extends Error {
   }
 }
 
+class NotAcceptableException extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 406;
+    this.error = 'Not Acceptable';
+  }
+}
+
 module.exports = {
   ConflictError,
   UnAuthorizedError,
@@ -53,4 +61,5 @@ module.exports = {
   UnprocessableEntity,
   ForbiddenResourceError,
   NotFoundError,
+  NotAcceptableException,
 };
