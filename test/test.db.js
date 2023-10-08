@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const { MongoMemoryReplSet } = require('mongodb-memory-server');
 
 let mongoServer = null;
 
 exports.dbConnect = async function () {
-  mongoServer = await MongoMemoryServer.create();
+  mongoServer = await MongoMemoryReplSet.create({ replSet: { count: 4 } });
   const uri = mongoServer.getUri();
 
   const mongooseOpt = {

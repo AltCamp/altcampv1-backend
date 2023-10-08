@@ -48,6 +48,70 @@ describe('Creating a post', () => {
     );
   });
 
+  test('with valid media formats is successful', async () => {
+    const user = helper.accountsAsJson.find((account) => {
+      return account.emailIsVerified === true;
+    });
+    await login(user);
+
+    const tags = ['firsttry', 'hacktoberfest'];
+
+    const response = await api
+      .post(url)
+      .set('Authorization', `Bearer ${token}`)
+      .set('Content-Type', 'multipart/form-data')
+      .field('content', content)
+      .attach('files', 'test/fixtures/testImage1.jpg')
+      .attach('files', 'test/fixtures/testImage2.jpg')
+      .field('tags', tags[0])
+      .field('tags', tags[1])
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body.data).toMatchObject({
+      content,
+      author: expect.objectContaining({
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profilePicture: expect.any(String),
+      }),
+      upvotes: 0,
+      upvotedBy: [],
+      __v: 0,
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
+      comments: [],
+    });
+    expect(
+      JSON.stringify(response.body.data.tags.map(({ name }) => name))
+    ).toBe(JSON.stringify(Object.values(tags)));
+    expect(response.body.data.media).toHaveLength(2);
+    response.body.data.media.forEach((item) => {
+      expect(item.url.endsWith('jpg')).toBe(true);
+    });
+  });
+
+  test('with invalid media formats is unsuccessful', async () => {
+    const user = helper.accountsAsJson.find((account) => {
+      return account.emailIsVerified === true;
+    });
+    await login(user);
+
+    const tags = ['amazing', 'funyuns'];
+
+    await api
+      .post(url)
+      .set('Authorization', `Bearer ${token}`)
+      .set('Content-Type', 'multipart/form-data')
+      .field('content', content)
+      .attach('files', 'test/fixtures/testFile.txt')
+      .field('tags', tags[0])
+      .field('tags', tags[1])
+      .expect(422)
+      .expect('Content-Type', /application\/json/);
+  });
+
   test('is successful if a user is logged in', async () => {
     const user = helper.accountsAsJson.find((account) => {
       return account.emailIsVerified === true;

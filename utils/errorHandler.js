@@ -48,6 +48,13 @@ function errorHandler(err, req, res, next) {
     customError.msg = 'Please contact the server administrator!';
   }
 
+  if (err.name === 'MulterError' && err.code === 'LIMIT_FILE_COUNT') {
+    customError.msg = err.message || 'Too many files';
+    customError.statusCode = 422;
+
+    customError.error = 'Validation Error';
+  }
+
   res.status(customError.statusCode).json({
     statusCode: customError.statusCode,
     message: customError.msg,
