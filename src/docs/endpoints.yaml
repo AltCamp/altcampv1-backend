@@ -12,10 +12,11 @@ servers:
           - http
           - https
       host:
-        default: the-altcamp.onrender.com
+        default: altcamp.onrender.com
         enum:
           - localhost:8000 # Local development server
-          - the-altcamp.onrender.com # Development server
+          - altcamp.onrender.com # Development server
+          - api.thealtcamp.com # Production server
 
 paths:
   # --------------- AUTHENTICATION ---------------
