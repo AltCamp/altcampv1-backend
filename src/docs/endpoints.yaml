@@ -583,44 +583,167 @@ paths:
       summary: Create a post
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               allOf:
                 - $ref: '#/components/schemas/createPostSchema'
+            encoding:
+              tags:
+                explode: true
               example:
                 content: >-
-                  To heal is to forgive and be loved. Thank you, JavaScript.
+                  Today, git saved my life! 🍕
       responses:
         '201':
           description: Created
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            RateLimit-Limit:
+              schema:
+                type: integer
+                example: '50'
+            RateLimit-Remaining:
+              schema:
+                type: integer
+                example: '48'
+            RateLimit-Reset:
+              schema:
+                type: integer
+                example: '549'
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: '1213'
+            ETag:
+              schema:
+                type: string
+                example: W/"4bd-FEyAMceqW7px5gDsRi7fhw9LY6M"
+            Date:
+              schema:
+                type: string
+                example: Sun, 08 Oct 2023 20:28:47 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/postSchema'
+                type: object
               example:
                 statusCode: 201
                 message: Request Successful!
                 data:
-                  content: >-
-                    Performing asynchronous operations has been giving me a
-                    headache. There are so many ways that the permutation does
-                    not support the standards with which we call the anomalies
-                    in the underlying systems. There are so many factors to
-                    consider that make it hard for the average individual to
-                    commute in their daily fashion. All the king's horses and
-                    all the king's men couldn't put Humpty Dumpty together again
+                  content: Today, git saved my life! 🍕
+                  tags:
+                    - _id: 652310f50ea611be4e2dd5ff
+                      name: git
+                    - _id: 652310f50ea611be4e2dd5fd
+                      name: os
+                  _id: 652310fd0ea611be4e2dd605
+                  comments: []
+                  media:
+                    - _id: 652310fc0ea611be4e2dd601
+                      url: >-
+                        http://res.cloudinary.com/duqn3dhyc/image/upload/v1696796924/test/648cc7070bcabbf9100c84b7/media/files-1696796917069-259310260.jpg
+                      assetId: 3d9b22f8e90c934cb20255d94d1d2033
+                      type: image
+                      isDeleted: false
+                      createdAt: '2023-10-08T20:28:44.531Z'
+                      updatedAt: '2023-10-08T20:28:44.531Z'
+                      __v: 0
+                    - _id: 652310fd0ea611be4e2dd603
+                      url: >-
+                        http://res.cloudinary.com/duqn3dhyc/image/upload/v1696796924/test/648cc7070bcabbf9100c84b7/media/files-1696796917071-329520307.jpg
+                      assetId: 7a5caa4e976924fd7d346a873aa7c107
+                      type: image
+                      isDeleted: false
+                      createdAt: '2023-10-08T20:28:45.215Z'
+                      updatedAt: '2023-10-08T20:28:45.215Z'
+                      __v: 0
+                  isDeleted: false
+                  author:
+                    _id: 648cc7070bcabbf9100c84b7
+                    firstName: tobisupreme
+                    lastName: ‎‎
+                    profilePicture: https://i.ibb.co/6WhtHBQ/talk.gif
                   upvotes: 0
                   upvotedBy: []
-                  author:
-                    _id: 64750feb02591ccffadd7717
-                    firstName: BadGuy
-                    lastName: Bushenga
-                  comments: []
-                  _id: 647c3080b26fc62cb642e53f
-                  createdAt: '2023-06-04T06:34:40.724Z'
-                  updatedAt: '2023-06-04T06:34:40.724Z'
+                  createdAt: '2023-10-08T20:28:45.497Z'
+                  updatedAt: '2023-10-08T20:28:45.497Z'
                   __v: 0
+        '422':
+          description: Unprocessable Entity
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            RateLimit-Limit:
+              schema:
+                type: integer
+                example: '50'
+            RateLimit-Remaining:
+              schema:
+                type: integer
+                example: '49'
+            RateLimit-Reset:
+              schema:
+                type: integer
+                example: '576'
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: '137'
+            ETag:
+              schema:
+                type: string
+                example: W/"89-I7Z7K9hdoC7zOTHTDeEbjIgzuWQ"
+            Date:
+              schema:
+                type: string
+                example: Mon, 02 Oct 2023 20:57:09 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                statusCode: 422
+                message: >-
+                  Please use a valid image format. Valid formats include: png,
+                  jpg, jpeg, gif
+                error: Unprocessable Entity
 
   /posts/{postId}:
     get:
@@ -1959,6 +2082,20 @@ components:
       properties:
         content:
           type: string
+          example: Today, git saved my life! 🍕
+        tags:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          maxItems: 3
+        files:
+          type: array
+          items:
+            type: string
+            format: binary
+          minItems: 1
+          maxItems: 4
 
     postSchema:
       type: object
