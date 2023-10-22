@@ -11,8 +11,9 @@ AltCamp by AltSchool is an e-learning platform that allows students to post mess
 ## Quick Links
 
 ### API
-- Base URL: https://the-altcamp.onrender.com
-- Documentation: https://the-altcamp.onrender.com/api-docs or `<base_url>/api-docs`
+- Base URL (dev): https://altcamp.onrender.com 
+- Base URL (prod): https://api.thealtcamp.com
+- Documentation: https://altcamp.onrender.com/api-docs or `<base_url>/api-docs`
 - Postman Collection: https://documenter.getpostman.com/view/21313847/2s93eePUTg#intro
 
 ### Frontend
