@@ -34,11 +34,11 @@ paths:
                 - $ref: '#/components/schemas/signUpAccountRequest'
             examples:
               Student signup:
-                $ref: '#/components/consolidated/examples/studentSignupRequest'
+                $ref: '#/components/consolidated/example/studentSignupRequest'
               Student signup (as AltScholer):
-                $ref: '#/components/consolidated/examples/altStudentSignupRequest'
+                $ref: '#/components/consolidated/example/altStudentSignupRequest'
               Mentor signup:
-                $ref: '#/components/consolidated/examples/mentorSignupRequest'
+                $ref: '#/components/consolidated/example/mentorSignupRequest'
       responses:
         '201':
           description: 'Account is created successfully'
@@ -48,11 +48,11 @@ paths:
                 $ref: '#/components/schemas/StudentCreated'
               examples:
                 Student signup:
-                  $ref: '#/components/consolidated/examples/studentSignUpResponse'
+                  $ref: '#/components/consolidated/example/studentSignUpResponse'
                 Student signup (as AltScholer):
-                  $ref: '#/components/consolidated/examples/altStudentSignUpResponse'
+                  $ref: '#/components/consolidated/example/altStudentSignUpResponse'
                 Mentor signup:
-                  $ref: '#/components/consolidated/examples/mentorSignUpResponse'
+                  $ref: '#/components/consolidated/example/mentorSignUpResponse'
         '422':
           description: One or more user input not validated.
           content:
@@ -83,9 +83,9 @@ paths:
                 - $ref: '#/components/schemas/loginAccountRequest'
             examples:
               Student login:
-                $ref: '#/components/consolidated/examples/studentLoginRequest'
+                $ref: '#/components/consolidated/example/studentLoginRequest'
               Mentor login:
-                $ref: '#/components/consolidated/examples/mentorLoginRequest'
+                $ref: '#/components/consolidated/example/mentorLoginRequest'
         required: true
       responses:
         '200':
@@ -96,9 +96,9 @@ paths:
                 $ref: '#/components/schemas/StudentCreated'
               examples:
                 Student login:
-                  $ref: '#/components/consolidated/examples/studentLoginResponse'
+                  $ref: '#/components/consolidated/example/studentLoginResponse'
                 Mentor login:
-                  $ref: '#/components/consolidated/examples/mentorLoginResponse'
+                  $ref: '#/components/consolidated/example/mentorLoginResponse'
         '401':
           description: 'Token is  invalid. User not authorized'
           content:
@@ -584,44 +584,167 @@ paths:
       summary: Create a post
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               allOf:
                 - $ref: '#/components/schemas/createPostSchema'
+            encoding:
+              tags:
+                explode: true
               example:
                 content: >-
-                  To heal is to forgive and be loved. Thank you, JavaScript.
+                  Today, git saved my life! 🍕
       responses:
         '201':
           description: Created
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            RateLimit-Limit:
+              schema:
+                type: integer
+                example: '50'
+            RateLimit-Remaining:
+              schema:
+                type: integer
+                example: '48'
+            RateLimit-Reset:
+              schema:
+                type: integer
+                example: '549'
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: '1213'
+            ETag:
+              schema:
+                type: string
+                example: W/"4bd-FEyAMceqW7px5gDsRi7fhw9LY6M"
+            Date:
+              schema:
+                type: string
+                example: Sun, 08 Oct 2023 20:28:47 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/postSchema'
+                type: object
               example:
                 statusCode: 201
                 message: Request Successful!
                 data:
-                  content: >-
-                    Performing asynchronous operations has been giving me a
-                    headache. There are so many ways that the permutation does
-                    not support the standards with which we call the anomalies
-                    in the underlying systems. There are so many factors to
-                    consider that make it hard for the average individual to
-                    commute in their daily fashion. All the king's horses and
-                    all the king's men couldn't put Humpty Dumpty together again
+                  content: Today, git saved my life! 🍕
+                  tags:
+                    - _id: 652310f50ea611be4e2dd5ff
+                      name: git
+                    - _id: 652310f50ea611be4e2dd5fd
+                      name: os
+                  _id: 652310fd0ea611be4e2dd605
+                  comments: []
+                  media:
+                    - _id: 652310fc0ea611be4e2dd601
+                      url: >-
+                        http://res.cloudinary.com/duqn3dhyc/image/upload/v1696796924/test/648cc7070bcabbf9100c84b7/media/files-1696796917069-259310260.jpg
+                      assetId: 3d9b22f8e90c934cb20255d94d1d2033
+                      type: image
+                      isDeleted: false
+                      createdAt: '2023-10-08T20:28:44.531Z'
+                      updatedAt: '2023-10-08T20:28:44.531Z'
+                      __v: 0
+                    - _id: 652310fd0ea611be4e2dd603
+                      url: >-
+                        http://res.cloudinary.com/duqn3dhyc/image/upload/v1696796924/test/648cc7070bcabbf9100c84b7/media/files-1696796917071-329520307.jpg
+                      assetId: 7a5caa4e976924fd7d346a873aa7c107
+                      type: image
+                      isDeleted: false
+                      createdAt: '2023-10-08T20:28:45.215Z'
+                      updatedAt: '2023-10-08T20:28:45.215Z'
+                      __v: 0
+                  isDeleted: false
+                  author:
+                    _id: 648cc7070bcabbf9100c84b7
+                    firstName: tobisupreme
+                    lastName: ‎‎
+                    profilePicture: https://i.ibb.co/6WhtHBQ/talk.gif
                   upvotes: 0
                   upvotedBy: []
-                  author:
-                    _id: 64750feb02591ccffadd7717
-                    firstName: BadGuy
-                    lastName: Bushenga
-                  comments: []
-                  _id: 647c3080b26fc62cb642e53f
-                  createdAt: '2023-06-04T06:34:40.724Z'
-                  updatedAt: '2023-06-04T06:34:40.724Z'
+                  createdAt: '2023-10-08T20:28:45.497Z'
+                  updatedAt: '2023-10-08T20:28:45.497Z'
                   __v: 0
+        '422':
+          description: Unprocessable Entity
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            RateLimit-Limit:
+              schema:
+                type: integer
+                example: '50'
+            RateLimit-Remaining:
+              schema:
+                type: integer
+                example: '49'
+            RateLimit-Reset:
+              schema:
+                type: integer
+                example: '576'
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: '137'
+            ETag:
+              schema:
+                type: string
+                example: W/"89-I7Z7K9hdoC7zOTHTDeEbjIgzuWQ"
+            Date:
+              schema:
+                type: string
+                example: Mon, 02 Oct 2023 20:57:09 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                statusCode: 422
+                message: >-
+                  Please use a valid image format. Valid formats include: png,
+                  jpg, jpeg, gif
+                error: Unprocessable Entity
 
   /posts/{postId}:
     get:
@@ -1960,6 +2083,20 @@ components:
       properties:
         content:
           type: string
+          example: Today, git saved my life! 🍕
+        tags:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          maxItems: 3
+        files:
+          type: array
+          items:
+            type: string
+            format: binary
+          minItems: 1
+          maxItems: 4
 
     postSchema:
       type: object
@@ -3120,161 +3257,161 @@ components:
               type: number
 
     # ----------------------------------------------------
-    consolidated:
-      example:
-        mentorLoginRequest:
-          value:
-            email: lilylearn@mail.com
-            password: 8&jsfjhJD(@
+  consolidated:
+    example:
+      mentorLoginRequest:
+        value:
+          email: lilylearn@mail.com
+          password: 8&jsfjhJD(@
 
-        studentLoginRequest:
-          value:
-            email: johnny.dope@mail.com
-            password: Pkgj748_h!@
+      studentLoginRequest:
+        value:
+          email: johnny.dope@mail.com
+          password: Pkgj748_h!@
 
-        mentorLoginResponse:
-          value:
-            statusCode: 200
-            message: Request Successful!
-            data:
-              token: Bearer token
-              user:
-                firstName: Lily
-                lastName: Olaniyan
-                email: lilylearn@mail.com
-                track: Frontend Engineering
-                accountType: Mentor
-                owner:
-                  _id: some ID
-                  __v: 0
+      mentorLoginResponse:
+        value:
+          statusCode: 200
+          message: Request Successful!
+          data:
+            token: Bearer token
+            user:
+              firstName: Lily
+              lastName: Olaniyan
+              email: lilylearn@mail.com
+              track: Frontend Engineering
+              accountType: Mentor
+              owner:
                 _id: some ID
-                createdAt: '2023-01-01T00:10:52.567Z'
-                updatedAt: '2023-01-01T00:10:52.567Z'
+                __v: 0
+              _id: some ID
+              createdAt: '2023-01-01T00:10:52.567Z'
+              updatedAt: '2023-01-01T00:10:52.567Z'
 
-        studentLoginResponse:
-          value:
-            statusCode: 200
-            message: Request Successful!
-            data:
-              token: Bearer token
-              user:
-                firstName: Johan
-                lastName: Dolapo
-                email: johnny.dope@mail.com
-                track: Frontend Engineering
-                accountType: Student
-                owner:
-                  _id: some ID
-                  __v: 0
+      studentLoginResponse:
+        value:
+          statusCode: 200
+          message: Request Successful!
+          data:
+            token: Bearer token
+            user:
+              firstName: Johan
+              lastName: Dolapo
+              email: johnny.dope@mail.com
+              track: Frontend Engineering
+              accountType: Student
+              owner:
                 _id: some ID
-                createdAt: '2023-01-01T00:10:52.567Z'
-                updatedAt: '2023-01-01T00:10:52.567Z'
+                __v: 0
+              _id: some ID
+              createdAt: '2023-01-01T00:10:52.567Z'
+              updatedAt: '2023-01-01T00:10:52.567Z'
 
-        altStudentLoginResponse:
-          value:
-            statusCode: 200
-            message: Request Successful!
-            data:
-              token: Bearer token
-              user:
-                firstName: Johan
-                lastName: Dolapo
-                email: johnny.dope@mail.com
-                track: Frontend Engineering
-                accountType: Student
-                owner:
-                  _id: some ID
-                  altSchoolId: 'ALT/SOD/023/0010'
-                  __v: 0
+      altStudentLoginResponse:
+        value:
+          statusCode: 200
+          message: Request Successful!
+          data:
+            token: Bearer token
+            user:
+              firstName: Johan
+              lastName: Dolapo
+              email: johnny.dope@mail.com
+              track: Frontend Engineering
+              accountType: Student
+              owner:
                 _id: some ID
-                createdAt: '2023-01-01T00:10:52.567Z'
-                updatedAt: '2023-01-01T00:10:52.567Z'
+                altSchoolId: 'ALT/SOD/023/0010'
+                __v: 0
+              _id: some ID
+              createdAt: '2023-01-01T00:10:52.567Z'
+              updatedAt: '2023-01-01T00:10:52.567Z'
 
-        mentorSignUpResponse:
-          value:
-            statusCode: 201
-            message: Request Successful!
-            data:
-              token: Bearer token
-              user:
-                firstName: Lily
-                lastName: Olaniyan
-                email: lilylearn@mail.com
-                track: Frontend Engineering
-                accountType: Mentor
-                owner:
-                  _id: some ID
-                  __v: 0
+      mentorSignUpResponse:
+        value:
+          statusCode: 201
+          message: Request Successful!
+          data:
+            token: Bearer token
+            user:
+              firstName: Lily
+              lastName: Olaniyan
+              email: lilylearn@mail.com
+              track: Frontend Engineering
+              accountType: Mentor
+              owner:
                 _id: some ID
-                createdAt: '2023-01-01T00:10:52.567Z'
-                updatedAt: '2023-01-01T00:10:52.567Z'
+                __v: 0
+              _id: some ID
+              createdAt: '2023-01-01T00:10:52.567Z'
+              updatedAt: '2023-01-01T00:10:52.567Z'
 
-        studentSignUpResponse:
-          value:
-            statusCode: 201
-            message: Request Successful!
-            data:
-              token: Bearer token
-              user:
-                firstName: Johan
-                lastName: Dolapo
-                email: johnny.dope@mail.com
-                track: Frontend Engineering
-                accountType: Student
-                owner:
-                  _id: some ID
-                  __v: 0
+      studentSignUpResponse:
+        value:
+          statusCode: 201
+          message: Request Successful!
+          data:
+            token: Bearer token
+            user:
+              firstName: Johan
+              lastName: Dolapo
+              email: johnny.dope@mail.com
+              track: Frontend Engineering
+              accountType: Student
+              owner:
                 _id: some ID
-                createdAt: '2023-01-01T00:10:52.567Z'
-                updatedAt: '2023-01-01T00:10:52.567Z'
+                __v: 0
+              _id: some ID
+              createdAt: '2023-01-01T00:10:52.567Z'
+              updatedAt: '2023-01-01T00:10:52.567Z'
 
-        altStudentSignUpResponse:
-          value:
-            statusCode: 201
-            message: Request Successful!
-            data:
-              token: Bearer token
-              user:
-                firstName: Johan
-                lastName: Dolapo
-                email: johnny.dope@mail.com
-                track: Frontend Engineering
-                accountType: Student
-                owner:
-                  _id: some ID
-                  altSchoolId: 'ALT/SOD/023/0010'
-                  __v: 0
+      altStudentSignUpResponse:
+        value:
+          statusCode: 201
+          message: Request Successful!
+          data:
+            token: Bearer token
+            user:
+              firstName: Johan
+              lastName: Dolapo
+              email: johnny.dope@mail.com
+              track: Frontend Engineering
+              accountType: Student
+              owner:
                 _id: some ID
-                createdAt: '2023-01-01T00:10:52.567Z'
-                updatedAt: '2023-01-01T00:10:52.567Z'
+                altSchoolId: 'ALT/SOD/023/0010'
+                __v: 0
+              _id: some ID
+              createdAt: '2023-01-01T00:10:52.567Z'
+              updatedAt: '2023-01-01T00:10:52.567Z'
 
-        mentorSignupRequest:
-          value:
-            firstName: Lily
-            lastName: Olaniyan
-            email: lilylearn@mail.com
-            password: 8&jsfjhJD(@
-            track: Frontend Engineering
-            category: Mentor
+      mentorSignupRequest:
+        value:
+          firstName: Lily
+          lastName: Olaniyan
+          email: lilylearn@mail.com
+          password: 8&jsfjhJD(@
+          track: Frontend Engineering
+          category: Mentor
 
-        altStudentSignupRequest:
-          value:
-            firstName: Johan
-            lastName: Dolapo
-            email: johnny.dope@mail.com
-            password: Pkgj748_h!@
-            track: Frontend Engineering
-            category: Student
-            altSchoolId: 'ALT/SOD/023/0010'
+      altStudentSignupRequest:
+        value:
+          firstName: Johan
+          lastName: Dolapo
+          email: johnny.dope@mail.com
+          password: Pkgj748_h!@
+          track: Frontend Engineering
+          category: Student
+          altSchoolId: 'ALT/SOD/023/0010'
 
-        studentSignupRequest:
-          value:
-            firstName: Johan
-            lastName: Dolapo
-            email: johnny.dope@mail.com
-            password: Pkgj748_h!@
-            track: Frontend Engineering
-            category: Student
+      studentSignupRequest:
+        value:
+          firstName: Johan
+          lastName: Dolapo
+          email: johnny.dope@mail.com
+          password: Pkgj748_h!@
+          track: Frontend Engineering
+          category: Student
 
   # ----------------------------------------------------
 
