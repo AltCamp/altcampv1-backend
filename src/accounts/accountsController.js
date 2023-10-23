@@ -23,6 +23,25 @@ async function uploadProfilePicture(req, res, next) {
   }
 }
 
+async function addProfilePicture(req, res, next) {
+  try {
+    const image = req.file?.path;
+
+    const account = await accountsService.uploadProfilePicture({
+      id: req.user.id,
+      image,
+    });
+
+    if (account instanceof Error) {
+      return next(account);
+    }
+
+    new responseHandler(res, account, 200, RESPONSE_MESSAGE.SUCCESS);
+  } catch (error) {
+    return next(error);
+  }
+}
+
 async function deleteProfilePicture(req, res, next) {
   try {
     const account = await accountsService.deleteProfilePicture(req.user.id);
@@ -120,6 +139,7 @@ const validatePasswordResetOtp = async (req, res) => {
 };
 
 module.exports = {
+  addProfilePicture,
   deleteAccount,
   getAccount,
   getAccounts,

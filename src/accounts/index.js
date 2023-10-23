@@ -12,6 +12,7 @@ const {
   forgotPassword,
   resetPassword,
   validatePasswordResetOtp,
+  addProfilePicture,
 } = require('./accountsController');
 const {
   getAccountsValidator,
@@ -25,6 +26,7 @@ const {
   validateTokenValidator,
 } = require('./accountsValidator');
 const validator = require('../common/validator');
+const { upload } = require('../../middleware/multer');
 
 router
   .route('/')
@@ -38,6 +40,7 @@ router
 router
   .route('/profile-picture')
   .put(verifyUser, validatorMiddleware(imageValidator), uploadProfilePicture)
+  .post(verifyUser, upload.single('profilePicture'), addProfilePicture)
   .delete(verifyUser, deleteProfilePicture);
 
 router.route('/:id').get(getAccount);
