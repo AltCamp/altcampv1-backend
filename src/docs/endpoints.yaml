@@ -361,6 +361,78 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationError'
 
+    post:
+      tags:
+        - Accounts
+      security:
+        - bearer: []
+      summary: Upload profile picture
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                profilePicture:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Powered-By:
+              schema:
+                type: string
+                example: Express
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: '482'
+            ETag:
+              schema:
+                type: string
+                example: W/"1e2-5K0ekGzICEHwj8hkEGfc+ItndQ8"
+            Date:
+              schema:
+                type: string
+                example: Sun, 28 May 2023 18:50:22 GMT
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Keep-Alive:
+              schema:
+                type: string
+                example: timeout=5
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                statusCode: 200
+                message: Request Successful!
+                data:
+                  _id: 6467f0b8e602c42b8c835cdd
+                  firstName: Nkechi
+                  lastName: Amusan
+                  email: nkechi.amusan@getnada.com
+                  track: Backend Engineering
+                  accountType: Student
+                  owner: 6467f0b8e602c42b8c835cdb
+                  createdAt: '2023-05-19T21:57:12.693Z'
+                  updatedAt: '2023-05-28T18:50:22.701Z'
+                  __v: 0
+                  profilePicture: >-
+                    https://res.cloudinary.com/pda-blog/image/upload/v1685299822/test/images/profile-pictures/6467f0b8e602c42b8c835cdd.jpg
+
   /accounts/update-password:
     put:
       tags:
