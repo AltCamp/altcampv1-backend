@@ -12,6 +12,7 @@ const {
   validateCredentials,
   verifyPassword,
   generateId,
+  removeFromDisk,
 } = require('../../utils/helper');
 const { apiFeatures } = require('../common');
 const {
@@ -175,6 +176,7 @@ async function uploadProfilePicture({ id, image }) {
 
     account.profilePicture = cloudinaryUpload.secure_url;
     await account.save();
+    removeFromDisk(image);
 
     return account;
   } catch (error) {
